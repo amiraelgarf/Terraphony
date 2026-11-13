@@ -74,21 +74,21 @@ export function parseRecipe(text: string): EarthRecord {
   try {
     raw = JSON.parse(text);
   } catch {
-    throw new RecipeError('This file is not valid JSON.');
+    throw new RecipeError('This file isn’t an Earth Records record file. Choose a .json file saved from a record page.');
   }
   const r = raw as Partial<EarthRecord>;
-  if (!r || r.schemaVersion !== '1.0') throw new RecipeError('This is not an Earth Records recipe (schemaVersion 1.0).');
-  if (r.story !== 'ocean' && r.story !== 'vegetation') throw new RecipeError('Only ocean and vegetation records can be opened.');
-  if (!Array.isArray(r.observations) || !r.musicalRule || !r.source || !r.geometry || !r.timeWindow) throw new RecipeError('The recipe is missing observations, rule, source or geometry.');
-  if (r.sourceStatus !== 'verified_observations') throw new RecipeError('Only recipes built from verified observations can be opened.');
-  if (!['glass', 'wood', 'felt'].includes(r.instrumentPaletteId as string)) throw new RecipeError('Unknown instrument palette.');
+  if (!r || r.schemaVersion !== '1.0') throw new RecipeError('This file isn’t an Earth Records record file, or it was made by a different version.');
+  if (r.story !== 'ocean' && r.story !== 'vegetation') throw new RecipeError('Only ocean and land records can be opened.');
+  if (!Array.isArray(r.observations) || !r.musicalRule || !r.source || !r.geometry || !r.timeWindow) throw new RecipeError('This record file is incomplete, so it can’t be opened.');
+  if (r.sourceStatus !== 'verified_observations') throw new RecipeError('This record file wasn’t made from verified NASA measurements, so it can’t be opened.');
+  if (!['glass', 'wood', 'felt'].includes(r.instrumentPaletteId as string)) throw new RecipeError('This record file uses a sound this app doesn’t know.');
   for (const o of r.observations) {
-    if (o.status === 'valid' && typeof o.numericValue !== 'number') throw new RecipeError('A valid observation has no numeric value.');
-    if (o.status !== 'valid' && o.numericValue !== null) throw new RecipeError('A rest carries a value.');
+    if (o.status === 'valid' && typeof o.numericValue !== 'number') throw new RecipeError('This record file has been changed, so its notes can’t be trusted. It wasn’t opened.');
+    if (o.status !== 'valid' && o.numericValue !== null) throw new RecipeError('This record file has been changed, so its notes can’t be trusted. It wasn’t opened.');
   }
   const events = buildEvents(r.observations, r.musicalRule as MusicalRule);
   if (Array.isArray(r.events) && eventHash(r.events) !== eventHash(events)) {
-    throw new RecipeError('The stored notes do not match the stored observations and rule.');
+    throw new RecipeError('This record file has been changed, so its notes can’t be trusted. It wasn’t opened.');
   }
   return { ...(r as EarthRecord), events };
 }

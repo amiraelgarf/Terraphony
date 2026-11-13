@@ -21,7 +21,7 @@ import { dialAngle, dialShape, pathD } from './geometry';
 
 const LAND = feature(landTopo as unknown as Topology, (landTopo as unknown as Topology).objects.land) as unknown as FeatureCollection;
 const GRAT = geoGraticule10();
-const MONTHS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+const MONTHS = ['Jan', '', '', 'Apr', '', '', 'Jul', '', '', 'Oct', '', ''];
 
 type Props = {
   places: PlaceIndexEntry[];
@@ -103,7 +103,9 @@ export function LandAtlas({ places, place, record, playhead, smooth, selected, o
           const on = p.id === place?.id;
           return (
             <g key={p.id} className={`land__place${on ? ' is-on' : ''}`} onClick={() => onPlace(p.id)}>
+              <circle cx={x} cy={y} r={14} className="land__place-hit" />
               <circle cx={x} cy={y} r={on ? 5 : 7} />
+              <title>{p.name}</title>
               {!on && <text x={x + 12} y={y + 4}>{p.name}</text>}
             </g>
           );
@@ -145,9 +147,9 @@ export function LandAtlas({ places, place, record, playhead, smooth, selected, o
         )}
       </svg>
       <div className="atlas__legend-land">
-        <span><i className="sw sw--spoke" /> one spoke = one 16-day MODIS window</span>
-        <span><i className="sw sw--rest" /> rest: rejected by quality checks</span>
-        <span>J F M … calendar guides only</span>
+        <span><i className="sw sw--spoke" /> Each spoke is 16 days; longer means greener</span>
+        <span><i className="sw sw--rest" /> Dashed: clouds or snow hid the ground</span>
+        <span>The year starts at the top (January) and runs clockwise</span>
       </div>
     </div>
   );

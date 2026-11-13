@@ -1,4 +1,5 @@
 /** "How it works" — the full method, sources and credits, readable without sound. */
+import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useActions } from '../app/useActions';
 import { OCEAN_RULE, OCEAN_SOURCE } from '../stories/ocean.config';
@@ -25,15 +26,26 @@ export function MethodScene() {
       <Masthead tone="paper" />
       <div className="method">
         <header className="method__head">
-          <span className="eyebrow eyebrow--copper">How it works</span>
           <h1 id="method-title" className="display">Every record has a story.<br /><em>Every note has an origin.</em></h1>
           <p>Earth Records turns real NASA Earth observations into short pieces of music. The sound is artistic; the numbers behind it are not invented. This page is the whole method.</p>
-          <button className="cta cta--ink" onClick={() => a.go('library')}>Back to the records <span className="cta__arrow" aria-hidden="true">↗</span></button>
+          <button className="cta cta--ink" onClick={() => a.go('library')}>Choose a journey <ArrowRight className="cta__arrow" aria-hidden="true" /></button>
         </header>
+
+        <article className="method__section method__short">
+          <h2>In short</h2>
+          <ol>
+            <li><strong>NASA satellites measured a real value</strong> at each stop on your line (sea temperature), or every 16 days in one place (how green the plants are).</li>
+            <li><strong>Each value picks a note</strong> from a fixed scale. Warmer water or greener land plays higher, and the same value always plays the same note.</li>
+            <li><strong>Gaps become silence.</strong> Where there is no valid measurement (land, ice, cloud or snow) the record rests. Nothing is made up.</li>
+          </ol>
+        </article>
 
         <article className="method__section">
           <h2>The one rule</h2>
-          <pre className="method__code">u = clamp((value − lo) / (hi − lo), 0, 1){'\n'}note = [C3 D3 E3 G3 A3 C4 D4 E4 G4 A4 C5][round(u × 10)]</pre>
+          <details className="method__formula">
+            <summary>Show the exact formula</summary>
+            <pre className="method__code" tabIndex={0} aria-label="The formula that turns a value into a note">u = clamp((value − lo) / (hi − lo), 0, 1){'\n'}note = [C3 D3 E3 G3 A3 C4 D4 E4 G4 A4 C5][round(u × 10)]</pre>
+          </details>
           <p>The range <em>lo–hi</em> is fixed for each side and never rescaled, so the same value always plays the same note, on any route, place or date. Values outside the range are clamped and the inspector says so. Nearby values can share a note; the exact number is always shown.</p>
           <p>Arrangement: the melody plays alone first; a bass (mean of each block of 4 values) joins; accents mark changes above a declared threshold; a closing chord ends the record. The closing chord is artistic and carries no data. Instruments change timbre only.</p>
         </article>
@@ -87,7 +99,7 @@ export function MethodScene() {
           <ul className="plain-list">
             <li>Absolute temperature is not an anomaly. Greenness is not health. A detection is not a fire.</li>
             <li>Missing, masked or rejected values are rests, drawn as rings, never filled in.</li>
-            <li>Same recipe → same notes → same sleeve. A recipe whose notes do not match its observations is refused when opened.</li>
+            <li>The same saved record file always gives the same notes and the same sleeve. A file whose notes don&apos;t match NASA&apos;s measurements is refused when opened.</li>
             <li>Nothing you make leaves your browser unless you download it.</li>
           </ul>
         </article>
@@ -111,6 +123,9 @@ export function MethodScene() {
           <p>Coastlines: Natural Earth (public domain) via world-atlas. Fonts: Instrument Serif, DM Sans, DM Mono (SIL OFL). Sound: original, synthesized in the browser with Tone.js.</p>
           <p className="muted">An independent NASA Space Apps Challenge 2026 project. Not endorsed by NASA.</p>
         </article>
+        <div className="method__end">
+          <button className="cta cta--ink" onClick={() => a.go('library')}>Choose a journey <ArrowRight className="cta__arrow" aria-hidden="true" /></button>
+        </div>
       </div>
     </section>
   );

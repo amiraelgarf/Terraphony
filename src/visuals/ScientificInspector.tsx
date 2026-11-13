@@ -50,11 +50,11 @@ export function ScientificInspector({ record, index, place, onClose, onHear, onP
         <span className="eyebrow eyebrow--copper" id="inspector-title">
           {unit} {index + 1} of {n} · {valid ? midiToName(e.midiNote!) : 'Rest'}
         </span>
-        <button className="inspector__close" onClick={onClose} aria-label="Close the note inspector">Close</button>
+        <button className="inspector__close" onClick={onClose} aria-label="Close the note details">Close</button>
       </div>
       <p className="inspector__sentence">{interpretation(record, index)}</p>
       <dl className="inspector__facts">
-        <div><dt>Value</dt><dd>{valid ? formatValue(record, o.numericValue, record.story === 'ocean' ? 2 : 3) : 'No valid measurement'}</dd></div>
+        <div><dt>Measured</dt><dd>{valid ? formatValue(record, o.numericValue, record.story === 'ocean' ? 2 : 3) : 'No valid measurement'}</dd></div>
         <div><dt>{record.story === 'ocean' ? 'Day' : 'Composite window'}</dt><dd>{whenText(record, index)}</dd></div>
         <div><dt>Where</dt><dd>{whereText(record, index)}</dd></div>
         <div><dt>Note</dt><dd>{valid ? `${midiToName(e.midiNote!)}${e.clamped ? ' (clamped)' : ''}` : 'Rest'}</dd></div>

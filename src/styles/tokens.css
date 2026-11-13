@@ -10,6 +10,21 @@
   --deep-3: #12302f;
   --copper: #b55d47;
   --copper-soft: #d8795c;
+  --copper-ink: #9a4a37; /* copper for TEXT on paper: 5.3:1 (plain copper is 3.9:1) */
+  --ink-muted: #4f625e;  /* secondary text on paper, ≥ 5:1 — use instead of opacity */
+  --paper-muted: #b9c6bf; /* secondary text on deep, ≥ 7:1 */
+  --side-a: #142f34;
+  --side-b: #1c3127;
+  --side-c: #252524;
+  --library-bg: #0a2428;
+  --studio-bg: #0b2528;
+  --press-bg: #081c20;
+  --sage-ink: #55693d;   /* Side B label on paper, 5.2:1 */
+  --studio-panel: #0d2025;
+  --score-paper: #e7e0d3;
+  --score-note: #315959;
+  --score-played: #4f716b;   /* 4.0:1 on score paper (was 2.8:1) */
+  --score-change: #8a6420;   /* 'big change' dot, 4.6:1 on score paper (was 2.4:1) */
   --gold: #e7b276;
   --gold-hi: #f3d49c;
   --forest: #8b9e6e;

@@ -6,6 +6,9 @@ type Props = { open: boolean; title: string; overline?: string; onClose: () => v
 export function Dialog({ open, title, overline, onClose, children, wide }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const opener = useRef<Element | null>(null);
+  // keep the latest onClose without re-running the focus effect on every parent render
+  const close = useRef(onClose);
+  close.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -15,7 +18,7 @@ export function Dialog({ open, title, overline, onClose, children, wide }: Props
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        close.current();
       }
       if (e.key === 'Tab' && el) {
         const items = Array.from(el.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])')).filter((x) => !x.hasAttribute('disabled'));
@@ -35,7 +38,7 @@ export function Dialog({ open, title, overline, onClose, children, wide }: Props
       document.removeEventListener('keydown', onKey);
       (opener.current as HTMLElement | null)?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
   return (

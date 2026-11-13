@@ -15,11 +15,15 @@ import { useStudioRecord, type StudioData } from './useStudioRecord';
 type Ctx = { state: State; dispatch: Dispatch<Action>; studio: StudioData; activeRecord: EarthRecord | null };
 const RecordCtx = createContext<Ctx | null>(null);
 
+/** Set when a #/record/<id> link pointed at a record that isn't on this browser's shelf; the library explains it once. */
+export const missingRecordLink = { current: false };
+
 function boot(): State {
   const drafts = loadDrafts();
   const shelf = loadShelf();
   const route = parseHash(window.location.hash);
   const current = route.recordId ? shelf.find((r) => r.recordId === route.recordId) ?? null : null;
+  if (route.scene === 'reveal' && !current) missingRecordLink.current = true;
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   return initialState({
     scene: route.scene === 'reveal' && !current ? 'library' : route.scene,
@@ -61,7 +65,10 @@ export function RecordProvider({ children }: { children: ReactNode }) {
       if (r.scene === 'reveal') {
         const rec = shelfRef.current.find((x) => x.recordId === r.recordId);
         if (rec) dispatch({ type: 'openRecord', record: rec, source: 'shelf' });
-        else dispatch({ type: 'go', scene: 'library' });
+        else {
+          missingRecordLink.current = true;
+          dispatch({ type: 'go', scene: 'library' });
+        }
       } else dispatch({ type: 'go', scene: r.scene, story: r.story });
     };
     window.addEventListener('popstate', onPop);

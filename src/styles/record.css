@@ -17,8 +17,8 @@
 .sleeve--small { box-shadow: 6px 10px 18px rgba(0, 0, 0, 0.35); }
 .sleeve--small .sleeve__bottom span:last-child { display: none; }
 
-.disc { width: 100%; aspect-ratio: 1; border-radius: 50%; }
-.disc svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 22px 34px rgba(16, 32, 30, 0.35)); }
+.disc { width: 100%; aspect-ratio: 1; border-radius: 50%; box-shadow: 0 22px 34px rgba(16, 32, 30, 0.35); } /* shadow on the still wrapper, not the spinning svg */
+.disc svg { width: 100%; height: 100%; display: block; }
 .disc.is-spinning svg { animation: spin 3.6s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .disc__label-title { font-family: var(--serif); font-size: 21px; fill: var(--ink); }
@@ -27,11 +27,11 @@
 /* =====================================================================
    04 · REVEAL — the finished record
    ===================================================================== */
-.scene--reveal { background: #efebe1; color: var(--ink); padding: calc(var(--mast) + 40px) var(--gutter) 36px; display: flex; flex-direction: column; }
+.scene--reveal { background: var(--paper); color: var(--ink); padding: calc(var(--mast) + 40px) var(--gutter) 36px; display: flex; flex-direction: column; }
 .reveal__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
-.reveal__head h1 { font-size: clamp(60px, 6.6vw, 112px); line-height: 0.86; margin: 12px 0 0; outline: none; }
+.reveal__head h1 { font-size: clamp(60px, 6.6vw, 112px); line-height: 0.86; margin: 0; outline: none; }
 .reveal__head h1 em { color: var(--copper); }
-.reveal__head p { max-width: 300px; color: #526967; font-size: 14px; line-height: 1.6; margin: 0; }
+.reveal__head p { max-width: 320px; color: var(--ink-muted); font-size: 15px; line-height: 1.6; margin: 0; }
 .reveal__layout { display: grid; grid-template-columns: minmax(320px, 1.05fr) minmax(320px, 0.95fr); gap: clamp(30px, 6vw, 110px); align-items: center; flex: 1; }
 .reveal__object { position: relative; width: min(100%, 560px); aspect-ratio: 1.22; margin: 0 auto; }
 .reveal__object::before { content: ''; position: absolute; inset: 8% -6% 4% 30%; border: 1px solid rgba(156, 140, 112, 0.35); border-radius: 50%; }
@@ -41,21 +41,32 @@
 .reveal__sleeve { position: absolute; width: 74%; left: 0; top: 4%; transform: rotate(-2deg); transition: transform 0.6s var(--ease); animation: sleeveSettle 0.8s var(--ease-out) both; }
 @keyframes sleeveSettle { from { transform: rotate(-6deg) translateY(16px); opacity: 0; } }
 .reveal__sleeve:hover { transform: rotate(0deg) translateY(-4px); }
-.liner { border-top: 1px solid rgba(83, 101, 98, 0.35); padding-top: 22px; display: flex; flex-direction: column; gap: 18px; animation: copyIn 0.9s var(--ease) 0.3s both; }
+.liner { border-top: 1px solid rgba(83, 101, 98, 0.35); padding-top: 20px; display: flex; flex-direction: column; gap: 14px; animation: copyIn 0.9s var(--ease) 0.3s both; }
 .liner__title { font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 3.8vw, 62px); line-height: 0.96; margin: 0; overflow-wrap: anywhere; }
-.liner__story { font-family: var(--serif); font-size: 22px; line-height: 1.28; color: #4f6762; margin: 0; max-width: 520px; }
+.liner__meta { margin: -6px 0 0; font-size: 14px; color: var(--ink-muted); }
+.liner__story { font-family: var(--serif); font-size: 21px; line-height: 1.28; color: var(--ink-muted); margin: 0; max-width: 520px; }
+.liner__kept { margin: 0; font-size: 15px; font-weight: 500; color: var(--ink); }
+.liner__actions { align-items: center; }
+.liner__keep { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid rgba(135, 149, 142, 0.4); }
+.liner__keep-title { margin: 0; font-size: 15px; font-weight: 600; }
+.liner__keep-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.liner__keep-note { margin: 0; font-size: 14px; color: var(--ink-muted); }
+.liner__details > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-size: 15px; font-weight: 500; }
+.reveal__next { margin-top: 18px; }
+.reveal__notes-title { grid-column: 1 / -1; margin: 0; font-family: var(--serif); font-weight: 400; font-size: 32px; outline: none; }
+.reveal__notes-lead { grid-column: 1 / -1; margin: -18px 0 0; font-size: 15px; color: var(--ink-muted); }
 .liner__actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .liner__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; margin: 0; padding: 16px 0; border-top: 1px solid rgba(135, 149, 142, 0.4); border-bottom: 1px solid rgba(135, 149, 142, 0.4); }
-.liner__facts dt { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #687b72; margin-bottom: 4px; }
+.liner__facts dt { font-size: 13px; color: var(--ink-muted); margin-bottom: 2px; }
 .liner__facts dd { margin: 0; font-size: 14.5px; font-weight: 700; }
-.liner__facts small { font-weight: 400; color: #687b72; }
+
 .liner__exports { display: flex; gap: 8px 22px; flex-wrap: wrap; }
 .liner__exports .link-btn { color: var(--ink); }
-.liner__msg { margin: 0; font-size: 13px; color: #2e5550; }
-.liner__fact-vs-art { font-size: 13px; line-height: 1.6; color: #5b6f69; margin: 0; max-width: 560px; }
+.liner__msg { margin: 0; font-size: 14px; color: var(--ink); }
+.liner__fact-vs-art { font-size: 14px; line-height: 1.6; color: var(--ink-muted); margin: 0; max-width: 560px; }
 .reveal__notes { margin-top: 30px; padding: 18px 0 0; border-top: 1px solid rgba(83, 101, 98, 0.35); display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); gap: 30px; align-items: start; }
 .inspector--inline { box-shadow: none; border: 1px solid rgba(16, 41, 42, 0.18); }
-.reveal__credits { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 30px; padding-top: 14px; border-top: 1px solid rgba(170, 179, 162, 0.4); font-size: 11px; color: #6a7e77; line-height: 1.5; }
+.reveal__credits { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 30px; padding-top: 14px; border-top: 1px solid rgba(170, 179, 162, 0.4); font-size: 12px; color: var(--ink-muted); line-height: 1.5; }
 .reveal__credits span:last-child { max-width: 780px; }
 
 @media (max-width: 980px) {

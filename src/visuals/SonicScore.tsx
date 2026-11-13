@@ -46,7 +46,7 @@ export function SonicScore({ record, playhead, smooth, selected, onSelect, tone 
       <div className="score__lane" ref={ref} role="toolbar" aria-label={`Score: ${n} notes. Use arrow keys to move between notes.`} onKeyDown={onKey} style={{ ['--n' as string]: n }}>
         {[b.bassFrom, b.accentFrom, b.resolveFrom].map((x, i) => (
           <span key={i} className="score__section" style={{ left: `${(x / n) * 100}%` }} aria-hidden="true">
-            {['+ bass', '+ accents', 'resolve'][i]}
+            {['Bass joins', 'Accents join', 'Ending'][i]}
           </span>
         ))}
         {record.events.map((e, i) => {
@@ -78,7 +78,7 @@ export function SonicScore({ record, playhead, smooth, selected, onSelect, tone 
             <strong>{unit} {active + 1}/{n}</strong> {sampleCaption(record, active)}
           </>
         ) : (
-          <>Select any mark to see where its note came from. Rings are rests: no valid measurement there.</>
+          <>Tap or click any mark to see the measurement behind its note.</>
         )}
       </p>
     </div>

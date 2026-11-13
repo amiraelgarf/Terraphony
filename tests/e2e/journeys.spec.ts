@@ -106,6 +106,7 @@ test('drawing a line over the sea makes a new 24-stop route', async ({ page }) =
   await openOceanStudio(page);
   const before = await page.locator('.score__mark').nth(12).getAttribute('aria-label');
   await page.getByRole('button', { name: 'Draw a route' }).click();
+  await page.locator('.atlas__svg').scrollIntoViewIfNeeded();
   const box = (await page.locator('.atlas__svg').boundingBox())!;
   const y = box.y + box.height * 0.72;
   await page.mouse.move(box.x + box.width * 0.2, y);
@@ -124,7 +125,7 @@ test('press -> reveal -> exports carry the real record', async ({ page }, info) 
   await expect(page.getByRole('heading', { name: /It's yours/ })).toBeVisible({ timeout: 10_000 });
   await expect(page.locator('.liner__title')).toHaveText('Test pressing');
 
-  const [json] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export record recipe (JSON)' }).click()]);
+  const [json] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Save record file' }).click()]);
   const recipe = JSON.parse(readFileSync((await json.path())!, 'utf-8'));
   expect(recipe.schemaVersion).toBe('1.0');
   expect(recipe.sourceStatus).toBe('verified_observations');
@@ -132,13 +133,13 @@ test('press -> reveal -> exports carry the real record', async ({ page }, info) 
   expect(recipe.source.units).toBe('°C');
   expect(recipe.title).toBe('Test pressing');
 
-  const [png] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Save sleeve (PNG)' }).click()]);
+  const [png] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Sleeve image' }).click()]);
   const bytes = readFileSync((await png.path())!);
   expect(bytes.subarray(1, 4).toString()).toBe('PNG');
   expect(bytes.readUInt32BE(16)).toBe(2400);
 
   if (info.project.name === 'desktop') {
-    const [wav] = await Promise.all([page.waitForEvent('download', { timeout: 30_000 }), page.getByRole('button', { name: 'Save audio (WAV)' }).click()]);
+    const [wav] = await Promise.all([page.waitForEvent('download', { timeout: 30_000 }), page.getByRole('button', { name: 'Audio', exact: true }).click()]);
     const w = readFileSync((await wav.path())!);
     expect(w.subarray(0, 4).toString()).toBe('RIFF');
     expect(w.length).toBeGreaterThan(44 + 44100 * 2 * 2 * 10);

@@ -11,7 +11,7 @@
  *   leaving  needle descends (400 ms) -> the gold ring unrolls into a line (700 ms) -> iris opens (600 ms)
  */
 import { geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { feature } from 'topojson-client';
 import type { FeatureCollection } from 'geojson';
 import type { Topology } from 'topojson-specification';
@@ -24,27 +24,44 @@ const C = 300;
 const R_GLOBE = 132;
 const R_RING = 168;
 
-export function EarthRecordHero({ leaving, nudge, reducedMotion }: { leaving: boolean; nudge: boolean; reducedMotion: boolean }) {
-  const [rot, setRot] = useState(-20);
-  const raf = useRef(0);
+/** Project the globe at a given rotation. Only land and graticule change with rotation; the sphere outline does not. */
+function project(rot: number) {
+  const proj = geoOrthographic().scale(R_GLOBE).translate([C, C]).rotate([rot, -18, 0]).clipAngle(90);
+  const path = geoPath(proj);
+  return { land: path(LAND) ?? '', grat: path(GRATICULE) ?? '', sphere: path({ type: 'Sphere' }) ?? '' };
+}
+const START_ROT = -20;
+const FRAME_MS = 1000 / 30; // a slow 4°/s turn needs no more than 30 fps
 
+export function EarthRecordHero({ leaving, nudge, reducedMotion }: { leaving: boolean; nudge: boolean; reducedMotion: boolean }) {
+  const raf = useRef(0);
+  const landRef = useRef<SVGPathElement>(null);
+  const gratRef = useRef<SVGPathElement>(null);
+  const initial = useMemo(() => project(START_ROT), []);
+  const { land, grat, sphere } = initial;
+
+  // Turn the globe by writing the two path attributes directly: no React re-render per frame.
   useEffect(() => {
     if (reducedMotion) return;
+    let rot = START_ROT;
     let last = performance.now();
+    let acc = 0;
     const tick = (t: number) => {
-      setRot((r) => r + ((t - last) / 1000) * 4);
+      const dt = t - last;
       last = t;
+      rot += (dt / 1000) * 4;
+      acc += dt;
+      if (acc >= FRAME_MS) {
+        acc = 0;
+        const next = project(rot);
+        landRef.current?.setAttribute('d', next.land);
+        gratRef.current?.setAttribute('d', next.grat);
+      }
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf.current);
   }, [reducedMotion]);
-
-  const { land, grat, sphere } = useMemo(() => {
-    const proj = geoOrthographic().scale(R_GLOBE).translate([C, C]).rotate([rot, -18, 0]).clipAngle(90);
-    const path = geoPath(proj);
-    return { land: path(LAND) ?? '', grat: path(GRATICULE) ?? '', sphere: path({ type: 'Sphere' }) ?? '' };
-  }, [rot]);
 
   const grooves = useMemo(() => Array.from({ length: 46 }, (_, i) => ({ r: 190 + i * 2.25, o: 0.05 + ((i * 37) % 11) / 90 })), []);
   const ticks = useMemo(() => Array.from({ length: 72 }, (_, i) => i * 5), []);
@@ -89,8 +106,8 @@ export function EarthRecordHero({ leaving, nudge, reducedMotion }: { leaving: bo
         <line className="hero-object__line" x1={C - R_RING} y1={C} x2={C + R_RING} y2={C} stroke="#e7b276" strokeWidth={2} />
         <g className="hero-object__globe">
           <path d={sphere} fill="url(#hero-sea)" />
-          <path d={grat} fill="none" stroke="#e9dcc0" strokeOpacity={0.14} strokeWidth={0.6} />
-          <path d={land} fill="#c9ad7d" fillOpacity={0.92} stroke="#f2e2bf" strokeOpacity={0.5} strokeWidth={0.5} />
+          <path ref={gratRef} d={grat} fill="none" stroke="#e9dcc0" strokeOpacity={0.14} strokeWidth={0.6} />
+          <path ref={landRef} d={land} fill="#c9ad7d" fillOpacity={0.92} stroke="#f2e2bf" strokeOpacity={0.5} strokeWidth={0.5} />
           <path d={sphere} fill="none" stroke="#e7cfa4" strokeOpacity={0.55} strokeWidth={1} />
           <circle cx={C} cy={C} r={5} fill="#0b1b1e" stroke="#e7cfa4" strokeWidth={1.2} />
         </g>

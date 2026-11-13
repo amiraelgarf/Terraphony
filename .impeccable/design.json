@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T00:00:00Z",
+  "title": "Design System: Earth Records",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Archive Paper", "canonical": "#f2ede3" },
+      "ink": { "role": "neutral", "displayName": "Chart Ink", "canonical": "#10292a" },
+      "deep": { "role": "neutral", "displayName": "Night Sea", "canonical": "#081e22" },
+      "gold": { "role": "primary", "displayName": "Listening Gold", "canonical": "#e7b276" },
+      "copper": { "role": "primary", "displayName": "Pressing Copper", "canonical": "#b55d47" },
+      "forest": { "role": "secondary", "displayName": "Field Forest", "canonical": "#8b9e6e" },
+      "sage": { "role": "secondary", "displayName": "Sea Sage", "canonical": "#aabdb7" }
+    },
+    "shadows": [
+      { "name": "object", "value": "0 30px 90px rgba(3, 13, 15, 0.7)", "purpose": "The hero record and dialogs." },
+      { "name": "sleeve", "value": "14px 22px 40px rgba(20, 40, 36, 0.28)", "purpose": "Sleeves on paper." }
+    ],
+    "motion": [
+      { "name": "ease", "value": "cubic-bezier(0.2, 0.72, 0.16, 1)", "purpose": "Default state and scene transitions." },
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Lifts and slides of physical objects." }
+    ],
+    "breakpoints": [{ "name": "mobile", "value": "760px" }]
+  },
+  "components": [
+    { "name": "Primary Button (paper)", "kind": "button", "refersTo": "button-primary-paper", "description": "Main action on paper scenes.", "html": "<button class=\"ds-cta\">Make my Earth Record <span>→</span></button>", "css": ".ds-cta{display:inline-flex;align-items:center;gap:28px;min-height:52px;padding:15px 22px;border:1px solid #10292a;background:transparent;color:#10292a;font:500 15px 'DM Sans',system-ui,sans-serif;transition:background .24s,color .24s,transform .24s}.ds-cta:hover{background:#10292a;color:#f2ede3;transform:translateY(-2px)}.ds-cta:focus-visible{outline:2px solid #b55d47;outline-offset:4px}" },
+    { "name": "Primary Button (deep)", "kind": "button", "refersTo": "button-primary-dark", "description": "Main action on deep scenes.", "html": "<button class=\"ds-cta-deep\">Hear this journey</button>", "css": ".ds-cta-deep{min-height:52px;padding:15px 22px;border:1px solid #f2ede3;background:#f2ede3;color:#081e22;font:500 15px 'DM Sans',system-ui,sans-serif;transition:background .24s}.ds-cta-deep:hover{background:#e7b276;border-color:#e7b276}.ds-cta-deep:focus-visible{outline:2px solid #e7b276;outline-offset:4px}" },
+    { "name": "Sound Toggle", "kind": "custom", "refersTo": "sound-toggle", "description": "Global sound on/off pill in the masthead.", "html": "<button class=\"ds-sound\"><i></i><i></i><i></i> Sound on</button>", "css": ".ds-sound{display:inline-flex;align-items:center;gap:9px;min-height:36px;padding:6px 13px;border:1px solid #f2ede3;border-radius:40px;background:transparent;color:#f2ede3;font:400 12px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase}.ds-sound i{width:2px;height:8px;background:currentColor;display:inline-block}.ds-sound:focus-visible{outline:2px solid #e7b276;outline-offset:4px}" }
+  ],
+  "narrative": {
+    "northStar": "The Listening Atlas",
+    "overview": "Earth Records is cartography you can hear: precise NASA maps on near-black, a calm paper score of real measurements, and a vinyl record as the keepsake. Paper is for invitation and reading; deep is for looking and listening. The atlas must read before it impresses.",
+    "keyCharacteristics": ["Two surfaces, paper and deep, never mixed inside one panel.", "Serif display for meaning, sans for doing, mono only for small reference labels.", "Square-edged, ruled, editorial geometry; circles belong only to the record and the globe.", "One clock: data motion follows the audio transport.", "Every note has an origin you can inspect."],
+    "rules": [
+      { "name": "The Not-A-Legend Rule", "body": "House colors never encode data.", "section": "colors" },
+      { "name": "The Two-Accent Rule", "body": "Gold lives on deep, copper lives on paper.", "section": "colors" },
+      { "name": "The Readable-First Rule", "body": "Anything a person must read to act is at least 14px, sentence case, DM Sans.", "section": "typography" },
+      { "name": "The Object-Only Shadow Rule", "body": "Only the record, sleeves and dialogs cast shadows.", "section": "elevation" }
+    ],
+    "dos": ["Do give every screen one obvious primary action and one lead sentence.", "Do keep buttons and labels at 14px or more in sentence case.", "Do keep sound opt-in and mirror everything audible on screen.", "Do respect reduced motion."],
+    "donts": ["Don't use house colors to encode data.", "Don't round interface corners.", "Don't put shadows on panels or controls.", "Don't show a technical term without a plain explanation beside it."]
+  }
+}

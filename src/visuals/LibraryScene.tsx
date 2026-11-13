@@ -1,6 +1,7 @@
 /** Screen 01 — The Record Library. "Where shall we listen?" */
-import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
-import { useRecord } from '../app/RecordContext';
+import { ArrowRight } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
+import { missingRecordLink, useRecord } from '../app/RecordContext';
 import { useActions } from '../app/useActions';
 import { normalize } from '../audio/normalize';
 import { loadPlace, type LandPlace } from '../data/adapters/modisNdviAdapter';
@@ -80,6 +81,12 @@ export function LibraryScene() {
   const [fireOpen, setFireOpen] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const file = useRef<HTMLInputElement>(null);
+  const closeFire = useCallback(() => setFireOpen(false), []);
+  const [missing] = useState(() => {
+    const m = missingRecordLink.current;
+    missingRecordLink.current = false;
+    return m;
+  });
 
   useEffect(() => {
     loadPresets().then((f) => setPreset(f.presets[0])).catch(() => setPreset(null));
@@ -104,79 +111,84 @@ export function LibraryScene() {
       <Masthead />
       <div className="library__intro">
         <div>
-          <span className="eyebrow eyebrow--gold">The library / Pick a side</span>
-          <h1 id="library-title" className="display">
+          <h1 id="library-title" className="display" tabIndex={-1} data-scene-heading>
             Where shall
             <br />
             we <em>listen?</em>
           </h1>
         </div>
-        <p>There are different ways to hear a planet. Choose a journey; the science comes with it.</p>
+        <p>Pick a journey. Each one turns a different kind of NASA measurement into music. A third is on its way.</p>
       </div>
 
       <div className="shelf-row">
-        <button className="choice choice--ocean" onPointerMove={tilt} onClick={() => a.go('studio', 'ocean')} aria-describedby="choice-a-desc">
+        <button className="choice choice--ocean" onPointerMove={tilt} onClick={() => a.go('studio', 'ocean')} aria-labelledby="choice-a-title" aria-describedby="choice-a-desc">
           <div className="choice__art">
             <OceanArt preset={preset} />
             <span className="choice__disc" aria-hidden="true" />
             <span className="choice__band eyebrow"><span>Side A</span><span>A path through space</span></span>
           </div>
           <div className="choice__body">
-            <span className="eyebrow eyebrow--gold">{OCEAN_COPY.question}</span>
-            <h2 className="display">Ocean<br />in Motion</h2>
+                        <h2 id="choice-a-title" className="display">Ocean<br />in Motion</h2>
+            <span className="choice__question">{OCEAN_COPY.question}</span>
             <p id="choice-a-desc">{OCEAN_COPY.libraryLine}</p>
-            <span className="choice__source">Sea surface temperature, °C · MUR v4.1 · picture NASA SVS 3912</span>
-            <span className="choice__go">Open the atlas <span aria-hidden="true">→</span></span>
+            <span className="choice__plain">Notes from sea temperature measured by NASA satellites</span>
+            <span className="choice__source">MUR SST v4.1 · picture: NASA SVS 3912</span>
+            <span className="choice__go">Start this journey <ArrowRight aria-hidden="true" /></span>
           </div>
         </button>
 
-        <button className="choice choice--land" onPointerMove={tilt} onClick={() => a.go('studio', 'vegetation')} aria-describedby="choice-b-desc">
+        <button className="choice choice--land" onPointerMove={tilt} onClick={() => a.go('studio', 'vegetation')} aria-labelledby="choice-b-title" aria-describedby="choice-b-desc">
           <div className="choice__art">
             <LandArt place={place} />
             <span className="choice__disc" aria-hidden="true" />
             <span className="choice__band eyebrow"><span>Side B</span><span>A journey through time</span></span>
           </div>
           <div className="choice__body">
-            <span className="eyebrow eyebrow--sage">{LAND_COPY.question}</span>
-            <h2 className="display">A Year in<br />One Place</h2>
+                        <h2 id="choice-b-title" className="display">A Year in<br />One Place</h2>
+            <span className="choice__question">{LAND_COPY.question}</span>
             <p id="choice-b-desc">{LAND_COPY.libraryLine}</p>
-            <span className="choice__source">Vegetation greenness (NDVI) · MODIS MOD13Q1 v061 · 2023</span>
-            <span className="choice__go">Choose a place <span aria-hidden="true">→</span></span>
+            <span className="choice__plain">Notes from how green the plants are, measured by NASA satellites through 2023</span>
+            <span className="choice__source">MODIS MOD13Q1 v061 · NDVI</span>
+            <span className="choice__go">Start this journey <ArrowRight aria-hidden="true" /></span>
           </div>
         </button>
 
-        <button className="choice choice--fire is-planned" onClick={() => setFireOpen(true)} aria-describedby="choice-c-desc">
+        <button className="choice choice--fire is-planned" onClick={() => setFireOpen(true)} aria-labelledby="choice-c-title choice-c-status" aria-describedby="choice-c-desc">
           <div className="choice__art">
             <FireArt />
             <span className="choice__band eyebrow"><span>Side C</span><span>{FIRE_COPY.status}</span></span>
           </div>
           <div className="choice__body">
-            <span className="eyebrow eyebrow--muted">{FIRE_COPY.question}</span>
-            <h2 className="display">A Landscape<br />Interrupted</h2>
+                        <h2 id="choice-c-title" className="display">A Landscape<br />Interrupted</h2>
+            <span className="choice__question">{FIRE_COPY.question}</span>
             <p id="choice-c-desc">{FIRE_COPY.libraryLine}</p>
-            <span className="choice__source">Planned · Dixie Fire 2021 · not playable yet</span>
-            <span className="choice__go">Why it is not ready <span aria-hidden="true">→</span></span>
+            <span id="choice-c-status" className="choice__plain">In preparation, so not playable yet</span>
+            <span className="choice__source">Planned · Dixie Fire, California, 2021</span>
+            <span className="choice__go">Why it isn&apos;t ready <ArrowRight aria-hidden="true" /></span>
           </div>
         </button>
       </div>
 
       <div className="library__shelf">
         <div className="library__shelf-head">
-          <h2 className="eyebrow">Your shelf{state.shelf.length > 0 ? ` · ${state.shelf.length}` : ''}</h2>
+          <h2>Your records{state.shelf.length > 0 ? ` (${state.shelf.length})` : ''}</h2>
           <label className="link-btn file-btn">
-            Open a record recipe (JSON)
+            Open a saved record file
             <input ref={file} type="file" accept="application/json,.json" onChange={(e) => onImport(e.target.files?.[0])} />
           </label>
         </div>
+        {missing && <p className="error-note" role="alert">That record link isn’t on this browser’s shelf. Records stay in the browser that made them; ask for its record file and open it here instead.</p>}
         {importError && <p className="error-note" role="alert">{importError}</p>}
         {state.shelf.length === 0 ? (
-          <p className="library__empty">Records you press are kept here, in this browser only.</p>
+          <p className="library__empty">Records you make appear here. They are kept in this browser only. To move one to another computer, save its file from the record page and open it here.</p>
         ) : (
           <ul className="shelf-list">
             {state.shelf.map((r) => (
               <li key={r.recordId}>
-                <button className="shelf-item" onClick={() => a.openShelf(r)} aria-label={`Open “${r.title}”`}>
+                <button className="shelf-item" onClick={() => a.openShelf(r)} aria-label={`Open “${r.title}”, ${r.story === 'ocean' ? 'sea' : 'land'}, ${r.timeWindow.label}`}>
                   <RecordSleeve record={r} size="small" />
+                  <span className="shelf-item__title">{r.title}</span>
+                  <span className="shelf-item__meta">{r.story === 'ocean' ? 'Sea' : 'Land'} · {r.timeWindow.label}</span>
                 </button>
               </li>
             ))}
@@ -184,17 +196,24 @@ export function LibraryScene() {
         )}
       </div>
 
-      <Dialog open={fireOpen} onClose={() => setFireOpen(false)} title="Not pressed yet." overline="Side C · In preparation">
+      <Dialog open={fireOpen} onClose={closeFire} title="Not pressed yet." overline="Side C · In preparation">
+        <p className="lead">This record isn&apos;t ready to play. We&apos;re still checking the wildfire data carefully, because the fire affected real people.</p>
         <p>
           This record will follow a documented wildfire, the 2021 Dixie Fire in California, window by window as NASA&apos;s visualization does (
           <a href={FIRE_COPY.svs} target="_blank" rel="noreferrer">SVS 4993</a>). It stays unplayable until the observations are integrated and reviewed. It needs:
         </p>
-        <ul className="plain-list">
-          {FIRE_COPY.needs.map((n) => (
-            <li key={n}>{n}</li>
-          ))}
-        </ul>
-        <p className="muted">One detection is not one fire, and no detection does not prove nothing was burning. The event affected real communities; it will be scored soberly or not at all.</p>
+        <details>
+          <summary>What&apos;s still needed (technical)</summary>
+          <ul className="plain-list">
+            {FIRE_COPY.needs.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        </details>
+        <p className="muted">One satellite detection is not one fire, and no detection does not prove nothing was burning. It will be scored soberly or not at all.</p>
+        <div className="dialog__actions">
+          <button className="cta cta--ink" onClick={closeFire}>Back to the journeys</button>
+        </div>
       </Dialog>
     </section>
   );

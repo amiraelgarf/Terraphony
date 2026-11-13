@@ -29,7 +29,7 @@ export function RouteControls({ draft, presets, waypoints, onPatch }: { draft: O
 
   return (
     <fieldset className="field">
-      <legend>Choose the line</legend>
+      <legend>Your line across the sea</legend>
       <div className="segmented" role="group" aria-label="Route tool">
         <button aria-pressed={draft.tool === 'preset'} onClick={() => onPatch({ tool: 'preset', presetId: draft.presetId ?? presets[0]?.id ?? null })}>Suggested route</button>
         <button aria-pressed={draft.tool === 'draw'} onClick={() => onPatch({ tool: 'draw' })}>Draw a route</button>
@@ -42,15 +42,16 @@ export function RouteControls({ draft, presets, waypoints, onPatch }: { draft: O
           ))}
         </select>
       ) : (
-        <p className="field__note">Drag across the map to draw a line through the sea. It is resampled into 24 stops at equal distances along the Earth&apos;s surface.</p>
+        <p className="field__note">Drag across the map to draw a line through the sea. We place 24 evenly spaced stops along it; each stop becomes one note.</p>
       )}
-      {draft.presetId && <p className="field__note">{presets.find((p) => p.id === draft.presetId)?.note}</p>}
+      {draft.presetId && draft.tool === 'preset' && <p className="field__note">{presets.find((p) => p.id === draft.presetId)?.note}</p>}
       <button className="link-btn link-btn--small" aria-expanded={editing} onClick={() => setEditing((v) => !v)}>
         {editing ? 'Close the coordinate editor' : 'Edit the route by coordinates'}
       </button>
       {editing && (
         <div className="coord-editor">
-          <p className="field__note">Waypoints in degrees (north and east are positive). The route between them is sampled at 24 equal distances.</p>
+          <p className="field__note">Turning points of your line, in degrees. North and east are positive numbers; south and west are negative.</p>
+          <div className="coord-editor__head" aria-hidden="true"><span>Latitude</span><span>Longitude</span></div>
           <ol>
             {editable.map((p, i) => (
               <li key={i}>
@@ -82,20 +83,30 @@ export function RouteControls({ draft, presets, waypoints, onPatch }: { draft: O
   );
 }
 
-export function DateControl({ value, onChange, layer, onLayer }: { value: string; onChange: (k: 'A' | 'B') => void; layer: 'picture' | 'data'; onLayer: (l: 'picture' | 'data') => void }) {
+export function DateControl({ value, onChange }: { value: string; onChange: (k: 'A' | 'B') => void }) {
   return (
     <fieldset className="field">
-      <legend>Listen at another moment</legend>
+      <legend>Day of the measurements</legend>
       <div className="segmented" role="group" aria-label="Date">
         {OCEAN_DATES.map((d) => (
           <button key={d.key} aria-pressed={value === d.key} onClick={() => onChange(d.key)}>{d.label}</button>
         ))}
       </div>
-      <p className="field__note">Same route, same note range (−2 to 31 °C) on both days, so notes can be compared honestly.</p>
-      <div className="segmented segmented--quiet" role="group" aria-label="Map layer">
+      <p className="field__note">Both days use the same notes for the same temperatures, so you can compare summer and winter fairly.</p>
+    </fieldset>
+  );
+}
+
+/** Which picture the map shows. Never changes the notes. */
+export function MapLayerControl({ layer, onLayer }: { layer: 'picture' | 'data'; onLayer: (l: 'picture' | 'data') => void }) {
+  return (
+    <fieldset className="field">
+      <legend>The map shows</legend>
+      <div className="segmented" role="group" aria-label="Map layer">
         <button aria-pressed={layer === 'picture'} onClick={() => onLayer('picture')}>NASA picture</button>
-        <button aria-pressed={layer === 'data'} onClick={() => onLayer('data')}>Measured field</button>
+        <button aria-pressed={layer === 'data'} onClick={() => onLayer('data')}>Measured temperatures</button>
       </div>
+      <p className="field__note">The picture is NASA&apos;s ocean model for that day. The measured map shows the satellite temperatures the notes come from.</p>
     </fieldset>
   );
 }
@@ -103,14 +114,14 @@ export function DateControl({ value, onChange, layer, onLayer }: { value: string
 export function PlaceControl({ places, value, onChange }: { places: PlaceIndexEntry[]; value: string; onChange: (id: string) => void }) {
   return (
     <fieldset className="field">
-      <legend>Choose a landscape</legend>
+      <legend>Choose a place</legend>
       <div className="place-list" role="radiogroup" aria-label="Place">
         {places.map((p) => (
           <label key={p.id} className={`place-option${p.id === value ? ' is-on' : ''}`}>
             <input type="radio" name="place" value={p.id} checked={p.id === value} onChange={() => onChange(p.id)} />
             <span className="place-option__name">{p.name}</span>
             <span className="place-option__meta">{p.region} · {p.landscape}</span>
-            <span className="place-option__meta">{p.summary.valid} of {p.summary.total} windows passed quality checks</span>
+            <span className="place-option__meta">{p.summary.valid === p.summary.total ? `Clear view all year (${p.summary.total} readings)` : `${p.summary.valid} of ${p.summary.total} readings usable; the rest were hidden by cloud or snow`}</span>
           </label>
         ))}
       </div>
@@ -121,8 +132,8 @@ export function PlaceControl({ places, value, onChange }: { places: PlaceIndexEn
 export function InstrumentControl({ value, onChange }: { value: InstrumentId; onChange: (v: InstrumentId) => void }) {
   return (
     <fieldset className="field">
-      <legend>Instrument character</legend>
-      <div className="instrument-list" role="radiogroup" aria-label="Instrument character">
+      <legend>Sound</legend>
+      <div className="instrument-list" role="radiogroup" aria-label="Sound">
         {PALETTES.map((p) => (
           <label key={p.id} className={`instrument${p.id === value ? ' is-on' : ''}`}>
             <input type="radio" name="instrument" value={p.id} checked={p.id === value} onChange={() => onChange(p.id)} />
@@ -131,22 +142,22 @@ export function InstrumentControl({ value, onChange }: { value: InstrumentId; on
           </label>
         ))}
       </div>
-      <p className="field__note">Changes the timbre, never the measurement-to-pitch rule.</p>
+      <p className="field__note">Changes how it sounds, never which notes play.</p>
     </fieldset>
   );
 }
 
 const LAYER_TEXT: Record<Layer, [string, string]> = {
-  lead: ['Melody', 'data: each value'],
-  bass: ['Bass', 'data: mean of each block of 4'],
-  accent: ['Accents', 'data: declared changes'],
-  cadence: ['Closing chord', 'artistic, not data'],
+  lead: ['Melody', 'one note per measurement'],
+  bass: ['Bass', 'average of every 4 measurements'],
+  accent: ['Accents', 'marks big changes'],
+  cadence: ['Closing chord', 'artistic, not from data'],
 };
 
 export function LayerMixer({ layers, volume, onLayer, onSolo, onVolume }: { layers: Record<Layer, boolean>; volume: number; onLayer: (l: Layer, on: boolean) => void; onSolo: (l: Layer | null) => void; onVolume: (v: number) => void }) {
   return (
-    <details className="mixer">
-      <summary>Layers and volume</summary>
+    <fieldset className="field mixer">
+      <legend>Layers and volume</legend>
       <ul>
         {LAYERS.map((l) => (
           <li key={l}>
@@ -164,7 +175,7 @@ export function LayerMixer({ layers, volume, onLayer, onSolo, onVolume }: { laye
         Volume
         <input type="range" min={0} max={1} step={0.05} value={volume} onChange={(e) => onVolume(Number(e.target.value))} />
       </label>
-    </details>
+    </fieldset>
   );
 }
 

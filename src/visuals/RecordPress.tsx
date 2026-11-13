@@ -13,6 +13,7 @@
  * Sound (only if on): beat II plays your notes as a quick phrase, III a stylus
  * touch, IV a closing chord (artistic). Reduced motion: direct reveal.
  */
+import { ArrowRight } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRecord } from '../app/RecordContext';
 import { transport } from '../audio/transport';
@@ -55,8 +56,15 @@ export function RecordPress() {
     dispatch({ type: 'go', scene: 'reveal' });
   };
 
+  // Esc skips straight to the finished record
   useEffect(() => {
-    announce('Pressing your record.');
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && finish();
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    announce('Pressing your record. It is already kept on your shelf. Press Escape to skip.');
     if (state.reducedMotion) {
       const id = window.setTimeout(finish, 600);
       return () => window.clearTimeout(id);
@@ -102,9 +110,11 @@ export function RecordPress() {
       <Masthead />
       <div className="press__grid" style={{ opacity: 0.35 * recede + 0.12 }} aria-hidden="true" />
       <div className="press__head">
-        <span className="eyebrow eyebrow--gold">The Earth Record Press</span>
         <h1 id="press-title" className="display">A place becomes <i>a record.</i></h1>
-        <p>This is your path, pressed into a record.</p>
+        <p>It&apos;s already kept on your shelf in this browser.</p>
+        <button className="cta cta--paper press__skip" onClick={finish}>
+          Skip to my record <ArrowRight className="cta__arrow" aria-hidden="true" />
+        </button>
       </div>
       <div className="press__stage" aria-hidden="true">
         <svg viewBox="0 0 1000 800" className="press__svg" style={{ transform: `translateX(${-16 * slide}%) scale(${1 - 0.18 * slide})` }}>
@@ -148,12 +158,11 @@ export function RecordPress() {
           </div>
         </div>
       </div>
-      <div className="press__status" role="status">
+      <div className="press__status">
         <span>{beat.label}</span>
         <div className="press__bar"><div style={{ width: `${(t / TOTAL) * 100}%` }} /></div>
         <span className="press__count">{n} notes · {record.events.filter((e) => e.midiNote === null).length} rests · {record.geometry.label}</span>
       </div>
-      <button className="link-btn press__skip" onClick={finish}>Reveal the record now</button>
     </section>
   );
 }
