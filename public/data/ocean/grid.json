@@ -1,0 +1,61 @@
+{
+  "product": "GHRSST L4 MUR SST v4.1 (analysed_sst), sub-sampled",
+  "stride": 25,
+  "resolutionDeg": 0.25,
+  "rowOrder": "north-to-south",
+  "dtype": "int16-le",
+  "width": 1440,
+  "height": 720,
+  "lat0": 89.76,
+  "dLat": -0.25,
+  "lon0": -179.99,
+  "dLon": 0.25,
+  "encoding": {
+    "scale": 0.01,
+    "units": "degree_C",
+    "land": -32768,
+    "lake": -32767,
+    "missing": -32766,
+    "iceBase": -30000,
+    "iceThreshold": 0.15
+  },
+  "dates": {
+    "A": {
+      "date": "2007-08-18",
+      "nominalTimeUTC": "2007-08-18T09:00:00Z",
+      "file": "data/ocean/mur-sst-20070818.bin",
+      "dataMap": "data/ocean/mur-sst-20070818.png",
+      "shares": {
+        "validOcean": 0.5518,
+        "seaIce": 0.1061,
+        "land": 0.3384,
+        "lake": 0.0037
+      },
+      "minC": -1.8,
+      "maxC": 34.976
+    },
+    "B": {
+      "date": "2008-02-06",
+      "nominalTimeUTC": "2008-02-06T09:00:00Z",
+      "file": "data/ocean/mur-sst-20080206.bin",
+      "dataMap": "data/ocean/mur-sst-20080206.png",
+      "shares": {
+        "validOcean": 0.5616,
+        "seaIce": 0.0963,
+        "land": 0.3384,
+        "lake": 0.0037
+      },
+      "minC": -1.8,
+      "maxC": 32.926
+    }
+  },
+  "pooledPercentilesC": {
+    "0.1": -1.8,
+    "0.5": -1.8,
+    "1": -1.794,
+    "50": 19.277,
+    "99": 29.999,
+    "99.5": 30.343,
+    "99.9": 31.39
+  }
+}

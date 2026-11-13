@@ -1,18 +1,33 @@
-/** Test helpers: load the real exported data from public/ via the file system. */
+/** Test helpers: read the real processed data from public/ (no network). */
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { FeatureGrid } from '../domain/dataSampler';
-import type { FrameRecord, Manifest, StoryRouteFile } from '../domain/sourceTypes';
+import { OceanGrid, type OceanGridMeta } from '../data/adapters/murSstAdapter';
+import type { LandPlace } from '../data/adapters/modisNdviAdapter';
+import type { PresetFile } from '../data/adapters/oceanPresets';
+import type { ObservationSample } from '../data/types';
 
-const PUBLIC = resolve(__dirname, '../../public');
+const PUB = resolve(__dirname, '../../public');
+export const readJson = <T,>(rel: string): T => JSON.parse(readFileSync(resolve(PUB, rel), 'utf-8')) as T;
 
-export const readJson = <T,>(p: string): T => JSON.parse(readFileSync(resolve(PUBLIC, p), 'utf8')) as T;
-export const manifest = readJson<Manifest>('data/manifest.json');
-export const storyRoute = readJson<StoryRouteFile>('data/story-route.json');
-
-export function loadGrid(frame: FrameRecord): FeatureGrid {
-  return new FeatureGrid(new Uint8Array(readFileSync(resolve(PUBLIC, frame.featurePath))), manifest.grid, frame);
+export function oceanGrid(key: 'A' | 'B'): OceanGrid {
+  const meta = readJson<OceanGridMeta>('data/ocean/grid.json');
+  const buf = readFileSync(resolve(PUB, meta.dates[key].file));
+  const arr = new Int16Array(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
+  return new OceanGrid(meta, arr);
 }
+export const presets = () => readJson<PresetFile>('data/ocean/presets.json');
+export const place = (id: string) => readJson<LandPlace>(`data/land/${id}.json`);
 
-export const frameA = manifest.availableFrames.find((f) => f.label === 'A')!;
-export const frameB = manifest.availableFrames.find((f) => f.label === 'B')!;
+/** A synthetic observation list (for mapping tests only — never shipped). */
+export function obs(values: (number | null)[]): ObservationSample[] {
+  return values.map((v, i) => ({
+    id: `t-${i}`,
+    sequenceIndex: i,
+    timeStart: '2000-01-01T00:00:00Z',
+    timeEnd: '2000-01-01T23:59:59Z',
+    status: v === null ? 'masked' : 'valid',
+    reason: v === null ? 'land' : undefined,
+    numericValue: v,
+    sourceId: 'test',
+  }));
+}

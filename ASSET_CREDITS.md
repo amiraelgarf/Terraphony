@@ -1,26 +1,33 @@
 # Asset credits
 
-## NASA visualization (in `public/nasa-svs/` and derived `public/data/`)
-**Global Sea Surface Currents and Temperature**, NASA SVS ID 3912 — https://svs.gsfc.nasa.gov/3912/
+## Data
+- **MUR SST v4.1** — JPL MUR MEaSUREs Project. 2015. GHRSST Level 4 MUR Global Foundation Sea
+  Surface Temperature Analysis. Ver. 4.1. PO.DAAC, CA, USA. doi:10.5067/GHGMR-4FJ04. Accessed via
+  NOAA CoastWatch ERDDAP (`jplMURSST41`). Sea-ice fraction: EUMETSAT OSI SAF (as distributed in MUR).
+- **MODIS MOD13Q1 v061** — Didan, K. (2021). MOD13Q1 MODIS/Terra Vegetation Indices 16-Day L3
+  Global 250m SIN Grid V061. NASA EOSDIS Land Processes DAAC. doi:10.5067/MODIS/MOD13Q1.061.
+  Subsets: ORNL DAAC MODIS/VIIRS Land Product Subsets web service.
 
-Please give credit to: **NASA/Goddard Space Flight Center Scientific Visualization Studio**.
-Animators: Greg Shirah, Horace Mitchell (NASA/GSFC), Eric Sokolowsky (Global Science and
-Technology, Inc.). Producer: Michael Starobin (HTSI). Scientists: Hong Zhang (UCLA),
-Dimitris Menemenlis (NASA/JPL Caltech). Model: ECCO2 (MIT/JPL). Topography: GTOPO30 (USGS).
+## NASA visualization (in `public/nasa-svs/`)
+**Global Sea Surface Currents and Temperature**, NASA SVS 3912 — https://svs.gsfc.nasa.gov/3912/.
+Credit: NASA/Goddard Space Flight Center Scientific Visualization Studio. Animators: Greg Shirah,
+Horace Mitchell (NASA/GSFC), Eric Sokolowsky (GST, Inc.). Producer: Michael Starobin (HTSI).
+Scientists: Hong Zhang (UCLA), Dimitris Menemenlis (NASA/JPL Caltech). Model: ECCO2 (MIT/JPL).
+Topography: GTOPO30 (USGS). Only two still frames and the legend are used; no NASA soundtrack,
+logos or insignia. Usage follows https://svs.gsfc.nasa.gov/help/ and NASA media guidelines.
 
-Usage follows NASA's guidelines (https://www.nasa.gov/nasa-brand-center/images-and-media/ and
-https://svs.gsfc.nasa.gov/help/). Only still frames and the legend are used — no NASA video
-soundtrack, no NASA logos or insignia. No endorsement by NASA is implied.
+## Maps
+Natural Earth (public domain) via the `world-atlas` package (ISC, Mike Bostock).
 
 ## Our own work
 - All music is original and synthesized at run time with Tone.js; no samples or recordings.
-- Interface design, overlays and copy: this project.
+- Interface, sleeve algorithms, groove geometry and copy: this project. The visual direction follows
+  the team's own *Earth Records Record Press* prototype.
 
-## Open-source
-- Fonts: Inter and Instrument Serif (SIL Open Font License) via Fontsource.
-- Icons: Lucide (ISC).
-- Libraries: React (MIT), Tone.js (MIT), Vite (MIT), Vitest (MIT), Playwright (Apache-2.0),
-  NumPy (BSD), Pillow (MIT-CMU).
+## Open source
+Fonts (SIL Open Font License, self-hosted via Fontsource): Instrument Serif, DM Sans, DM Mono.
+Libraries: React (MIT), Tone.js (MIT), d3-geo (ISC), topojson-client (ISC), Vite (MIT),
+Vitest (MIT), Playwright (Apache-2.0), NumPy (BSD), SciPy (BSD), Pillow (MIT-CMU).
 
-> An independent NASA Space Apps Challenge 2026 project using NASA data and visualization
-> assets; not endorsed by NASA.
+> An independent NASA Space Apps Challenge 2026 project using NASA data and visualization assets;
+> not endorsed by NASA.

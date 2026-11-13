@@ -1,2 +1,3 @@
 numpy>=1.26
 Pillow>=10.0
+scipy>=1.11   # reads the MUR NetCDF-3 files

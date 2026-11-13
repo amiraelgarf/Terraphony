@@ -1,40 +1,29 @@
-/* Design tokens — dark ink observatory, warm paper type, teal interaction, brass focus. */
+/* House style (NOT a data legend). Scientific colours come from NASA's own legends. */
 :root {
-  --ink-950: #08141b;
-  --ink-900: #0d1b24;
-  --ink-850: #10232c;
-  --ink-800: #152c37;
-  --paper: #f0f0e8;
-  --muted: #a5b2b6;
-  --faint: #7f8f94;
-  --hairline: rgba(216, 232, 231, 0.16);
-  --hairline-strong: rgba(216, 232, 231, 0.28);
-  --teal: #7dbdb4;
-  --teal-strong: #4c9e98;
-  --brass: #cfb17b;
-  --cool: #598cc2;
-  --warm: #d17f62;
-  --focus: #d8c58b;
-  --warn: #e0b56a;
-  --shadow-subtle: 0 12px 40px rgba(0, 0, 0, 0.18);
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --paper: #f2ede3;
+  --paper-2: #e9e2d4;
+  --cream: #fff9ee;
+  --ink: #10292a;
+  --ink-soft: #435b56;
+  --deep: #081e22;
+  --deep-2: #0d2427;
+  --deep-3: #12302f;
+  --copper: #b55d47;
+  --copper-soft: #d8795c;
+  --gold: #e7b276;
+  --gold-hi: #f3d49c;
+  --forest: #8b9e6e;
+  --sage: #aabdb7;
+  --rule-dark: rgba(240, 235, 215, 0.18);
+  --rule-paper: rgba(20, 45, 45, 0.18);
 
-  --font-sans: 'Inter', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --mono: 'DM Mono', ui-monospace, Consolas, monospace;
 
-  --s1: 8px;
-  --s2: 16px;
-  --s3: 24px;
-  --s4: 32px;
-  --s5: 48px;
-  --s6: 64px;
-
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --t-fast: 180ms;
-  --t-med: 260ms;
-  --t-slow: 750ms;
-
+  --ease: cubic-bezier(0.2, 0.72, 0.16, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --gutter: clamp(18px, 4.2vw, 76px);
+  --mast: 76px;
   color-scheme: dark;
 }

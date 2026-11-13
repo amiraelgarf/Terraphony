@@ -1,171 +1,340 @@
 {
- "schemaVersion": "2.0",
- "storyId": "ocean-in-motion",
- "primaryOfficialResourceId": 3912,
- "sourceGallery": "https://svs.gsfc.nasa.gov/gallery/earth-information-center/",
- "sourceVisual": "https://svs.gsfc.nasa.gov/3912/",
- "fidelity": "verified-visual-frame",
- "variable": "image_feature_normalized",
- "units": "normalized_0_1",
- "featureName": "Normalized palette position",
- "interpretation": "Position, between 0 and 1, of a pixel's hue along NASA's published SST colour legend (0 = legend's left end, labelled 0 °C; 1 = right end, labelled 32 °C), median of matched pixels in a 4x4-pixel cell. An image feature, not a temperature.",
- "timeRangeDocumentedUTC": [
-  "2007-03-25T12:00:00Z",
-  "2008-03-03T12:00:00Z"
+ "schema": "earth-records.manifest.v1",
+ "pitchesMidi": [
+  48,
+  50,
+  52,
+  55,
+  57,
+  60,
+  62,
+  64,
+  67,
+  69,
+  72
  ],
- "availableFrames": [
-  {
-   "id": "svs3912-26400",
-   "label": "A",
+ "ocean": {
+  "status": "verified_observations",
+  "picture": {
    "svsId": 3912,
-   "frameNumber": 26400,
-   "assetUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.26400.tif",
-   "imagePath": "nasa-svs/svs3912-frame-26400.jpg",
-   "featurePath": "data/frames/frame-26400.bin",
-   "captureOrModelTimeUTC": "2007-08-18T16:48:00Z",
-   "visualProjection": "verified-equirectangular",
-   "geographicBounds": [
-    -180,
-    -90,
-    180,
-    90
-   ],
-   "width": 2048,
-   "height": 1024,
-   "fidelity": "verified-visual-frame",
-   "variable": "image_feature_normalized",
-   "sourceCredits": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
-   "sha256": "3e009f2640db6b51e6c9b97212f5c43cba322c26966e1310cd283f3c7afc0640",
-   "featureStats": {
-    "frame": 26400,
-    "cells": 131072,
-    "ok": 67776,
-    "land": 44731,
-    "occluded": 18565,
-    "oceanCellsUsable": 0.785,
-    "matchedPixelShare": 0.282
+   "page": "https://svs.gsfc.nasa.gov/3912/",
+   "credit": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+   "people": "Animators: Greg Shirah, Horace Mitchell (NASA/GSFC), Eric Sokolowsky (GST, Inc.); Producer: Michael Starobin (HTSI); Scientists: Hong Zhang (UCLA), Dimitris Menemenlis (NASA/JPL Caltech). Model: ECCO2 (MIT/JPL).",
+   "frames": {
+    "A": {
+     "frame": 26400,
+     "timeUTC": "2007-08-18T16:48:00Z",
+     "image": "nasa-svs/svs3912-frame-26400.jpg",
+     "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.26400.tif",
+     "landmarksPassed": 24,
+     "landmarksTotal": 24,
+     "maskAgreement": 0.9837
+    },
+    "B": {
+     "frame": 30400,
+     "timeUTC": "2008-02-06T16:48:00Z",
+     "image": "nasa-svs/svs3912-frame-30400.jpg",
+     "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.30400.tif",
+     "landmarksPassed": 24,
+     "landmarksTotal": 24,
+     "maskAgreement": 0.9844
+    }
+   },
+   "registrationVerified": true,
+   "legend": "nasa-svs/sst_ecco2_cbar.png",
+   "timeTable": "flat_ecco2_dates.txt"
+  },
+  "numbers": {
+   "product": "GHRSST Level 4 MUR Global Foundation SST Analysis",
+   "version": "4.1",
+   "dataset": "jplMURSST41",
+   "doi": "10.5067/GHGMR-4FJ04",
+   "page": "https://podaac.jpl.nasa.gov/dataset/MUR-JPL-L4-GLOB-v4.1",
+   "accessedVia": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplMURSST41",
+   "dates": {
+    "A": "2007-08-18",
+    "B": "2008-02-06"
+   },
+   "grid": {
+    "product": "GHRSST L4 MUR SST v4.1 (analysed_sst), sub-sampled",
+    "stride": 25,
+    "resolutionDeg": 0.25,
+    "rowOrder": "north-to-south",
+    "dtype": "int16-le",
+    "width": 1440,
+    "height": 720,
+    "lat0": 89.76,
+    "dLat": -0.25,
+    "lon0": -179.99,
+    "dLon": 0.25,
+    "encoding": {
+     "scale": 0.01,
+     "units": "degree_C",
+     "land": -32768,
+     "lake": -32767,
+     "missing": -32766,
+     "iceBase": -30000,
+     "iceThreshold": 0.15
+    },
+    "dates": {
+     "A": {
+      "date": "2007-08-18",
+      "nominalTimeUTC": "2007-08-18T09:00:00Z",
+      "file": "data/ocean/mur-sst-20070818.bin",
+      "dataMap": "data/ocean/mur-sst-20070818.png",
+      "shares": {
+       "validOcean": 0.5518,
+       "seaIce": 0.1061,
+       "land": 0.3384,
+       "lake": 0.0037
+      },
+      "minC": -1.8,
+      "maxC": 34.976
+     },
+     "B": {
+      "date": "2008-02-06",
+      "nominalTimeUTC": "2008-02-06T09:00:00Z",
+      "file": "data/ocean/mur-sst-20080206.bin",
+      "dataMap": "data/ocean/mur-sst-20080206.png",
+      "shares": {
+       "validOcean": 0.5616,
+       "seaIce": 0.0963,
+       "land": 0.3384,
+       "lake": 0.0037
+      },
+      "minC": -1.8,
+      "maxC": 32.926
+     }
+    },
+    "pooledPercentilesC": {
+     "0.1": -1.8,
+     "0.5": -1.8,
+     "1": -1.794,
+     "50": 19.277,
+     "99": 29.999,
+     "99.5": 30.343,
+     "99.9": 31.39
+    }
    }
   },
-  {
-   "id": "svs3912-30400",
-   "label": "B",
-   "svsId": 3912,
-   "frameNumber": 30400,
-   "assetUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.30400.tif",
-   "imagePath": "nasa-svs/svs3912-frame-30400.jpg",
-   "featurePath": "data/frames/frame-30400.bin",
-   "captureOrModelTimeUTC": "2008-02-06T16:48:00Z",
-   "visualProjection": "verified-equirectangular",
-   "geographicBounds": [
-    -180,
-    -90,
-    180,
-    90
-   ],
-   "width": 2048,
-   "height": 1024,
-   "fidelity": "verified-visual-frame",
-   "variable": "image_feature_normalized",
-   "sourceCredits": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
-   "sha256": "f8987ad8fe495cc4ebc1fc3812189f73c6a47c855b17875ddadfae8648a38310",
-   "featureStats": {
-    "frame": 30400,
-    "cells": 131072,
-    "ok": 66506,
-    "land": 44747,
-    "occluded": 19819,
-    "oceanCellsUsable": 0.7704,
-    "matchedPixelShare": 0.28
-   }
-  }
- ],
- "availableComparablePairs": [
-  [
-   "svs3912-26400",
-   "svs3912-30400"
-  ]
- ],
- "mapRegistrationVerified": true,
- "registrationEvidence": {
-  "A": "24/24 landmark checks",
-  "B": "24/24 landmark checks"
- },
- "comparability": {
-  "sameSize": true,
-  "pixelLandMaskAgreement": 0.99808,
-  "cellLandMaskAgreement": 0.99881,
-  "sameCamera": "fixed flat global camera (SVS frame set 2048x1024 orig)",
-  "comparable": true
- },
- "grid": {
-  "cellSize": 4,
-  "width": 512,
-  "height": 256,
-  "planes": [
-   "value",
-   "status",
-   "confidence"
+  "domainC": [
+   -2.0,
+   31.0
   ],
-  "noValue": 255,
-  "valueScale": 250,
-  "statusCodes": {
-   "ok": 0,
-   "land": 1,
-   "occluded": 2
+  "accentC": 1.0
+ },
+ "land": {
+  "status": "verified_observations",
+  "product": "MOD13Q1 v061",
+  "doi": "10.5067/MODIS/MOD13Q1.061",
+  "page": "https://modis.gsfc.nasa.gov/data/dataprod/mod13.php",
+  "accessedVia": "https://modis.ornl.gov/rst/api/v1",
+  "year": 2023,
+  "places": [
+   {
+    "id": "nile-delta",
+    "name": "Nile Delta farmland",
+    "region": "Western Nile Delta, Egypt",
+    "lat": 30.85,
+    "lon": 30.7,
+    "landscape": "Irrigated cropland (two harvests a year)",
+    "file": "data/land/nile-delta.json",
+    "summary": {
+     "valid": 23,
+     "total": 23,
+     "min": 0.3102,
+     "max": 0.7509
+    }
+   },
+   {
+    "id": "harvard-forest",
+    "name": "Harvard Forest",
+    "region": "Massachusetts, USA",
+    "lat": 42.531,
+    "lon": -72.19,
+    "landscape": "Temperate deciduous forest",
+    "file": "data/land/harvard-forest.json",
+    "summary": {
+     "valid": 21,
+     "total": 23,
+     "min": 0.5314,
+     "max": 0.8913
+    }
+   },
+   {
+    "id": "sahel-dahra",
+    "name": "Sahel grassland",
+    "region": "Dahra, Senegal",
+    "lat": 15.4,
+    "lon": -15.43,
+    "landscape": "Semi-arid savanna (one rainy season)",
+    "file": "data/land/sahel-dahra.json",
+    "summary": {
+     "valid": 21,
+     "total": 23,
+     "min": 0.173,
+     "max": 0.7392
+    }
+   }
+  ],
+  "domainNdvi": [
+   0.0,
+   0.9
+  ],
+  "accentNdvi": 0.08
+ },
+ "fire": {
+  "status": "planned",
+  "svs": "https://svs.gsfc.nasa.gov/4993/",
+  "reason": "Per-window VIIRS/MODIS active-fire counts for the event polygon are not yet integrated or reviewed."
+ },
+ "acquisition": {
+  "svs3912": {
+   "acquiredUTC": "2026-11-13T11:31:22Z",
+   "files": [
+    {
+     "role": "frame-timestamps",
+     "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/flat_ecco2_dates.txt",
+     "file": "flat_ecco2_dates.txt",
+     "bytes": 50025,
+     "sha256": "2911a0e01ba21542462283276636f834511527ac45b9e5df76226acc03f743fb"
+    },
+    {
+     "role": "sst-legend",
+     "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/sst_ecco2_cbar.png",
+     "file": "sst_ecco2_cbar.png",
+     "bytes": 8867,
+     "sha256": "7c4c25f9ca51bb458c100ca4d31f452b8dfdbce8898e2945b7042729d55404c5"
+    },
+    {
+     "role": "frame-A",
+     "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.26400.tif",
+     "file": "flat_global_ecco2_2028x1024.26400.tif",
+     "bytes": 6300088,
+     "sha256": "3e009f2640db6b51e6c9b97212f5c43cba322c26966e1310cd283f3c7afc0640"
+    },
+    {
+     "role": "frame-B",
+     "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.30400.tif",
+     "file": "flat_global_ecco2_2028x1024.30400.tif",
+     "bytes": 6300088,
+     "sha256": "f8987ad8fe495cc4ebc1fc3812189f73c6a47c855b17875ddadfae8648a38310"
+    }
+   ]
+  },
+  "mur": {
+   "acquiredUTC": "2026-11-13T14:08:05Z",
+   "files": [
+    {
+     "role": "mur-sst-A",
+     "date": "2007-08-18",
+     "url": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplMURSST41.nc?analysed_sst[(2007-08-18T09:00:00Z)][(-89.99):25:(89.99)][(-179.99):25:(180.0)],sea_ice_fraction[(2007-08-18T09:00:00Z)][(-89.99):25:(89.99)][(-179.99):25:(180.0)],mask[(2007-08-18T09:00:00Z)][(-89.99):25:(89.99)][(-179.99):25:(180.0)]",
+     "file": "mur-20070818.nc",
+     "bytes": 17642248,
+     "sha256": "f95dcf3d4f8fb138feb03621f93913d138bcd1acb73f1b1e9621a0e4d0893fb7"
+    },
+    {
+     "role": "mur-sst-B",
+     "date": "2008-02-06",
+     "url": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/jplMURSST41.nc?analysed_sst[(2008-02-06T09:00:00Z)][(-89.99):25:(89.99)][(-179.99):25:(180.0)],sea_ice_fraction[(2008-02-06T09:00:00Z)][(-89.99):25:(89.99)][(-179.99):25:(180.0)],mask[(2008-02-06T09:00:00Z)][(-89.99):25:(89.99)][(-179.99):25:(180.0)]",
+     "file": "mur-20080206.nc",
+     "bytes": 17642248,
+     "sha256": "6ca8e4ce7ba6a52982ff64e35c91c93e58894df867d9414ca85ab32871890a51"
+    }
+   ]
+  },
+  "modis": {
+   "acquiredUTC": "2026-11-13T14:18:06Z",
+   "service": "https://modis.ornl.gov/rst/api/v1",
+   "product": "MOD13Q1",
+   "files": [
+    {
+     "place": "nile-delta",
+     "file": "nile-delta.json",
+     "bytes": 38369,
+     "sha256": "0a01c663bf21371fba70086fc9cbf2a9138c36a85f9f3a477a9dfaea3a5e336a"
+    },
+    {
+     "place": "harvard-forest",
+     "file": "harvard-forest.json",
+     "bytes": 38324,
+     "sha256": "1e00f1144027ccd496b8c0ba14a54d3be139163daad7142832864b88a65a1858"
+    },
+    {
+     "place": "sahel-dahra",
+     "file": "sahel-dahra.json",
+     "bytes": 38381,
+     "sha256": "db4ae27d4eee31568c7ae50200d2109f033c16d0537b0595fef04b585fe6733f"
+    }
+   ]
   }
  },
- "processing": {
-  "sourceAlgorithm": "hue-to-legend-position inversion (scripts/feature_lib.py)",
-  "pixelRules": {
-   "candidate": "max channel >= 40 and saturation >= 0.45",
-   "land": "saturation < 0.18 and 28 <= max channel <= 150 (GTOPO30 relief)",
-   "hueGapDegrees": 6.0
-  },
-  "aggregation": "median over matched pixels in 4x4 cells; needs >= 3 matched pixels and confidence >= 0.35",
-  "confidence": "min(1, matched/8) * clip(1 - MAD/0.08, 0, 1)",
-  "missingPolicy": "explicit_rest",
-  "legendNote": "red-end hue plateau: >0.97 resolves to ~0.97"
- },
- "dataIntegrity": {
-  "verifiedRealData": true,
-  "fixture": false,
-  "sampledFrom": "NASA SVS 3912 frame set 2048x1024_1x1_30p/orig"
- },
- "pipelineA": {
-  "attempted": true,
-  "available": false,
-  "reason": "Matching ECCO2 numeric fields for these frames were not reachable; see DECISIONS.md. The app therefore sonifies visual features only."
- },
- "sourceCredits": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
- "creditsPeople": "Animators: Greg Shirah, Horace Mitchell (NASA/GSFC), Eric Sokolowsky (GST, Inc.); Producer: Michael Starobin (HTSI); Scientists: Hong Zhang (UCLA), Dimitris Menemenlis (NASA/JPL Caltech). Model: ECCO2 (MIT/JPL).",
- "sourceFilesAndChecksums": [
+ "officialResources": [
   {
-   "role": "frame-timestamps",
-   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/flat_ecco2_dates.txt",
-   "file": "flat_ecco2_dates.txt",
-   "bytes": 50025,
-   "sha256": "2911a0e01ba21542462283276636f834511527ac45b9e5df76226acc03f743fb"
+   "n": 1,
+   "title": "Earth Information Center (EIC) Content Database",
+   "url": "https://svs.gsfc.nasa.gov/gallery/earth-information-center/",
+   "role": "Context for the challenge"
   },
   {
-   "role": "sst-legend",
-   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/sst_ecco2_cbar.png",
-   "file": "sst_ecco2_cbar.png",
-   "bytes": 8867,
-   "sha256": "7c4c25f9ca51bb458c100ca4d31f452b8dfdbce8898e2945b7042729d55404c5"
+   "n": 2,
+   "title": "Data Sonification: Caldwell 73",
+   "url": "https://svs.gsfc.nasa.gov/13786/",
+   "role": "Precedent for scanning sonification; studied, not copied"
   },
   {
-   "role": "frame-A",
-   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.26400.tif",
-   "file": "flat_global_ecco2_2028x1024.26400.tif",
-   "bytes": 6300088,
-   "sha256": "3e009f2640db6b51e6c9b97212f5c43cba322c26966e1310cd283f3c7afc0640"
+   "n": 3,
+   "title": "Change in Night Lights between 2012 and 2023 — EIC Version",
+   "url": "https://svs.gsfc.nasa.gov/5313/",
+   "role": "Not used"
   },
   {
-   "role": "frame-B",
-   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.30400.tif",
-   "file": "flat_global_ecco2_2028x1024.30400.tif",
-   "bytes": 6300088,
-   "sha256": "f8987ad8fe495cc4ebc1fc3812189f73c6a47c855b17875ddadfae8648a38310"
+   "n": 4,
+   "title": "Global Sea Surface Currents and Temperature",
+   "url": "https://svs.gsfc.nasa.gov/3912/",
+   "role": "Side A picture: the NASA visualization behind every ocean route"
+  },
+  {
+   "n": 5,
+   "title": "GEOS Aerosols (2025)",
+   "url": "https://svs.gsfc.nasa.gov/5669/",
+   "role": "Not used"
+  },
+  {
+   "n": 6,
+   "title": "Air Quality Model Runs",
+   "url": "https://svs.gsfc.nasa.gov/5533/",
+   "role": "Not used"
+  },
+  {
+   "n": 7,
+   "title": "Perpetual Ocean 2: Western Boundary Currents",
+   "url": "https://svs.gsfc.nasa.gov/5425/",
+   "role": "Visual reference for the ocean atmosphere"
+  },
+  {
+   "n": 8,
+   "title": "DYAMOND Global Carbon Dioxide",
+   "url": "https://svs.gsfc.nasa.gov/5196/",
+   "role": "Not used"
+  },
+  {
+   "n": 9,
+   "title": "Lightning Events Detected from ISS 2017–2023",
+   "url": "https://svs.gsfc.nasa.gov/5011/",
+   "role": "Not used"
+  },
+  {
+   "n": 10,
+   "title": "A 3D View of an Atmospheric River from an Earth System Model",
+   "url": "https://svs.gsfc.nasa.gov/4960/",
+   "role": "Not used"
+  },
+  {
+   "n": 11,
+   "title": "GEDI Forest Height",
+   "url": "https://svs.gsfc.nasa.gov/4950/",
+   "role": "Planned record: Beneath the Canopy (no data integrated yet)"
   }
  ]
 }

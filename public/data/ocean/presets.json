@@ -1,0 +1,2012 @@
+{
+ "stops": 24,
+ "domainC": [
+  -2.0,
+  31.0
+ ],
+ "accentC": 1.0,
+ "presets": [
+  {
+   "id": "gulf-stream",
+   "name": "Florida Strait to the Norwegian Sea",
+   "note": "Roughly follows where the Gulf Stream and North Atlantic Current are usually mapped.",
+   "waypoints": [
+    [
+     25.2,
+     -79.9
+    ],
+    [
+     31.0,
+     -79.2
+    ],
+    [
+     35.2,
+     -74.6
+    ],
+    [
+     38.6,
+     -66.0
+    ],
+    [
+     41.4,
+     -52.0
+    ],
+    [
+     46.0,
+     -38.0
+    ],
+    [
+     51.5,
+     -24.0
+    ],
+    [
+     57.5,
+     -11.5
+    ],
+    [
+     63.0,
+     2.0
+    ]
+   ],
+   "lengthKm": 7809.3,
+   "reference": {
+    "A": [
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 30.1764,
+      "cell": [
+       400,
+       258
+      ],
+      "neighboursUsed": 4,
+      "lat": 25.2,
+      "lon": -79.9,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 30.308,
+      "cell": [
+       402,
+       246
+      ],
+      "neighboursUsed": 4,
+      "lat": 28.2359,
+      "lon": -79.5336,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.6863,
+      "cell": [
+       404,
+       234
+      ],
+      "neighboursUsed": 4,
+      "lat": 31.20003,
+      "lon": -78.98092,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.0759,
+      "cell": [
+       414,
+       225
+      ],
+      "neighboursUsed": 4,
+      "lat": 33.44103,
+      "lon": -76.52649,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.899,
+      "cell": [
+       425,
+       217
+      ],
+      "neighboursUsed": 4,
+      "lat": 35.49734,
+      "lon": -73.84791,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 27.5089,
+      "cell": [
+       438,
+       212
+      ],
+      "neighboursUsed": 4,
+      "lat": 36.84034,
+      "lon": -70.4509,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.4843,
+      "cell": [
+       452,
+       206
+      ],
+      "neighboursUsed": 4,
+      "lat": 38.20258,
+      "lon": -67.00524,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.336,
+      "cell": [
+       467,
+       202
+      ],
+      "neighboursUsed": 4,
+      "lat": 39.14019,
+      "lon": -63.29906,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.7096,
+      "cell": [
+       482,
+       199
+      ],
+      "neighboursUsed": 4,
+      "lat": 39.90656,
+      "lon": -59.46719,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 24.3256,
+      "cell": [
+       498,
+       196
+      ],
+      "neighboursUsed": 4,
+      "lat": 40.68105,
+      "lon": -55.59474,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 24.011,
+      "cell": [
+       513,
+       193
+      ],
+      "neighboursUsed": 4,
+      "lat": 41.49977,
+      "lon": -51.69636,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.6541,
+      "cell": [
+       528,
+       188
+      ],
+      "neighboursUsed": 4,
+      "lat": 42.73646,
+      "lon": -47.93251,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.9257,
+      "cell": [
+       544,
+       183
+      ],
+      "neighboursUsed": 4,
+      "lat": 43.99406,
+      "lon": -44.10503,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.7826,
+      "cell": [
+       559,
+       178
+      ],
+      "neighboursUsed": 4,
+      "lat": 45.27411,
+      "lon": -40.20924,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 17.5038,
+      "cell": [
+       575,
+       172
+      ],
+      "neighboursUsed": 4,
+      "lat": 46.66601,
+      "lon": -36.30471,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 16.5382,
+      "cell": [
+       590,
+       166
+      ],
+      "neighboursUsed": 4,
+      "lat": 48.19953,
+      "lon": -32.40121,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 15.5206,
+      "cell": [
+       606,
+       160
+      ],
+      "neighboursUsed": 4,
+      "lat": 49.76789,
+      "lon": -28.409,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 15.3799,
+      "cell": [
+       623,
+       154
+      ],
+      "neighboursUsed": 4,
+      "lat": 51.37421,
+      "lon": -24.3202,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 14.6944,
+      "cell": [
+       638,
+       146
+      ],
+      "neighboursUsed": 4,
+      "lat": 53.2414,
+      "lon": -20.37208,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 14.8003,
+      "cell": [
+       655,
+       138
+      ],
+      "neighboursUsed": 4,
+      "lat": 55.17866,
+      "lon": -16.33613,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 13.7918,
+      "cell": [
+       671,
+       130
+      ],
+      "neighboursUsed": 4,
+      "lat": 57.17272,
+      "lon": -12.18184,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 12.6199,
+      "cell": [
+       689,
+       123
+      ],
+      "neighboursUsed": 4,
+      "lat": 59.06878,
+      "lon": -7.64936,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 11.1877,
+      "cell": [
+       708,
+       115
+      ],
+      "neighboursUsed": 4,
+      "lat": 60.99876,
+      "lon": -2.91214,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 12.4391,
+      "cell": [
+       728,
+       107
+      ],
+      "neighboursUsed": 4,
+      "lat": 63.0,
+      "lon": 2.0,
+      "midi": 57
+     }
+    ],
+    "B": [
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.8818,
+      "cell": [
+       400,
+       258
+      ],
+      "neighboursUsed": 4,
+      "lat": 25.2,
+      "lon": -79.9,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.1678,
+      "cell": [
+       402,
+       246
+      ],
+      "neighboursUsed": 4,
+      "lat": 28.2359,
+      "lon": -79.5336,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.1341,
+      "cell": [
+       404,
+       234
+      ],
+      "neighboursUsed": 4,
+      "lat": 31.20003,
+      "lon": -78.98092,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.3359,
+      "cell": [
+       414,
+       225
+      ],
+      "neighboursUsed": 4,
+      "lat": 33.44103,
+      "lon": -76.52649,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.0481,
+      "cell": [
+       425,
+       217
+      ],
+      "neighboursUsed": 4,
+      "lat": 35.49734,
+      "lon": -73.84791,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.4226,
+      "cell": [
+       438,
+       212
+      ],
+      "neighboursUsed": 4,
+      "lat": 36.84034,
+      "lon": -70.4509,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.5612,
+      "cell": [
+       452,
+       206
+      ],
+      "neighboursUsed": 4,
+      "lat": 38.20258,
+      "lon": -67.00524,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 16.9062,
+      "cell": [
+       467,
+       202
+      ],
+      "neighboursUsed": 4,
+      "lat": 39.14019,
+      "lon": -63.29906,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 15.7835,
+      "cell": [
+       482,
+       199
+      ],
+      "neighboursUsed": 4,
+      "lat": 39.90656,
+      "lon": -59.46719,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 18.2746,
+      "cell": [
+       498,
+       196
+      ],
+      "neighboursUsed": 4,
+      "lat": 40.68105,
+      "lon": -55.59474,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 11.0976,
+      "cell": [
+       513,
+       193
+      ],
+      "neighboursUsed": 4,
+      "lat": 41.49977,
+      "lon": -51.69636,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 7.8432,
+      "cell": [
+       528,
+       188
+      ],
+      "neighboursUsed": 4,
+      "lat": 42.73646,
+      "lon": -47.93251,
+      "midi": 55
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 13.1965,
+      "cell": [
+       544,
+       183
+      ],
+      "neighboursUsed": 4,
+      "lat": 43.99406,
+      "lon": -44.10503,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 14.1679,
+      "cell": [
+       559,
+       178
+      ],
+      "neighboursUsed": 4,
+      "lat": 45.27411,
+      "lon": -40.20924,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 12.4195,
+      "cell": [
+       575,
+       172
+      ],
+      "neighboursUsed": 4,
+      "lat": 46.66601,
+      "lon": -36.30471,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 11.8317,
+      "cell": [
+       590,
+       166
+      ],
+      "neighboursUsed": 4,
+      "lat": 48.19953,
+      "lon": -32.40121,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 11.6109,
+      "cell": [
+       606,
+       160
+      ],
+      "neighboursUsed": 4,
+      "lat": 49.76789,
+      "lon": -28.409,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 10.6037,
+      "cell": [
+       623,
+       154
+      ],
+      "neighboursUsed": 4,
+      "lat": 51.37421,
+      "lon": -24.3202,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 10.2849,
+      "cell": [
+       638,
+       146
+      ],
+      "neighboursUsed": 4,
+      "lat": 53.2414,
+      "lon": -20.37208,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 11.0696,
+      "cell": [
+       655,
+       138
+      ],
+      "neighboursUsed": 4,
+      "lat": 55.17866,
+      "lon": -16.33613,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 10.1486,
+      "cell": [
+       671,
+       130
+      ],
+      "neighboursUsed": 4,
+      "lat": 57.17272,
+      "lon": -12.18184,
+      "midi": 57
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 9.5312,
+      "cell": [
+       689,
+       123
+      ],
+      "neighboursUsed": 4,
+      "lat": 59.06878,
+      "lon": -7.64936,
+      "midi": 55
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 9.1318,
+      "cell": [
+       708,
+       115
+      ],
+      "neighboursUsed": 4,
+      "lat": 60.99876,
+      "lon": -2.91214,
+      "midi": 55
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 7.3808,
+      "cell": [
+       728,
+       107
+      ],
+      "neighboursUsed": 4,
+      "lat": 63.0,
+      "lon": 2.0,
+      "midi": 55
+     }
+    ]
+   }
+  },
+  {
+   "id": "equatorial-pacific",
+   "name": "Across the equatorial Pacific",
+   "note": "From off the Galapagos westward to the western Pacific near New Guinea.",
+   "waypoints": [
+    [
+     -0.5,
+     -92.0
+    ],
+    [
+     -0.5,
+     -120.0
+    ],
+    [
+     0.0,
+     -150.0
+    ],
+    [
+     0.0,
+     180.0
+    ],
+    [
+     0.0,
+     160.0
+    ],
+    [
+     -1.0,
+     148.0
+    ]
+   ],
+   "lengthKm": 13348.3,
+   "reference": {
+    "A": [
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 17.6716,
+      "cell": [
+       352,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -92.0,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 18.6385,
+      "cell": [
+       331,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -97.21949,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 19.6986,
+      "cell": [
+       310,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -102.43898,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 19.7521,
+      "cell": [
+       289,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -107.65847,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.3381,
+      "cell": [
+       268,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -112.87796,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.3626,
+      "cell": [
+       248,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -118.09745,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.5279,
+      "cell": [
+       227,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.44473,
+      "lon": -123.31647,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.7416,
+      "cell": [
+       206,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.35775,
+      "lon": -128.53516,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.7898,
+      "cell": [
+       185,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.27077,
+      "lon": -133.75381,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.5567,
+      "cell": [
+       164,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.18379,
+      "lon": -138.97242,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.3805,
+      "cell": [
+       143,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.09682,
+      "lon": -144.191,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.743,
+      "cell": [
+       122,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.00984,
+      "lon": -149.40957,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.9744,
+      "cell": [
+       101,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -154.62878,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 26.891,
+      "cell": [
+       81,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -159.84807,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 27.3866,
+      "cell": [
+       60,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -165.06736,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 27.2255,
+      "cell": [
+       39,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -170.28665,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.0733,
+      "cell": [
+       18,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -175.50595,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.0937,
+      "cell": [
+       1437,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 179.27476,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.2682,
+      "cell": [
+       1416,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 174.05547,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.6379,
+      "cell": [
+       1395,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 168.83618,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.9272,
+      "cell": [
+       1374,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 163.61689,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 30.2365,
+      "cell": [
+       1354,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.13307,
+      "lon": 158.40313,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 30.4456,
+      "cell": [
+       1333,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.56652,
+      "lon": 153.20176,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.8638,
+      "cell": [
+       1312,
+       363
+      ],
+      "neighboursUsed": 4,
+      "lat": -1.0,
+      "lon": 148.0,
+      "midi": 72
+     }
+    ],
+    "B": [
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 24.8129,
+      "cell": [
+       352,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -92.0,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.2091,
+      "cell": [
+       331,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -97.21949,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.1361,
+      "cell": [
+       310,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -102.43898,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.2814,
+      "cell": [
+       289,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -107.65847,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.1296,
+      "cell": [
+       268,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -112.87796,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.1364,
+      "cell": [
+       248,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.5,
+      "lon": -118.09745,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.988,
+      "cell": [
+       227,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.44473,
+      "lon": -123.31647,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.489,
+      "cell": [
+       206,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.35775,
+      "lon": -128.53516,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.1197,
+      "cell": [
+       185,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.27077,
+      "lon": -133.75381,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.418,
+      "cell": [
+       164,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.18379,
+      "lon": -138.97242,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.3193,
+      "cell": [
+       143,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.09682,
+      "lon": -144.191,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.5426,
+      "cell": [
+       122,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.00984,
+      "lon": -149.40957,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.4818,
+      "cell": [
+       101,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -154.62878,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 24.5309,
+      "cell": [
+       81,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -159.84807,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.2022,
+      "cell": [
+       60,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -165.06736,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 24.9204,
+      "cell": [
+       39,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -170.28665,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.1185,
+      "cell": [
+       18,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": -175.50595,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.8062,
+      "cell": [
+       1437,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 179.27476,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 26.1386,
+      "cell": [
+       1416,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 174.05547,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 26.9639,
+      "cell": [
+       1395,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 168.83618,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 26.9375,
+      "cell": [
+       1374,
+       359
+      ],
+      "neighboursUsed": 4,
+      "lat": 0.0,
+      "lon": 163.61689,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.1964,
+      "cell": [
+       1354,
+       360
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.13307,
+      "lon": 158.40313,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.0462,
+      "cell": [
+       1333,
+       361
+      ],
+      "neighboursUsed": 4,
+      "lat": -0.56652,
+      "lon": 153.20176,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 30.1447,
+      "cell": [
+       1312,
+       363
+      ],
+      "neighboursUsed": 4,
+      "lat": -1.0,
+      "lon": 148.0,
+      "midi": 72
+     }
+    ]
+   }
+  },
+  {
+   "id": "agulhas",
+   "name": "Around the Cape of Good Hope",
+   "note": "From the Mozambique Channel down the African coast and into the South Atlantic.",
+   "waypoints": [
+    [
+     -20.0,
+     41.0
+    ],
+    [
+     -27.0,
+     34.5
+    ],
+    [
+     -33.0,
+     29.0
+    ],
+    [
+     -36.5,
+     22.0
+    ],
+    [
+     -36.0,
+     16.0
+    ],
+    [
+     -32.0,
+     13.0
+    ],
+    [
+     -24.0,
+     9.0
+    ]
+   ],
+   "lengthKm": 4659.3,
+   "reference": {
+    "A": [
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.075,
+      "cell": [
+       884,
+       439
+      ],
+      "neighboursUsed": 4,
+      "lat": -20.0,
+      "lon": 41.0,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.1254,
+      "cell": [
+       879,
+       445
+      ],
+      "neighboursUsed": 4,
+      "lat": -21.37539,
+      "lon": 39.72285,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.9791,
+      "cell": [
+       874,
+       450
+      ],
+      "neighboursUsed": 4,
+      "lat": -22.7563,
+      "lon": 38.44058,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.3108,
+      "cell": [
+       869,
+       456
+      ],
+      "neighboursUsed": 4,
+      "lat": -24.14317,
+      "lon": 37.15277,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.3386,
+      "cell": [
+       863,
+       461
+      ],
+      "neighboursUsed": 4,
+      "lat": -25.53633,
+      "lon": 35.85912,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.4654,
+      "cell": [
+       858,
+       467
+      ],
+      "neighboursUsed": 4,
+      "lat": -26.93622,
+      "lon": 34.55923,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 22.2612,
+      "cell": [
+       853,
+       472
+      ],
+      "neighboursUsed": 4,
+      "lat": -28.35018,
+      "lon": 33.26234,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.1722,
+      "cell": [
+       848,
+       478
+      ],
+      "neighboursUsed": 4,
+      "lat": -29.77191,
+      "lon": 31.95908,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.7959,
+      "cell": [
+       843,
+       484
+      ],
+      "neighboursUsed": 4,
+      "lat": -31.20154,
+      "lon": 30.64859,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.9417,
+      "cell": [
+       837,
+       490
+      ],
+      "neighboursUsed": 4,
+      "lat": -32.63945,
+      "lon": 29.33051,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.0594,
+      "cell": [
+       830,
+       494
+      ],
+      "neighboursUsed": 4,
+      "lat": -33.70193,
+      "lon": 27.59614,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.776,
+      "cell": [
+       823,
+       498
+      ],
+      "neighboursUsed": 4,
+      "lat": -34.64423,
+      "lon": 25.71153,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.9268,
+      "cell": [
+       815,
+       501
+      ],
+      "neighboursUsed": 4,
+      "lat": -35.59443,
+      "lon": 23.81114,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.0201,
+      "cell": [
+       807,
+       505
+      ],
+      "neighboursUsed": 4,
+      "lat": -36.48968,
+      "lon": 21.87618,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 18.3128,
+      "cell": [
+       798,
+       504
+      ],
+      "neighboursUsed": 4,
+      "lat": -36.30207,
+      "lon": 19.62489,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 17.703,
+      "cell": [
+       789,
+       503
+      ],
+      "neighboursUsed": 4,
+      "lat": -36.11491,
+      "lon": 17.37893,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 17.1901,
+      "cell": [
+       782,
+       501
+      ],
+      "neighboursUsed": 4,
+      "lat": -35.40118,
+      "lon": 15.55089,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 16.1331,
+      "cell": [
+       778,
+       494
+      ],
+      "neighboursUsed": 4,
+      "lat": -33.85082,
+      "lon": 14.38812,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 16.135,
+      "cell": [
+       773,
+       488
+      ],
+      "neighboursUsed": 4,
+      "lat": -32.30828,
+      "lon": 13.23121,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 16.8256,
+      "cell": [
+       769,
+       482
+      ],
+      "neighboursUsed": 4,
+      "lat": -30.66039,
+      "lon": 12.33019,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 16.0703,
+      "cell": [
+       766,
+       475
+      ],
+      "neighboursUsed": 4,
+      "lat": -28.989,
+      "lon": 11.4945,
+      "midi": 60
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 16.999,
+      "cell": [
+       763,
+       468
+      ],
+      "neighboursUsed": 4,
+      "lat": -27.32196,
+      "lon": 10.66098,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 17.4774,
+      "cell": [
+       759,
+       462
+      ],
+      "neighboursUsed": 4,
+      "lat": -25.65903,
+      "lon": 9.82952,
+      "midi": 62
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 17.4637,
+      "cell": [
+       756,
+       455
+      ],
+      "neighboursUsed": 4,
+      "lat": -24.0,
+      "lon": 9.0,
+      "midi": 62
+     }
+    ],
+    "B": [
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 29.4224,
+      "cell": [
+       884,
+       439
+      ],
+      "neighboursUsed": 4,
+      "lat": -20.0,
+      "lon": 41.0,
+      "midi": 72
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.701,
+      "cell": [
+       879,
+       445
+      ],
+      "neighboursUsed": 4,
+      "lat": -21.37539,
+      "lon": 39.72285,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.6863,
+      "cell": [
+       874,
+       450
+      ],
+      "neighboursUsed": 4,
+      "lat": -22.7563,
+      "lon": 38.44058,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.7321,
+      "cell": [
+       869,
+       456
+      ],
+      "neighboursUsed": 4,
+      "lat": -24.14317,
+      "lon": 37.15277,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 27.4181,
+      "cell": [
+       863,
+       461
+      ],
+      "neighboursUsed": 4,
+      "lat": -25.53633,
+      "lon": 35.85912,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 27.7537,
+      "cell": [
+       858,
+       467
+      ],
+      "neighboursUsed": 4,
+      "lat": -26.93622,
+      "lon": 34.55923,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 28.0596,
+      "cell": [
+       853,
+       472
+      ],
+      "neighboursUsed": 4,
+      "lat": -28.35018,
+      "lon": 33.26234,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 27.0194,
+      "cell": [
+       848,
+       478
+      ],
+      "neighboursUsed": 4,
+      "lat": -29.77191,
+      "lon": 31.95908,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 26.8096,
+      "cell": [
+       843,
+       484
+      ],
+      "neighboursUsed": 4,
+      "lat": -31.20154,
+      "lon": 30.64859,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.9085,
+      "cell": [
+       837,
+       490
+      ],
+      "neighboursUsed": 4,
+      "lat": -32.63945,
+      "lon": 29.33051,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 26.8249,
+      "cell": [
+       830,
+       494
+      ],
+      "neighboursUsed": 4,
+      "lat": -33.70193,
+      "lon": 27.59614,
+      "midi": 69
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 25.0731,
+      "cell": [
+       823,
+       498
+      ],
+      "neighboursUsed": 4,
+      "lat": -34.64423,
+      "lon": 25.71153,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 24.631,
+      "cell": [
+       815,
+       501
+      ],
+      "neighboursUsed": 4,
+      "lat": -35.59443,
+      "lon": 23.81114,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 23.226,
+      "cell": [
+       807,
+       505
+      ],
+      "neighboursUsed": 4,
+      "lat": -36.48968,
+      "lon": 21.87618,
+      "midi": 67
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.3806,
+      "cell": [
+       798,
+       504
+      ],
+      "neighboursUsed": 4,
+      "lat": -36.30207,
+      "lon": 19.62489,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.4457,
+      "cell": [
+       789,
+       503
+      ],
+      "neighboursUsed": 4,
+      "lat": -36.11491,
+      "lon": 17.37893,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.4358,
+      "cell": [
+       782,
+       501
+      ],
+      "neighboursUsed": 4,
+      "lat": -35.40118,
+      "lon": 15.55089,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.2969,
+      "cell": [
+       778,
+       494
+      ],
+      "neighboursUsed": 4,
+      "lat": -33.85082,
+      "lon": 14.38812,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.4112,
+      "cell": [
+       773,
+       488
+      ],
+      "neighboursUsed": 4,
+      "lat": -32.30828,
+      "lon": 13.23121,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.4069,
+      "cell": [
+       769,
+       482
+      ],
+      "neighboursUsed": 4,
+      "lat": -30.66039,
+      "lon": 12.33019,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.3633,
+      "cell": [
+       766,
+       475
+      ],
+      "neighboursUsed": 4,
+      "lat": -28.989,
+      "lon": 11.4945,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 21.3573,
+      "cell": [
+       763,
+       468
+      ],
+      "neighboursUsed": 4,
+      "lat": -27.32196,
+      "lon": 10.66098,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.5039,
+      "cell": [
+       759,
+       462
+      ],
+      "neighboursUsed": 4,
+      "lat": -25.65903,
+      "lon": 9.82952,
+      "midi": 64
+     },
+     {
+      "status": "valid",
+      "reason": null,
+      "value": 20.76,
+      "cell": [
+       756,
+       455
+      ],
+      "neighboursUsed": 4,
+      "lat": -24.0,
+      "lon": 9.0,
+      "midi": 64
+     }
+    ]
+   }
+  }
+ ]
+}

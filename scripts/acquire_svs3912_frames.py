@@ -10,46 +10,13 @@ Re-running is safe: files already present with a recorded checksum are kept.
 
 Usage:  python scripts/acquire_svs3912_frames.py
 """
-import hashlib
 import json
-import ssl
 import time
-import urllib.request
 
+from net import download, sha256
 from pipeline_config import (COLORBAR_FILE, DATES_FILE, FRAME_DIR, FRAME_NAME,
                              FRAMES, RAW_DIR, SVS_BASE)
 
-USER_AGENT = "earth-information-jukebox-data-pipeline/1.0"
-
-
-def sha256(path):
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-def download(url, dest, attempts=5):
-    """Download with retries (the SVS server occasionally resets connections)."""
-    if dest.exists() and dest.stat().st_size > 0:
-        print(f"  cached  {dest.name}")
-        return
-    ctx = ssl.create_default_context()
-    for i in range(1, attempts + 1):
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(req, timeout=120, context=ctx) as r:
-                data = r.read()
-            tmp = dest.with_suffix(dest.suffix + ".part")
-            tmp.write_bytes(data)
-            tmp.replace(dest)
-            print(f"  fetched {dest.name} ({len(data)/1e6:.1f} MB)")
-            return
-        except Exception as exc:  # network errors: retry with backoff
-            print(f"  attempt {i} failed for {url}: {exc}")
-            time.sleep(2 * i)
-    raise SystemExit(f"Could not download {url}. Check your connection and retry.")
 
 
 def main():

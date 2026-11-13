@@ -1,0 +1,50 @@
+{
+ "year": 2023,
+ "places": [
+  {
+   "id": "nile-delta",
+   "name": "Nile Delta farmland",
+   "region": "Western Nile Delta, Egypt",
+   "lat": 30.85,
+   "lon": 30.7,
+   "landscape": "Irrigated cropland (two harvests a year)",
+   "file": "data/land/nile-delta.json",
+   "summary": {
+    "valid": 23,
+    "total": 23,
+    "min": 0.3102,
+    "max": 0.7509
+   }
+  },
+  {
+   "id": "harvard-forest",
+   "name": "Harvard Forest",
+   "region": "Massachusetts, USA",
+   "lat": 42.531,
+   "lon": -72.19,
+   "landscape": "Temperate deciduous forest",
+   "file": "data/land/harvard-forest.json",
+   "summary": {
+    "valid": 21,
+    "total": 23,
+    "min": 0.5314,
+    "max": 0.8913
+   }
+  },
+  {
+   "id": "sahel-dahra",
+   "name": "Sahel grassland",
+   "region": "Dahra, Senegal",
+   "lat": 15.4,
+   "lon": -15.43,
+   "landscape": "Semi-arid savanna (one rainy season)",
+   "file": "data/land/sahel-dahra.json",
+   "summary": {
+    "valid": 21,
+    "total": 23,
+    "min": 0.173,
+    "max": 0.7392
+   }
+  }
+ ]
+}

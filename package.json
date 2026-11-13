@@ -2,7 +2,7 @@
   "name": "earth-information-jukebox",
   "private": true,
   "version": "1.0.0",
-  "description": "Ocean in Motion — a listening observatory for NASA SVS 3912 (Space Apps 2026)",
+  "description": "Earth Records — the Earth Information Jukebox: real NASA observations as music, pressed into a personal record (Space Apps 2026)",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,18 +15,25 @@
     "pipeline": "python scripts/run_pipeline.py"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.1.0",
+    "@fontsource/dm-mono": "^5.1.0",
+    "@fontsource/dm-sans": "^5.1.0",
     "@fontsource/instrument-serif": "^5.1.0",
+    "d3-geo": "^3.1.1",
     "lucide-react": "^0.460.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tone": "^15.0.4"
+    "tone": "^15.0.4",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.2",
+    "@types/d3-geo": "^3.1.0",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^22.9.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/topojson-client": "^3.1.5",
     "@vitejs/plugin-react": "^4.3.3",
     "typescript": "~5.6.3",
     "vite": "^5.4.11",

@@ -1,0 +1,68 @@
+/* =====================================================================
+   SLEEVE + DISC (shared by press, reveal and shelf)
+   ===================================================================== */
+.sleeve { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; container-type: inline-size; background: #163f43; box-shadow: 14px 22px 40px rgba(20, 40, 36, 0.28), inset 1px 1px 0 rgba(255, 246, 223, 0.25); }
+.sleeve__art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sleeve__foil { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 72% 18%, rgba(249, 231, 176, 0.18), transparent 46%), linear-gradient(115deg, transparent 40%, rgba(255, 244, 214, 0.07) 50%, transparent 60%); mix-blend-mode: screen; }
+.sleeve__top, .sleeve__bottom { position: absolute; left: 6.4%; right: 6.4%; display: flex; justify-content: space-between; gap: 10px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.13em; color: #f2e6cd; font-size: max(7px, 1.6cqi); }
+.sleeve__top { top: 6%; }
+.sleeve__bottom { bottom: 6%; opacity: 0.92; }
+.sleeve__bottom span:last-child { text-align: right; }
+.sleeve__title { position: absolute; left: 6.2%; right: 8%; bottom: 13%; font-family: var(--serif); font-size: 8.6cqi; line-height: 0.92; letter-spacing: -0.025em; color: #fff3db; overflow-wrap: break-word; text-wrap: balance; }
+.sleeve__top span, .sleeve__bottom span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@container (max-width: 420px) {
+  .sleeve__bottom span:last-child { display: none; }
+  .sleeve__title { bottom: 12%; font-size: 9.4cqi; }
+}
+.sleeve--small { box-shadow: 6px 10px 18px rgba(0, 0, 0, 0.35); }
+.sleeve--small .sleeve__bottom span:last-child { display: none; }
+
+.disc { width: 100%; aspect-ratio: 1; border-radius: 50%; }
+.disc svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 22px 34px rgba(16, 32, 30, 0.35)); }
+.disc.is-spinning svg { animation: spin 3.6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.disc__label-title { font-family: var(--serif); font-size: 21px; fill: var(--ink); }
+.disc__label-side { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; fill: #6b7c76; }
+
+/* =====================================================================
+   04 · REVEAL — the finished record
+   ===================================================================== */
+.scene--reveal { background: #efebe1; color: var(--ink); padding: calc(var(--mast) + 40px) var(--gutter) 36px; display: flex; flex-direction: column; }
+.reveal__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+.reveal__head h1 { font-size: clamp(60px, 6.6vw, 112px); line-height: 0.86; margin: 12px 0 0; outline: none; }
+.reveal__head h1 em { color: var(--copper); }
+.reveal__head p { max-width: 300px; color: #526967; font-size: 14px; line-height: 1.6; margin: 0; }
+.reveal__layout { display: grid; grid-template-columns: minmax(320px, 1.05fr) minmax(320px, 0.95fr); gap: clamp(30px, 6vw, 110px); align-items: center; flex: 1; }
+.reveal__object { position: relative; width: min(100%, 560px); aspect-ratio: 1.22; margin: 0 auto; }
+.reveal__object::before { content: ''; position: absolute; inset: 8% -6% 4% 30%; border: 1px solid rgba(156, 140, 112, 0.35); border-radius: 50%; }
+.reveal__disc { position: absolute; width: 70%; right: -8%; top: 9%; transition: transform 0.9s var(--ease); animation: discOut 1.1s var(--ease) 0.2s both; }
+@keyframes discOut { from { transform: translateX(-30%); } }
+.reveal__object.is-playing .reveal__disc { transform: translateX(4%); }
+.reveal__sleeve { position: absolute; width: 74%; left: 0; top: 4%; transform: rotate(-2deg); transition: transform 0.6s var(--ease); animation: sleeveSettle 0.8s var(--ease-out) both; }
+@keyframes sleeveSettle { from { transform: rotate(-6deg) translateY(16px); opacity: 0; } }
+.reveal__sleeve:hover { transform: rotate(0deg) translateY(-4px); }
+.liner { border-top: 1px solid rgba(83, 101, 98, 0.35); padding-top: 22px; display: flex; flex-direction: column; gap: 18px; animation: copyIn 0.9s var(--ease) 0.3s both; }
+.liner__title { font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 3.8vw, 62px); line-height: 0.96; margin: 0; overflow-wrap: anywhere; }
+.liner__story { font-family: var(--serif); font-size: 22px; line-height: 1.28; color: #4f6762; margin: 0; max-width: 520px; }
+.liner__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.liner__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; margin: 0; padding: 16px 0; border-top: 1px solid rgba(135, 149, 142, 0.4); border-bottom: 1px solid rgba(135, 149, 142, 0.4); }
+.liner__facts dt { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #687b72; margin-bottom: 4px; }
+.liner__facts dd { margin: 0; font-size: 14.5px; font-weight: 700; }
+.liner__facts small { font-weight: 400; color: #687b72; }
+.liner__exports { display: flex; gap: 8px 22px; flex-wrap: wrap; }
+.liner__exports .link-btn { color: var(--ink); }
+.liner__msg { margin: 0; font-size: 13px; color: #2e5550; }
+.liner__fact-vs-art { font-size: 13px; line-height: 1.6; color: #5b6f69; margin: 0; max-width: 560px; }
+.reveal__notes { margin-top: 30px; padding: 18px 0 0; border-top: 1px solid rgba(83, 101, 98, 0.35); display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); gap: 30px; align-items: start; }
+.inspector--inline { box-shadow: none; border: 1px solid rgba(16, 41, 42, 0.18); }
+.reveal__credits { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 30px; padding-top: 14px; border-top: 1px solid rgba(170, 179, 162, 0.4); font-size: 11px; color: #6a7e77; line-height: 1.5; }
+.reveal__credits span:last-child { max-width: 780px; }
+
+@media (max-width: 980px) {
+  .reveal__head { flex-direction: column; align-items: flex-start; }
+  .reveal__layout, .reveal__notes { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .liner__facts { grid-template-columns: 1fr; }
+  .reveal__object { aspect-ratio: 1.15; }
+}

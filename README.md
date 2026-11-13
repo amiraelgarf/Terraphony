@@ -1,333 +1,244 @@
-# Earth Information Jukebox — *Ocean in Motion*
+# Earth Records — The Earth Information Jukebox
 
-A browser-based listening observatory for the NASA Space Apps Challenge 2026 challenge
-*The Earth Information Jukebox*. It turns NASA's Earth Information Center visualization
-**SVS 3912 — Global Sea Surface Currents and Temperature** (ECCO2 model, 2007–2008) into
-original music generated live in your browser, and lets you trace every note back to the
-exact pixel, frame and rule that produced it.
+*A world of sound. Yours.* — NASA Space Apps Challenge 2026
 
-> An independent NASA Space Apps Challenge 2026 project using NASA data and visualization
-> assets; not endorsed by NASA.
+Choose a place on Earth, follow a real pattern through **space** (a line across the sea) or
+**time** (a year in one place), hear a short composition generated from NASA observations,
+inspect where any note came from, and press a personal record whose sleeve is drawn from your
+own route and values. Then save the sleeve (PNG), the recipe (JSON) or the audio (WAV).
 
----
+| Side | Question | Data the notes come from | Picture |
+|---|---|---|---|
+| **A · Ocean in Motion** | What changes as you travel? | Sea surface temperature, °C — **MUR SST v4.1** (NASA JPL), 18 Aug 2007 or 6 Feb 2008 | NASA **SVS 3912** (ECCO2 model) for the same day |
+| **B · A Year in One Place** | What changes as time passes? | Vegetation greenness (NDVI) — **MODIS MOD13Q1 v061**, all 23 16-day windows of 2023 | Natural Earth coastlines + year dial |
+| **C · A Landscape Interrupted** | Window-by-window fire detections | *Planned — not playable* (see DECISIONS D9) | — |
 
-## Contents
-
-1. [Quick start (5 minutes)](#1-quick-start-5-minutes)
-2. [What you need installed](#2-what-you-need-installed)
-3. [All commands](#3-all-commands)
-4. [Guided manual test — walk through every feature](#4-guided-manual-test--walk-through-every-feature)
-5. [Automated tests](#5-automated-tests)
-6. [Regenerating the NASA data (optional)](#6-regenerating-the-nasa-data-optional)
-7. [How it works](#7-how-it-works)
-8. [Project structure](#8-project-structure)
-9. [Where to change things](#9-where-to-change-things)
-10. [Troubleshooting](#10-troubleshooting)
-11. [Other documents](#11-other-documents)
+Nothing is synthetic. Every note is a real value, or a **rest** where no valid value exists
+(land, sea ice, cloud, snow). The sound and sleeve are artistic; the numbers are not.
 
 ---
 
 ## 1. Quick start (5 minutes)
 
-All processed NASA data is already in `public/`, so you **do not** need Python or internet
-access to the NASA servers to run the app.
+**Requirements:** Node.js 18+ (20 LTS recommended) and npm. Python is **not** needed to run the
+app: the processed NASA data is already in `public/data/`.
 
 ```bash
 cd earth-information-jukebox
-npm install          # once
-npm run dev          # starts http://localhost:5173
+npm install
+npm run dev
 ```
 
-Open **http://localhost:5173** in Chrome, Edge, Firefox or Safari, put on headphones or
-turn your speakers on, and click **Begin listening**.
+Open **http://localhost:5173** and click **Make my Earth Record**. Sound starts only when you
+click something that needs it; use the **Sound off / on** pill (top right) at any time.
 
-That's it. Section 4 walks you through everything to try.
+Production build: `npm run build` then `npm run preview` → http://localhost:4173.
+The `dist/` folder is static (relative paths + hash routes) and can be hosted anywhere.
 
----
-
-## 2. What you need installed
-
-| Tool | Version | Needed for | Check with |
-|---|---|---|---|
-| Node.js | 18 or newer (developed on 24) | running, building, testing the app | `node -v` |
-| npm | comes with Node | installing packages | `npm -v` |
-| Python | 3.10+ with `numpy` and `Pillow` | **only** if you regenerate the data (section 6) | `python --version` |
-
-Nothing else: no database, no API keys, no environment variables.
-
----
-
-## 3. All commands
-
-Run these from the `earth-information-jukebox/` folder.
+## 2. Commands
 
 | Command | What it does |
 |---|---|
-| `npm install` | Install dependencies (first time only). |
-| `npm run dev` | Development server with hot reload at http://localhost:5173. |
-| `npm run build` | Type-check, then build a static site into `dist/`. |
-| `npm run preview` | Serve the built `dist/` at http://localhost:4173 (what you would deploy). |
-| `npm run typecheck` | TypeScript check only. |
-| `npm test` | Unit tests (Vitest) — 53 tests on the science, mapping and geometry rules. |
-| `npm run test:e2e` | End-to-end browser tests (Playwright) — builds, serves and drives the real app on desktop and mobile. See section 5 for the one-time browser install. |
-| `npm run pipeline` | Re-download the NASA frames and regenerate all data (needs Python, section 6). |
+| `npm run dev` | Development server with hot reload (port 5173) |
+| `npm run build` | Type-check + production build into `dist/` |
+| `npm run preview` | Serve the production build (port 4173) |
+| `npm run typecheck` | TypeScript only |
+| `npm test` | Unit tests (Vitest, 40 tests, ~1 s) |
+| `npm run test:e2e` | Browser journeys (Playwright, desktop + Pixel 7, 26 tests, ~1–2 min) |
+| `npm run pipeline` | Re-download and re-process all NASA data (Python, optional) |
 
-**Deploying:** `npm run build` produces a fully static `dist/` folder (relative paths + hash
-routing), so you can drop it on GitHub Pages, Netlify, any web server, or a USB stick served
-with `npx serve dist`.
+First time running e2e tests: `npx playwright install chromium`.
 
----
+## 3. Walk through it yourself (≈ 10 minutes)
 
-## 4. Guided manual test — walk through every feature
+Each step says what you should **see** and **hear**. If something differs, see Troubleshooting.
 
-Start the app (`npm run dev`) and follow along. Each step says what you should see or hear.
-The whole tour takes about 10 minutes.
+**The invitation** — `#/`
+1. Paper on the left, a dark engraved Earth-record on the right; the globe turns slowly. Silence.
+2. Hover **Make my Earth Record**: the tonearm lifts toward the groove.
+3. Click it: one soft note; the needle drops, the gold ring around the globe unrolls into a line,
+   the stage closes like an iris and the library opens. (With *reduce motion* on: a direct cut.)
 
-### 4.1 Entry (Scene 00)
-1. Open http://localhost:5173. You should see the real NASA frame, dimmed, with the headline
-   *"There is more than one way to understand a moving ocean."*
-2. **Nothing plays yet.** Audio only starts after you click — this is deliberate.
-3. Note the three options: **Begin listening**, **Explore directly**, **Continue without sound**.
+**The library** — `#/library`
+4. Three sleeves. Side A shows the real NASA SVS 3912 picture with the suggested route drawing on
+   hover; Side B shows growth rings drawn from real Nile Delta NDVI; Side C is marked *In
+   preparation*. Click C: a dialog explains what data it still needs. Press **Esc**: it closes and
+   focus returns to the sleeve.
 
-### 4.2 The story (Scenes 01–06)
-4. Click **Begin listening**. The header now says **Sound on**. You are on *Scene 01 — Colors are not sound*.
-5. On the right, the **Sonic legend**: drag the slider and watch the note change
-   (0 → C3, 0.5 → C4, 1 → C5). Click **Hear …** to hear it. Click **Hear the rule** to hear
-   three illustrative notes. These are clearly labelled *illustrative*, not data.
-6. Click **Continue**. *Scene 02* starts the 40‑second scan automatically:
-   - a white cursor travels north along the dotted Atlantic route;
-   - a brass ring appears at each note;
-   - the bars in the timeline at the bottom are the actual notes (height = pitch,
-     small circle = rest, dot above = rhythm accent);
-   - instruments enter gradually: bass at beat 9, pad at 17, accents at 25.
-   Hollow circles on the route are **rests** (land, or no readable colour) — you hear silence there.
-7. Let it finish (or click **Skip to the microscope**). *Scene 03* pauses on the
-   **largest step-to-step change** on the route (point 58, south-east of Newfoundland).
-   The **Behind the sound** panel shows: frame time, latitude/longitude, source pixel,
-   *normalized palette position* (e.g. 0.520 — *normalized, not °C*), confidence, note,
-   rhythm and bass. Open **See the mapping** to see `round(u × 10) = index → note`.
-8. Click **Replay this event** (plays the few notes around it), then **Continue the story**.
-9. *Scene 04 — The contrast*: the same route on two NASA frames — **A: 18 Aug 2007** and
-   **B: 6 Feb 2008**. Click **Play A, then B**: 16 notes on A, a short silence, the same 16
-   points on B. The map cross-fades between frames; the route never moves. The inspector shows
-   A value, B value and **B − A** in *normalized feature units, not °C*.
-10. Click **Next scene**. *Scene 05* offers **Probe / Draw / Navigate**. Click **Finish the story**
-    for *Scene 06*, the closing, with links to Explore, Compare and Method.
+**Side A, the ocean studio** — click **Ocean in Motion** (`#/studio/ocean`)
+5. Map = NASA picture of 18 Aug 2007; a dashed suggested route (Florida Strait → Norwegian Sea)
+   with 24 gold stops. Below, the paper **living score**: 24 marks, height = note.
+6. **Hear this journey** (≈ 12 s at 120 bpm): melody alone first; a soft bass joins at stop 6;
+   from stop 13 soft accents mark stops that changed ≥ 1 °C (the gold dots above the score);
+   a closing chord ends it. The cursor on the map, the highlighted mark, the caption line and the
+   readout in the panel all move together — they share one clock.
+7. Pause and click any score mark (or stop on the map). The **inspector** opens next to that stop:
+   one sentence (“Here the sea surface measured 24.3 °C … plays G4”), then value / day / place /
+   note. Open **Technical details**: the formula with the real numbers, the note's value band, the
+   bass block mean, the change from the previous stop, grid cell, source and DOI.
+8. **Listen at another moment → 6 February 2008**: same route, same note range; the line now sits
+   lower (the North Atlantic is colder in winter). Switch **NASA picture / Measured field** to see
+   the actual MUR numbers drawn with NASA's own SVS 3912 colour legend.
+9. **Draw a route**, then drag across the sea. Release: the line becomes 24 equal-distance stops
+   (they light up in order). Stops on land or sea ice are hollow rings = rests. Try one through the
+   Caribbean islands to see rests.
+10. Keyboard: Tab to the score, use ← → / Home / End. Open **Edit the route by coordinates** to
+    type waypoints, add, remove or reverse them — no mouse needed.
+11. Name the record, choose **Glass & tide / Wood & earth / Felt & dusk** (timbre only — the notes
+    do not change), open **Layers and volume** to mute or solo melody, bass, accents or the
+    (artistic) closing chord.
 
-### 4.3 Explore
-11. Click **Explore** in the header. Tool **Probe** is selected.
-    - Click anywhere in the ocean: one note plays and the inspector explains it.
-    - Click on land (e.g. the Sahara): the inspector says it is land and the melody rests.
-12. Choose **Draw**, then drag a line across an ocean (e.g. from the Southern Ocean north into
-    the Arabian Sea) and release. You should see *"Your path is ready to hear."* and 64 new
-    bars in the timeline. Click **Play this route**, then try **Reverse** and **Clear**.
-    A very short drag counts as a probe, not a route. A path mostly over land shows a warning.
-13. Choose **Navigate**: drag to pan, scroll to zoom (or use the + / − / reset buttons on the
-    map). Clicking in Navigate **never** makes a sound.
+**The press** — **Press my Earth Record**
+12. ~2.7 s, skippable: your route detaches from the map → straightens into the score (notches =
+    your notes, rings = rests) → winds into a spiral groove whose spacing follows your values, the
+    tonearm touches down → the disc slides into your sleeve and the title resolves. With sound on
+    you hear your notes as a quick phrase, a stylus touch and a chord.
 
-### 4.4 Compare
-14. Click **Compare**. Click any bar in the timeline (e.g. the 21st). Switch between **A** and
-    **B**: the selected point stays the same; only the frame changes.
-15. Click **Two places**, then click two ocean points: markers **A** and **B** appear and the
-    inspector compares them. **Hear A, then B** plays both.
+**The reveal** — `#/record/<id>`
+13. Sleeve + disc on paper, liner notes on the right. **Play my record**: the disc spins and the
+    groove lights up note by note; the sleeve marks the playing stop.
+14. **Explore its notes**: the score and inspector again, for the pressed record.
+15. **Save sleeve (PNG)** → a 2400 × 2400 image drawn from the recipe (not a screenshot).
+    **Export record recipe (JSON)** → everything needed to reproduce it.
+    **Save audio (WAV)** → the record rendered offline with the same instruments.
+16. **Make another** → back to the library; your record is now on **Your shelf** (kept in this
+    browser). Reload the page: it is still there. **Open a record recipe (JSON)** re-opens an
+    exported recipe (it is refused if its notes do not match its observations).
 
-### 4.5 Accessibility checks
-16. **Keyboard only:** reload, press <kbd>Tab</kbd> to reach controls. In the timeline use
-    <kbd>←</kbd>/<kbd>→</kbd> (and <kbd>Home</kbd>/<kbd>End</kbd>) to move between notes and
-    <kbd>Enter</kbd> to open *Why this note?*. Focus the map and use the arrow keys to move a
-    crosshair (<kbd>Shift</kbd> = 5°), <kbd>Enter</kbd> to probe that point, <kbd>+</kbd>/<kbd>−</kbd> to zoom.
-17. **Without a map:** open **All 64 route points as a list** under the timeline — every point
-    with position, value, note, **Play** and **Inspect** buttons. Works with screen readers.
-18. **Without sound:** settings icon (top right) → *Visual-only mode*. The scan still runs,
-    with all values and notes visible.
-19. **Reduced motion:** settings → *Reduce motion* (also follows your OS setting). The cursor
-    jumps step by step instead of sweeping, and rings are hidden.
-20. **Mobile:** open the dev server on a phone on the same network (`npm run dev -- --host`)
-    or use your browser's device emulation.
+**Side B, a year in one place** — `#/studio/land`
+17. A quiet map around the Nile Delta and a **year dial**: 23 spokes = the 23 real MODIS 16-day
+    windows of 2023 (starting 1 January at 12 o'clock); spoke length = NDVI. Month letters are
+    calendar guides only. Play it: the hand sweeps once around the year; two harvests, two dips.
+18. Choose **Harvard Forest**: dashed spokes / score rings are windows rejected by quality checks
+    (one cloudy, one snow-covered). Choose **Sahel grassland**: one sharp rainy-season pulse, with
+    two cloud gaps in the wet season.
+19. Inspect a window: its true dates (“13–28 Aug 2023”), NDVI, and in Technical details the 81
+    actual MODIS pixels with rejected ones crossed out.
 
-### 4.6 Method
-21. Click **Method**: sources and checksums, how pixels become values, validation results
-    (24/24 landmark checks), the musical mapping, limitations, the full story transcript,
-    the 11 official challenge resources and credits.
-22. Deep links work and survive refresh, e.g. http://localhost:5173/#/story/microscope.
+**Other checks**
+20. **How it works** (`#/method`): the full method, note tables, registration results, credits.
+21. Browser **Back/Forward** move between scenes; drafts survive navigation and reloads.
+22. Turn on *reduce motion* in your OS: transitions become cuts, the press becomes a direct reveal.
+23. **Sound off**: everything still works; captions and the score carry all the information.
+24. Short tour: from `#/` choose **Take the short tour** — Hear → Notice (“That change you
+    heard? Here is the observation that made it.”) → Investigate → Shape → Press. Skip any time.
 
----
+## 4. Automated tests
 
-## 5. Automated tests
-
-### Unit tests (fast, no browser)
 ```bash
-npm test
+npm test            # unit
+npm run test:e2e    # browser (builds and serves the app automatically)
 ```
-53 tests across `src/tests/`:
 
 | File | Proves |
 |---|---|
-| `sonification.test.ts` | `0→C3, 16→C4, 32→C5` and `0→C3, 0.5→C4, 1→C5`; nulls/invalid ranges give rests; clamping affects pitch only; model-SST and image-feature quantities cannot be mixed; accents use spatial (not temporal) differences; identical input → identical event hash; A/B plays identical subsequences. |
-| `sourceIntegrity.test.ts` | The manifest is real data (not a fixture) from SVS 3912; timestamps are inside the documented range; **the TypeScript sampler reproduces the Python pipeline's 64 samples exactly on both frames**; land/out-of-bounds give rests with reasons. |
-| `frameRegistration.test.ts` | geo↔pixel and screen↔source round trips under pan/zoom; unregistered frames never produce lat/lon. |
-| `routeGeometry.test.ts` | antimeridian unwrap; 64 equal-distance points; image routes are never given kilometres; a tap is a probe. |
-| `compare.test.ts` | A/B rejects mismatched cameras, timestamps, quantities or unvalidated pairs; never invents a difference; explains same-note quantization. |
+| `src/tests/dataMapping.test.ts` | value → note rule, clamping, note bands, arrangement sections, bass/accent rules, only the closing chord is artistic, determinism |
+| `src/tests/scientificMasks.test.ts` | land, lake, sea ice and missing → rests; bilinear uses only valid neighbours; real grid sanity; MODIS QA rests are never interpolated; true 16-day windows |
+| `src/tests/samePathComparison.test.ts` | the same route on two days uses the same stops and fixed range; the same value always gives the same note; instruments never change notes |
+| `src/tests/recordRoundtrip.test.ts` | recipe → JSON → recipe gives identical events and identical sleeve geometry; tampered, invented or synthetic recipes are refused |
+| `src/tests/pythonParity.test.ts` | the browser reproduces the Python pipeline's stops, statuses, grid cells, values and notes for every preset route on both days |
+| `src/tests/geodesicPath.test.ts` | equal great-circle spacing, antimeridian crossing, projection round trip, trace thinning |
+| `tests/e2e/journeys.spec.ts` | no AudioContext before a gesture; 3-click path to sound; inspector + formula; keyboard score + coordinate editor; drawing; press → reveal → valid JSON / 2400-px PNG / WAV; shelf survives reload; land dial + QA rests + 81 pixels; tour; deep links + back; reduced motion; no horizontal overflow; no console errors — desktop and Pixel 7 |
 
-### End-to-end tests (real browser)
-One-time setup (downloads a test copy of Chromium, ~150 MB):
-```bash
-npx playwright install chromium
-```
-Then:
-```bash
-npm run test:e2e
-```
-This builds the app, serves it on port 4173, and runs 10 journeys on a desktop and a mobile
-(Pixel 7) viewport — 20 tests: entry, the full story, keyboard-only use, keyboard map probing,
-probing land vs ocean, drawing/reversing/clearing a route, Navigate never making sound,
-temporal and spatial compare, the Method page and deep links. Every test also fails on any
-console error. For a visual report: `npx playwright show-report`.
-
----
-
-## 6. Regenerating the NASA data (optional)
-
-The app ships with processed data. Re-run the pipeline only to reproduce it, change the
-frames or route, or tune the feature extraction.
+## 5. Regenerating the data (optional)
 
 ```bash
-pip install -r scripts/requirements.txt     # numpy, Pillow
+pip install -r scripts/requirements.txt     # numpy, Pillow, scipy
 npm run pipeline                            # = python scripts/run_pipeline.py
 ```
 
-It runs five steps (each is also runnable alone, e.g. `python scripts/validate_alignment.py`):
+Downloads go to `data-raw/` (git-ignored, ~50 MB); outputs overwrite `public/data/` and
+`public/nasa-svs/`. No accounts are needed. Steps (each script also runs on its own):
 
 | Step | Script | Output |
 |---|---|---|
-| 1 | `acquire_svs3912_frames.py` | Downloads NASA's frame-date table, SST legend and the two TIFF frames into `data-raw/` (+ SHA-256 checksums). ~13 MB. |
-| 2 | `extract_visual_features.py` | Web JPEGs in `public/nasa-svs/`, 512×256 feature grids in `public/data/frames/`, `legend.json`, QA images in `data-raw/qa/`. |
-| 3 | `validate_alignment.py` | Landmark registration test, A/B comparability, legend round-trip → `data-raw/validation.json`. |
-| 4 | `build_story_route.py` | `public/data/story-route.json` — 64 reference samples, accent threshold, notable event. |
-| 5 | `export_manifest.py` | `public/data/manifest.json` and `sources.json`. |
+| 1 | `acquire_svs3912_frames.py` | NASA SVS 3912 frames, legend, frame→time table (+SHA-256) |
+| 2 | `acquire_mur_sst.py` | MUR SST v4.1 for both days via NOAA CoastWatch ERDDAP (0.25° sub-sample) |
+| 3 | `build_ocean_grids.py` | `public/data/ocean/*.bin` (int16 °C×100 + mask codes), data-map PNGs, `grid.json` |
+| 4 | `validate_ocean_alignment.py` | picture ↔ numbers registration: 24 landmarks + land-mask agreement |
+| 5 | `build_ocean_presets.py` | suggested routes + Python reference samples (used by the parity test) |
+| 6 | `acquire_modis_ndvi.py` | MOD13Q1 v061 pixels (NDVI, reliability, day-of-year) via ORNL DAAC |
+| 7 | `build_land_series.py` | `public/data/land/<place>.json`: QA-filtered 16-day series + raw pixels |
+| 8 | `export_manifest.py` | `public/data/manifest.json`: products, versions, checksums, validation |
 
-Frame choices, cell size and thresholds live in **`scripts/pipeline_config.py`**; the story
-route waypoints are at the top of `scripts/build_story_route.py`. After changing either, run
-the pipeline, then `npm test` — the parity test will tell you if TypeScript and Python disagree.
+Change dates, places or ranges in `scripts/pipeline_config.py` (and mirror the ranges in
+`src/stories/*.config.ts`; the parity test fails if the ocean range drifts).
 
-`python scripts/acquire_matching_ecco2.py` probes whether numeric ECCO2 data is reachable
-(Pipeline A). It never downloads or substitutes anything.
-
----
-
-## 7. How it works
+## 6. How it is built
 
 ```
-NASA SVS 3912 frames + legend + timestamp table          (official source)
-        │  scripts/ (offline, Python)
-        ▼
-hue → position on NASA's legend (0–1) per pixel → median per 4×4 cell + confidence
-land / unreadable cells → "rest"   ·   landmark registration + A/B checks
-        │  public/data/*.json, *.bin                    (versioned, checksummed)
-        ▼
-domain/ (pure TypeScript)
-  sourceRegistry → dataSampler → routeGeometry (64 equal-distance points)
-  → sonification (value → one of 11 notes, bass, accents) → Program (one step per beat)
-        │
-        ├──► audio/AudioEngine (Tone.js): one clock, schedules notes, emits step events
-        └──► components/: map cursor, rings, timeline, inspector — all driven by the
-             same step events, so sound and picture cannot drift apart
+React 18 + TypeScript + Vite · Tone.js (loaded only after a gesture) · d3-geo + Natural Earth (world-atlas)
+Fonts: Instrument Serif (display), DM Sans (body), DM Mono (data labels) — self-hosted via Fontsource
 ```
 
-**The feature, honestly.** We could not obtain the numeric ECCO2 fields behind these exact
-frames, so the app does **visual-frame sonification** (the spec's Pipeline B). For each point
-it asks *where does this colour sit on NASA's own legend?* — a number from 0 to 1. It follows
-the legend but is not a calibrated temperature, so the interface never shows it in °C. See
-`METHODS.md` and `DECISIONS.md`.
+**Data flow**
 
-**The music.** 96 BPM, one route point per beat, 64 points ≈ 40 s. Scale
-C3 D3 E3 G3 A3 C4 D4 E4 G4 A4 C5; `note = scale[round(value × 10)]`.
-Melody = the value; Bass = mean of each 8-point stretch; Rhythm = accent when the value changes
-by ≥ 0.048 from the previous point (spatial change); Atmosphere = an artistic pad (not data).
+```
+story config ─► adapter (MUR grid / MODIS series) ─► ObservationSample[] (valid | masked | missing | quality_rejected)
+            ─► musicMapper (fixed range → pentatonic notes, bass, accents, closing chord) ─► MusicEvent[]
+            ─► Transport (one clock) ─► map cursor · year-dial hand · score · captions · disc groove
+            ─► buildRecord ─► EarthRecord recipe ─► sleeve SVG/PNG · JSON · WAV
+```
 
----
+**State machine** (`src/app/recordMachine.ts`): `arrival → library → studio → press → reveal`
+(+ `method`), mirrored in the URL hash. Drafts and the shelf persist in `localStorage` only.
 
-## 8. Project structure
+## 7. Project structure
 
 ```
 earth-information-jukebox/
-├── public/                     static assets served as-is
-│   ├── nasa-svs/               NASA frames (JPEG) + NASA legend, attributed
-│   └── data/                   manifest.json, sources.json, legend.json,
-│                               story-route.json, frames/frame-<n>.bin
-├── scripts/                    offline Python data pipeline (section 6)
-├── src/
-│   ├── main.tsx, App.tsx       entry point; loads data, renders the shell
-│   ├── app/                    state & orchestration (no UI)
-│   │   ├── state.ts            reducer: route, tool, playback, selection, mixer…
-│   │   ├── derive.ts           route → samples → events → programs (memoised)
-│   │   ├── actions.ts          every user intent as one named function
-│   │   ├── effects.ts          engine sync, URL hash sync, story director, visibility
-│   │   ├── inspection.ts       what the inspector shows for the current selection
-│   │   ├── hashRoute.ts        #/, #/story/<scene>, #/explore, #/compare, #/method
-│   │   ├── format.ts           number/position formatting
-│   │   └── JukeboxContext.tsx  wires it together; components use useJukebox()
-│   ├── domain/                 pure, framework-free, unit-tested logic
-│   │   ├── sourceTypes.ts      types (model SST vs visual feature kept separate)
-│   │   ├── sourceRegistry.ts   load + validate manifest and grids
-│   │   ├── dataSampler.ts      FeatureGrid lookups → value or rest + reason
-│   │   ├── projection.ts       geo↔pixel, screen↔source, zoom/pan
-│   │   ├── routeGeometry.ts    haversine, antimeridian, equal-distance resampling
-│   │   ├── scan.ts             sample a route on a frame
-│   │   ├── sonification.ts     note mapping, events, programs, hash
-│   │   ├── compare.ts          comparability rules, A/B point comparison
-│   │   └── storyHighlights.ts  the notable-event rule
-│   ├── audio/                  Tone.js only lives here
-│   │   ├── instruments.ts      melody, bass, rhythm, pad, buses, limiter
-│   │   └── AudioEngine.ts      transport, silent clock, audition, mixer
-│   ├── content/                all copy — story.en.ts (scenes), microcopy.en.ts
-│   ├── components/             one component per file (map, inspector, transport…)
-│   ├── styles/                 tokens.css, base.css, layout.css, components.css
-│   └── tests/                  Vitest unit tests
-├── tests/e2e/                  Playwright journeys
-├── README.md  DECISIONS.md  METHODS.md  DATA_SOURCES.md  ASSET_CREDITS.md  STORYBOARD.md
-└── package.json, vite.config.ts, playwright.config.ts, tsconfig.json
+├─ public/
+│  ├─ data/ocean/           MUR grids (.bin), data maps (.png), grid.json, presets.json
+│  ├─ data/land/            one JSON per place + places.json
+│  ├─ data/manifest.json    provenance, checksums, validation, official resources
+│  ├─ data/legend.json      NASA SVS 3912 legend ramp
+│  └─ nasa-svs/             the two SVS 3912 frames + NASA legend
+├─ scripts/                 Python pipeline (see §5); pipeline_config.py = all choices
+├─ src/
+│  ├─ app/                  recordMachine (state + routes), RecordContext (effects), useActions,
+│  │                        useStudioRecord (draft record), persistence
+│  ├─ stories/              ocean / vegetation / fire configs: sources, rules, copy
+│  ├─ data/                 types (brief §9 contracts), projections, geodesicPath,
+│  │  └─ adapters/          murSstAdapter, modisNdviAdapter, oceanPresets
+│  ├─ audio/                normalize (the one rule), musicMapper, instruments (3 palettes), transport
+│  ├─ visuals/              scenes (Arrival, Library, Studio, RecordPress, Reveal, Method),
+│  │                        EarthRecordHero, OceanAtlas, LandAtlas, SonicScore, ScientificInspector,
+│  │                        RecordSleeve, RecordDisc, geometry (route→score→groove→sleeve), TourCoach…
+│  ├─ export/               recordRecipe, coverRenderer (PNG), wavRenderer (WAV)
+│  ├─ accessibility/        announcements (live region), usePlayhead (audio-clock animation)
+│  ├─ styles/               tokens, base, scenes, studio, record
+│  └─ tests/                unit tests
+└─ tests/e2e/               Playwright journeys
 ```
 
-Dependency direction is one-way: `components → app → domain`, and `app → audio → domain`.
-`domain/` imports nothing from React or Tone.js, which is why it is easy to test.
-
----
-
-## 9. Where to change things
+## 8. Where to change things
 
 | I want to… | Edit |
 |---|---|
-| Change story text or narration | `src/content/story.en.ts` |
-| Change button labels / UI wording | `src/content/microcopy.en.ts` |
-| Change the scale, tempo, bass/accents | `src/domain/sonification.ts` (then `npm test`) |
-| Change instrument sounds | `src/audio/instruments.ts` |
-| Change colours, fonts, spacing | `src/styles/tokens.css` |
-| Change what a scene does when it opens | `useChapterDirector` in `src/app/effects.ts` |
-| Use different NASA frames or route | `scripts/pipeline_config.py`, `scripts/build_story_route.py`, then `npm run pipeline` |
+| change copy of a side | `src/stories/<side>.config.ts` |
+| change note range / accent threshold | `src/stories/*.config.ts` + `scripts/pipeline_config.py`, re-run the pipeline |
+| add a suggested ocean route | `PRESETS` in `scripts/build_ocean_presets.py`, run it |
+| add a land place | `LAND_PLACES` in `scripts/pipeline_config.py`, run steps 6–8 |
+| change instrument sounds | `src/audio/instruments.ts` (timbre only) |
+| change the arrangement | `src/audio/musicMapper.ts` (tests describe the current rules) |
+| change sleeve artwork | `sleeveArt()` in `src/visuals/geometry.ts` (PNG export follows automatically) |
+| change the press choreography | `src/visuals/RecordPress.tsx` (beat timings at the top) |
+| change colours / type | `src/styles/tokens.css` |
 
----
-
-## 10. Troubleshooting
+## 9. Troubleshooting
 
 | Symptom | Fix |
 |---|---|
-| **No sound** | Click a button first (browsers block audio until you interact). Check the header says *Sound on*, the volume slider, OS volume, and that no layer is muted under *Sound layers*. Safari: also check the tab isn't muted. |
-| *"Sound couldn't start"* banner | The browser refused audio. Everything else still works; click *Sound unavailable — retry* in the header. |
-| Playback stopped when I switched tabs | Intentional: playback pauses in a background tab so picture and sound stay in sync. Press Play to resume. |
-| `Port 5173 is already in use` | Another dev server is running. Stop it, or run `npm run dev -- --port 5180`. |
-| `npm run test:e2e` says the browser is missing | Run `npx playwright install chromium` once. |
-| `npm run test:e2e` fails on port 4173 | Stop any other `vite preview` already running on 4173, then retry. |
-| *"The source data couldn't be loaded"* | `public/data/` is missing or incomplete; run `npm run pipeline` (section 6). |
-| Pipeline download fails on Windows with a TLS/revocation error in `curl` | The scripts use Python's own HTTP client, which avoids this. If NASA's server resets the connection, just re-run — downloads retry and resume from what is cached. |
-| `ModuleNotFoundError: numpy / PIL` | `pip install -r scripts/requirements.txt` |
+| No sound | Click the **Sound off** pill to turn it on; check the tab is not muted; Safari may need a second click. Everything works without sound. |
+| “Loading measurements…” forever | Open the browser console; the files in `public/data/` must be served — use `npm run dev`/`preview`, not `file://`. |
+| Port 5173/4173 busy | Stop the other server, or `npx vite --port 5180`. |
+| e2e: “Executable doesn't exist” | `npx playwright install chromium` |
+| e2e: port 4173 in use | Playwright reuses an existing server — make sure it serves this project's latest build (`npm run build`). |
+| Pipeline: ERDDAP HTTP 503 | The server is busy; the script retries automatically. Re-run later; cached files are kept. |
+| Pipeline: `No module named scipy` | `pip install -r scripts/requirements.txt` |
+| My shelf disappeared | It lives in this browser's storage; private windows or clearing site data remove it. Export recipes to keep records. |
 
----
+More: [ARCHITECTURE.md](ARCHITECTURE.md) (how the code works) · [METHODS.md](METHODS.md) · [DATA_SOURCES.md](DATA_SOURCES.md) · [DECISIONS.md](DECISIONS.md) ·
+[STORYBOARD.md](STORYBOARD.md) · [ASSET_CREDITS.md](ASSET_CREDITS.md)
 
-## 11. Other documents
-
-- **`METHODS.md`** — the feature extraction, mapping and validation in detail.
-- **`DATA_SOURCES.md`** — every NASA asset used, with URLs, timestamps and checksums.
-- **`DECISIONS.md`** — consequential choices and why (e.g. Pipeline B, frame choice, bass definition).
-- **`STORYBOARD.md`** — the seven scenes and what happens in each.
-- **`ASSET_CREDITS.md`** — attribution and usage notes.
+> An independent NASA Space Apps Challenge 2026 project using NASA data and visualization assets; not endorsed by NASA.

@@ -1,70 +1,67 @@
 # Decisions
 
-Consequential choices made while implementing the brief, with the reasoning.
+Consequential choices made while implementing *Earth Records — Master Brief v5.0*, with reasons.
 
-## D1 — Pipeline B (visual-frame sonification), not Pipeline A
-The brief prefers numeric ECCO2 fields matching the SVS 3912 frames. SVS does not host them
-("we do not store … the data sets themselves"), and JPL's ECCO Drive was not reachable from
-the build environment (and requires Earthdata credentials; it is also not guaranteed to match
-the exact 2012 render). Per sections 6.4 and 16 we chose the honest visual-frame mode. The UI
-never shows °C for our values; `manifest.fidelity = verified-visual-frame`.
-`scripts/acquire_matching_ecco2.py` re-probes access and documents next steps.
+## D1 — Ocean notes come from MUR SST, the picture stays NASA SVS 3912
+The brief requires numeric observations for production records, not colours. ECCO2 model fields
+matching SVS 3912 are not hosted by SVS and JPL's ECCO Drive needs credentials (and may not match
+the 2012 render). Brief §8A allows "another NASA-referenced numerical dataset explicitly named as
+distinct". MUR SST v4.1 (NASA JPL) is an observation-based daily analysis, available without login
+through ERDDAP, for **the very same days** as two SVS 3912 frames. So the visitor sees NASA's
+beautiful model visualization and hears measured-analysis numbers for that day; every label says
+which is which. The earlier version's "palette position" sonification of image colours was removed.
 
-## D2 — Feature = hue position along NASA's legend
-Tried first: nearest legend colour by RGB direction. It failed at high latitudes because the
-legend PNG is rendered lighter than the frames. Hue is invariant to that whitening and to streak
-brightness, and the legend's hue is strictly monotonic (≈228° → −6°), so hue → position is a
-well-defined inverse. Usable ocean cells went from 44 % to 78 %. Limitation: the last ~3 % of
-the legend is one hue (pure red), so values > 0.97 read as ≈ 0.97 (< ⅓ of a note step).
+## D2 — 0.25° sub-sample, int16 encoding with explicit mask codes
+Full-resolution MUR is ~1.3 GB per day. A stride-25 sub-sample (1440 × 720) keeps ocean basins and
+fronts recognisable, loads in ~2 MB per day, and keeps land, lakes, sea ice and missing values as
+distinct codes so a rest can always say *why*.
 
-## D3 — 2048×1024 "orig" global frame set, equirectangular −180…180 / −90…90
-It is NASA's uncropped 2:1 global set. Registration was not assumed: 24 land/sea landmarks
-(several within ~1° of a coastline) are checked on both frames; all pass, so the manifest marks
-the frames `verified-equirectangular`. If a check fails the pipeline marks them unregistered
-and the app falls back to image coordinates.
+## D3 — Fixed ranges, published: −2…31 °C and 0…0.9 NDVI
+From the pooled distribution (ocean: freezing point to the value exceeded by only 0.17 % of ocean
+cells on both days) and from the typical vegetated NDVI span. Never rescaled per route/place/date,
+so August vs February, or forest vs savanna, are honestly comparable. Clamping is disclosed.
 
-## D4 — Frames A = 26400 (18 Aug 2007) and B = 30400 (6 Feb 2008)
-Same fixed camera and size; land masks agree on 99.88 % of cells. About six months apart, so
-the contrast is seasonal (late northern summer vs winter). Copy calls it "two selected model
-times — a seasonal contrast, not a climate trend". Timestamps come from NASA's
-`flat_ecco2_dates.txt`, never from frame index ÷ 30.
+## D4 — 24 stops at 120 bpm (≈ 12 s); the arrangement follows brief §7.3
+Short enough to replay and compare; long enough to have a shape. Lead alone → bass → accents →
+resolve. The only artistic voice (closing chord) is labelled and has its own mute.
 
-## D5 — Bass = mean of each 8-point route stretch
-The brief allows a fixed-region mean "if available". A single fixed box would give one constant
-note per frame. We instead average the valid melody values in each 8-step segment of the route,
-labelled exactly that way in the mixer and inspector. Silent when a stretch has no valid values.
+## D5 — Bass = mean of each block of 4 values; accents = declared change thresholds
+A documented summary (brief: "bass derives from a documented regional or temporal summary"), and a
+declared change magnitude (1 °C / 0.08 NDVI). Changes are marked on the score even before the
+accent voice enters, so silence in section 1–2 never hides information.
 
-## D6 — Accent threshold = 0.048, data-driven
-The 90th percentile of |feature difference| between valid cells three cells apart (≈ one route
-step) over all of frame A (≈ 260 k pairs). One global threshold for every route and frame.
+## D6 — Land: MOD13Q1 via the ORNL subset service, 9 × 9 pixels, ≥ 50 % QA pass
+Real 250 m pixels with pixel-reliability QA, without downloading whole tiles. A 2 km neighbourhood
+is a "documented point neighbourhood" (brief §8B). Rejected windows are rests, never interpolated.
+Three places with contrasting cycles; the Nile Delta site was moved to an all-cropland window after
+the first site included villages (mean NDVI 0.2–0.39 vs 0.31–0.75).
 
-## D7 — The notable event is computed, not authored
-Largest finite change between neighbouring points, ≥ 6 steps from either end, earliest wins ties.
-Computed identically in Python (build time, recorded) and TypeScript (run time, unit-tested to agree).
-On the story route it is point 58, 43.95°N 51.09°W (0.680 → 0.520).
+## D7 — One spoke per real 16-day window (23), not 12 months
+Brief §10: draw true compositing intervals; month letters are only calendar guides.
 
-## D8 — Story route: a meridional line through the Atlantic
-Southern Ocean → South Atlantic → equator → Sargasso Sea → across the Gulf Stream → Labrador Sea,
-14 597 km, 8 rests on frame A. Chosen for an audible cold → warm → cold arc. The route is the only
-hand-authored input; we do not name currents in narration beyond what the data shows.
+## D8 — Records are recipes; the sleeve is a pure function of the recipe
+Same recipe → same events → same sleeve (tested). Imported recipes are re-derived and refused if
+their notes do not match their observations. PNG is drawn with the same geometry at 2400 px.
 
-## D9 — One clock for sound and picture; a silent clock for sound-off
-`AudioEngine` drives both the Tone.js transport and UI step events (via `Tone.Draw`). When sound
-is off or blocked, an identical `performance.now()` clock drives the same step events, so the
-visual-only experience is the same experience.
+## D9 — Side C (Dixie Fire) is visible but not playable
+Brief §2 MVP: "label it planned rather than making it falsely playable". Its sleeve is a sober
+document grid; its dialog lists exactly what data and review are still required.
 
-## D10 — Pause on hidden tab
-Background tabs throttle timers; rather than let visuals drift, playback pauses when the tab is
-hidden and resumes on Play.
+## D10 — No AudioContext before a gesture
+Importing Tone.js creates an AudioContext, so Tone is loaded only inside the first gesture that
+asks for sound (tested). A first soft note plays on "Make my Earth Record" if sound is allowed.
+"Continue sound-off" and the Sound pill switch to a silent clock with identical visuals.
 
-## D11 — Hash routing, relative base
-`#/story/<scene>`, `#/explore`, `#/compare`, `#/method` deep-link and survive refresh on any
-static host without rewrite rules.
+## D11 — One clock for sound and picture
+Animation reads the transport position every frame; there are no independent CSS timers for data
+motion. The press animation is the one exception: it is a fixed 2.7 s choreography of the record's
+own geometry, skippable and replaced by a direct reveal under reduced motion.
 
-## D12 — Staged entrances only in the Guided passage
-Bass enters at beat 9, pad 17, accents 25 in Scene 02 only. Elsewhere all layers play from the
-start so Explore and Compare are directly comparable. Note mapping is identical either way (tested).
+## D12 — Hash routing + local persistence
+`#/`, `#/library`, `#/studio/ocean|land`, `#/record/<id>`, `#/method` deep-link and survive
+refresh on any static host. Drafts and the shelf live in `localStorage` only (no accounts, no
+uploads); every storage access is guarded.
 
-## D13 — Out of scope (per the brief's priority cut)
-Optical-flow "current movement" layer, numeric velocities, second stories (night lights, aerosols,
-MUR anomalies), split-map compare, narration audio (captions are always shown instead).
+## D13 — Previous "Ocean in Motion" app
+The earlier 7-scene observatory was replaced by this experience. Its source is preserved outside the
+project at `../_legacy_backup/src-ocean-in-motion/` for reference.
