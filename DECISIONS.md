@@ -152,9 +152,50 @@ soft bells instead of noise bursts. The glass reverb tail is 4 s instead of 6.5 
   lifted further, a gentle compressor (−10 dB threshold, 2:1 ratio) and a −1 dB limiter. At the
   default 70 % volume, the opening peaks around −5 dBFS and the full ensemble around −3, with no
   clipping. An e2e test guards these levels.
-- **Development reloads.** Hot-module replacement in `npm run dev` could swap the audio modules
-  inside an open tab. The page then kept animating with a fresh, silent engine. Audio and tour
-  modules now force a full page reload when they change.
+- **Development reloads (corrected).** An earlier attempt made the audio modules reload the page
+  on hot updates (`import.meta.hot.accept(() => location.reload())`). In Vite's dev server this
+  made those modules "self-accepting", so after an edit, pages could load **two copies** of the
+  audio engine. One copy was unlocked and loaded; the other received the narrated tour's play
+  command and stayed silent. The handlers are removed, and Vite's default full reload applies
+  again. An e2e test now checks that the tour's music is audible after "Listen."
+
+## D20d — A small orchestra, click-free, and transitions that never stall
+**The orchestra.** Visitors heard "only piano". Each record is now performed by:
+- a solo instrument (celesta, marimba or felt piano), carrying the data melody;
+- violins doubling the melody;
+- sustained strings and horn swells;
+- harp eighth notes, which give the rhythm;
+- basses playing the data bass;
+- soft timpani on each bar's downbeat;
+- a glockenspiel on declared changes;
+- the closing chord.
+
+The instruments enter section by section (`src/audio/ensemble.ts`). Every added note is built
+from the data's own bass or melody and stays in the same pentatonic collection. The data notes are
+unchanged.
+
+**No noise between notes.** Three causes, all measured:
+- **A bright "tick" at every note start.** It came from the FM bell and marimba. Their overtones
+  now bloom over 18–25 ms, with less modulation and a gentler treble cut.
+- **Voices retriggered while still sounding.** Each instrument now has a round-robin voice pool,
+  sized so this never happens. A unit test checks it against real records.
+- **Clipping.** The previous +12 dB boost drove the limiter past 0 dBFS when the sections filled
+  in. The mix now peaks around −4.5 to −6 dBFS, with the opening at about −9, so the limiter never
+  works.
+
+Click-like bursts in the rendered audio: before 5–8, now 0.
+
+**Smooth transitions.** At 2× CPU, transitions blocked the page for 0.7–2.3 s. They now block for
+about 0.2 s or less. The causes were:
+- **Instrument building.** Instruments were built on the main thread at the start of transitions
+  (on sound unlock, palette switch, and every pause, seek or scene change). Now each instrument set
+  is built once, after transitions settle, and recycled. Only a set that still has queued notes is
+  swapped.
+- **The detailed coastline.** It is now used only when zoomed in.
+- **Data fetching and image decoding at click time.** These now happen during idle time on the
+  invitation and library screens (`src/app/warmUp.ts`).
+- **Expensive animations.** The full-screen blur is gone from scene entrances, and the
+  library→studio zoom now uses transforms only.
 
 ## D20b — The score is never covered
 On laptop-height windows (600–730 px) the map insisted on a 420 px minimum and ran 40–60 px into

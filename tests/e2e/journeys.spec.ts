@@ -285,10 +285,8 @@ test('playback keeps time on a slow, busy device (4× CPU throttle) and the scor
   expect(seconds).toBeLessThan(30);
 });
 
-test('the music is clearly audible from the first note and never clips', async ({ page }, info) => {
-  test.skip(info.project.name !== 'desktop', 'one audio level check is enough');
-  test.setTimeout(60_000);
-  // listen to everything that reaches the speakers
+/** Listen to everything that reaches the speakers: window.__peaks gets the peak of every 100 ms. */
+async function listen(page: Page) {
   await page.addInitScript(() => {
     const w = window as unknown as { __peaks: number[] };
     w.__peaks = [];
@@ -313,6 +311,13 @@ test('the music is clearly audible from the first note and never clips', async (
       return orig.call(this, dest, ...rest);
     };
   });
+}
+
+test('the music is clearly audible from the first note and never clips', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'one audio level check is enough');
+  test.setTimeout(60_000);
+  // listen to everything that reaches the speakers
+  await listen(page);
   await page.goto('/#/studio/ocean');
   await page.reload();
   await expect(page.locator('.score__mark')).toHaveCount(24, { timeout: 20_000 });
@@ -325,6 +330,20 @@ test('the music is clearly audible from the first note and never clips', async (
   expect(db(opening)).toBeGreaterThan(-12); // clearly audible at an ordinary volume
   expect(db(all)).toBeGreaterThan(-8);
   expect(db(all)).toBeLessThan(-0.5); // never clips
+});
+
+test('the narrated journey music is audible after "Listen."', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'one audio level check is enough');
+  test.setTimeout(120_000);
+  await listen(page);
+  await guideMode(page, 'fast');
+  await page.getByRole('button', { name: /Begin the narrated journey/ }).click();
+  // the studio's own play button switches to Pause when the tour starts the music
+  await page.locator('.panel-actions .cta', { hasText: 'Pause' }).waitFor({ timeout: 60_000 });
+  await page.evaluate(() => ((window as unknown as { __peaks: number[] }).__peaks = []));
+  await page.waitForTimeout(2500);
+  const peak = await page.evaluate(() => Math.max(0, ...(window as unknown as { __peaks: number[] }).__peaks));
+  expect(20 * Math.log10(Math.max(peak, 1e-6))).toBeGreaterThan(-15);
 });
 
 test('deep links and the back button keep the journey', async ({ page }) => {

@@ -178,7 +178,7 @@ npm run test:e2e    # browser (builds and serves the app automatically)
 | `src/tests/geodesicPath.test.ts` | equal great-circle spacing, antimeridian crossing, projection round trip, trace thinning |
 | `src/tests/tourDirector.test.ts` | the guided journey: hands-off progression on real cue endings and data events; choosing land cancels the ocean branch for good; pause holds planned beats; skip leaves no stale actions; pressing jumps to the closing line; leaving pauses without teleporting back |
 | `src/tests/narrationScript.test.ts` | every cue exists with direction; the brief's lines are verbatim; the spoken Gulf Stream and Nile Delta numbers match the data; the browser fallback picks a natural, lower voice and never a novelty voice |
-| `src/tests/ensemble.test.ts` | the ensemble plays exactly the data melody and bass, keeps section 1 solo, and keeps every added note in the pentatonic collection |
+| `src/tests/ensemble.test.ts` | the orchestra plays exactly the data melody and bass, brings instruments in section by section, keeps every added note in the pentatonic collection, and never retriggers a sounding voice (no clicks) |
 | `src/tests/modisLive.test.ts` | the in-browser MODIS builder (any place) reproduces the pipeline's windows for all three curated places |
 | `tests/e2e/journeys.spec.ts` | no AudioContext before a gesture; 3-click path to sound; inspector + formula; keyboard score + coordinate editor; drawing; press → reveal → valid JSON / 2400-px PNG / WAV; shelf survives reload; land dial + QA rests + 81 pixels; playback keeps time on a 4×-throttled CPU and the score is never covered at laptop height; any place by click or coordinates with the picture following the notes (NASA services mocked); narrated journey hands-off to the baton; the visitor's choice wins; pause; voice off; deep links + back; reduced motion; no horizontal overflow; no console errors — desktop and Pixel 7 |
 
@@ -267,7 +267,7 @@ earth-information-jukebox/
 | add a suggested ocean route | `PRESETS` in `scripts/build_ocean_presets.py`, run it |
 | add a land place | `LAND_PLACES` in `scripts/pipeline_config.py`, run steps 6–8 |
 | change instrument sounds | `src/audio/instruments.ts` (timbre only) |
-| change who plays what (the soft strings layer) | `src/audio/ensemble.ts` (`arrange`, tested in `src/tests/ensemble.test.ts`) |
+| change who plays what (violins, strings, horns, harp, basses, timpani) | `src/audio/ensemble.ts` (`arrange`, tested in `src/tests/ensemble.test.ts`) |
 | change the land picture | `gibsUrl()` in `src/visuals/LandAtlas.tsx` |
 | change live land fetching / QA | `src/data/adapters/modisLiveAdapter.ts` (tested against the pipeline) |
 | change the arrangement | `src/audio/musicMapper.ts` (tests describe the current rules) |

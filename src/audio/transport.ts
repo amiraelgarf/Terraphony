@@ -65,8 +65,11 @@ export class Transport {
   private silentTimer: number | null = null;
   private lastAudition = -Infinity;
 
+  private unlocked = false;
+  private preparing: number | null = null;
+
   get audioReady() {
-    return this.voices.size > 0;
+    return this.unlocked;
   }
   get clockMode() {
     return this.mode;
@@ -86,8 +89,10 @@ export class Transport {
       await Tone.start();
       if (Tone.getContext().state !== 'running') return false;
       Tone.getDraw().expiration = 5; // a long page block never drops a step / end callback
-      const v = this.ensureVoices(this.palette);
-      await v.ready; // build the reverb before the first note, not during it
+      this.unlocked = true;
+      // building an orchestra is heavy: do it in the next idle moment, never during the
+      // click's own animation (play() builds on the spot if it comes first)
+      this.prepare(this.palette);
       return true;
     } catch {
       return false;
@@ -105,7 +110,23 @@ export class Transport {
   }
 
   private get v(): Voices | null {
-    return this.voices.get(this.palette) ?? null;
+    return this.unlocked ? this.ensureVoices(this.palette) : null;
+  }
+
+  /** Build a palette's instruments when the page is idle. */
+  private prepare(id: InstrumentId) {
+    if (!this.unlocked || this.voices.has(id) || typeof window === 'undefined') return;
+    if (this.preparing !== null) return;
+    const run = () => {
+      this.preparing = null;
+      this.ensureVoices(id);
+      if (id !== this.palette) this.prepare(this.palette);
+    };
+    // wait for any scene transition to finish (~1.7 s), then use the next idle moment
+    this.preparing = window.setTimeout(() => {
+      if (window.requestIdleCallback) window.requestIdleCallback(run, { timeout: 3000 });
+      else run();
+    }, 1800);
   }
 
   setMode(mode: ClockMode) {
@@ -123,8 +144,8 @@ export class Transport {
     if (was) this.pause();
     this.release();
     this.palette = id;
-    if (this.audioReady) this.ensureVoices(id);
     if (was) this.play();
+    else this.prepare(id);
   }
 
   load(program: Program, listener: TransportListener, startStep = 0, emit = true) {
@@ -207,8 +228,8 @@ export class Transport {
       if (immediate) v.buses[l].gain.value = g;
       else v.buses[l].gain.rampTo(g, RAMP);
     }
-    // +12 dB of make-up gain: at the default 70 % the mix peaks around -3 dBFS, like ordinary music
-    const db = this.volume <= 0.001 ? -Infinity : 20 * Math.log10(this.volume) + 12;
+    // make-up gain: at the default 70 % the full orchestra peaks around -4 dBFS (headroom: the limiter never works)
+    const db = this.volume <= 0.001 ? -Infinity : 20 * Math.log10(this.volume) + 8;
     if (immediate) v.master.volume.value = db;
     else v.master.volume.rampTo(db, RAMP);
   }
@@ -224,22 +245,28 @@ export class Transport {
 
   /** One note on demand (inspecting a score mark). At most ~5 per second. */
   audition(midi: number | null) {
-    const v = this.v;
+    // a preview never builds the orchestra on the spot (that would stall the page)
+    const v = this.unlocked ? this.voices.get(this.palette) ?? null : null;
     if (!v || this.mode !== 'audio' || midi === null) return;
     const now = performance.now();
-    if (now - this.lastAudition < 180) return;
+    if (now - this.lastAudition < 300) return;
     this.lastAudition = now;
     v.set.lead.triggerAttackRelease(midiToTone(midi), 0.45, Tone.immediate() + 0.01, 0.75);
   }
 
-  /** Short phrase for the press (beat II): the visitor's own notes, quickly. */
-  phrase(midis: (number | null)[], spacing = 0.07) {
+  /**
+   * Short phrase for the press (beat II): the visitor's own melody in miniature — every
+   * third note as a harp pluck, spaced so no harp voice is retriggered while it sounds.
+   */
+  phrase(midis: (number | null)[], spacing = 0.14) {
     const v = this.v;
     if (!v || this.mode !== 'audio') return;
     const t0 = Tone.immediate() + 0.02;
-    midis.forEach((m, i) => {
-      if (m !== null) v.set.lead.triggerAttackRelease(midiToTone(m), 0.25, t0 + i * spacing, 0.45);
-    });
+    midis
+      .filter((_, i) => i % 3 === 0)
+      .forEach((m, i) => {
+        if (m !== null) v.set.harp.triggerAttackRelease(midiToTone(m), 0.1, t0 + i * spacing, 0.6);
+      });
   }
 
   stylus() {
@@ -323,8 +350,3 @@ export class Transport {
 }
 
 export const transport = new Transport();
-
-// The audio engine holds live browser audio state (AudioContext, instruments, scheduled
-// notes). Hot-swapping this module in development would leave the page with a fresh,
-// silent engine; reload the page instead.
-if (import.meta.hot) import.meta.hot.accept(() => window.location.reload());

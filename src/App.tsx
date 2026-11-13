@@ -12,6 +12,7 @@ import { RevealScene } from './visuals/RevealScene';
 import { StudioScene } from './visuals/StudioScene';
 import { GuideLayer } from './visuals/GuideLayer';
 import { TourBridge } from './tour/TourBridge';
+import { warmUp } from './app/warmUp';
 
 function Scenes() {
   const { state } = useRecord();
@@ -50,6 +51,7 @@ class Boundary extends Component<{ children: ReactNode }, { error: Error | null 
 }
 
 export function App() {
+  useEffect(() => warmUp(), []);
   return (
     <Boundary>
       <RecordProvider>

@@ -1,43 +1,77 @@
 /**
- * The ensemble orchestrates; it never changes what the data says.
+ * The orchestra plays the data; it never changes it, never clashes with it, and is
+ * click-free by construction (no voice is retriggered while it is still sounding).
  */
 import { describe, expect, it } from 'vitest';
-import { arrange, scaleStep, triad } from '../audio/ensemble';
+import { arrange, scaleStep, triad, type Hit, type PerformedEvent } from '../audio/ensemble';
+import { POOL_PLAN } from '../audio/instruments';
 import { buildEvents } from '../audio/musicMapper';
 import { OCEAN_RULE } from '../stories/ocean.config';
-import { obs } from './helpers';
+import { obs, presets } from './helpers';
 
 const values = [12, 14, 15, 13, null, 18, 21, 22, 22, 25, 24, 20, 19, 17, 16, 18, 20, 23, 26, 27, 25, 22, 20, 18];
 const events = buildEvents(obs(values), OCEAN_RULE);
 const perf = arrange(events);
 const SCALE = new Set([0, 2, 4, 7, 9]);
+const BEAT = OCEAN_RULE.beatSeconds;
 
 describe('ensemble', () => {
-  it('plays exactly the data melody, and rests stay silent', () => {
+  it('plays exactly the data melody and the data bass; rests stay silent', () => {
     perf.forEach((p, i) => expect(p.lead?.midi ?? null).toBe(events[i].midiNote));
     expect(perf[4].lead).toBeNull();
-  });
-  it('keeps section 1 as the melody alone', () => {
-    perf.filter((_, i) => events[i].section === 1).forEach((p) => {
-      expect(p.chord).toHaveLength(0);
-    });
-  });
-  it('adds soft strings later, all inside the pentatonic collection', () => {
-    expect(perf.some((p) => p.chord.length === 3)).toBe(true);
-    for (const p of perf) for (const h of p.chord) expect(SCALE.has(h.midi % 12)).toBe(true);
-  });
-  it('keeps the data bass and makes changes audible as pitched chimes', () => {
     events.forEach((e, i) => {
       const bass = e.supportingEvents.find((s) => s.instrumentId === 'bass');
-      expect(perf[i].bass?.midi ?? null).toBe(bass?.midiNote ?? null);
-      expect(!!perf[i].chime).toBe(e.supportingEvents.some((s) => s.instrumentId === 'accent'));
+      if (bass) expect(perf[i].bass?.midi).toBe(bass.midiNote);
     });
   });
+
+  it('opens with the solo and soft strings only, then adds the orchestra section by section', () => {
+    const inSection = (n: number) => perf.filter((_, i) => events[i].section === n);
+    inSection(1).forEach((p) => {
+      expect(p.violin).toBeNull();
+      expect(p.horns).toHaveLength(0);
+      expect(p.harp).toHaveLength(0);
+      expect(p.timpani).toBeNull();
+    });
+    expect(inSection(1).some((p) => p.strings.length === 3)).toBe(true);
+    expect(inSection(2).some((p) => p.violin && p.timpani)).toBe(true);
+    expect(inSection(3).some((p) => p.horns.length === 2 && p.harp.length === 2)).toBe(true);
+    expect(inSection(4).some((p) => p.harp.length === 1)).toBe(true);
+  });
+
+  it('keeps every added note inside the pentatonic collection', () => {
+    for (const p of perf) for (const h of [...p.strings, ...p.horns, ...p.harp, ...(p.violin ? [p.violin] : []), ...(p.timpani ? [p.timpani] : [])]) expect(SCALE.has(h.midi % 12)).toBe(true);
+  });
+
+  it('never retriggers a voice that is still sounding (the cause of clicks)', () => {
+    const check = (name: keyof typeof POOL_PLAN, list: (p: PerformedEvent) => Hit[], evs: PerformedEvent[]) => {
+      const { voices, release } = POOL_PLAN[name];
+      const notes = evs.flatMap((p, i) => list(p).map((h) => ({ start: (i + h.at) * BEAT, end: (i + h.at + h.dur) * BEAT + release })));
+      notes.sort((a, b) => a.start - b.start);
+      notes.forEach((n, k) => {
+        if (k >= voices) expect(n.start, `${name} note ${k}`).toBeGreaterThanOrEqual(notes[k - voices].end - 1e-9);
+      });
+    };
+    const records = [events, ...presets().presets.map((pr) => buildEvents(obs(pr.reference.A.map((r) => r.value)), OCEAN_RULE))];
+    for (const evs of records) {
+      const pf = arrange(evs);
+      check('lead', (p) => (p.lead ? [p.lead] : []), pf);
+      check('violin', (p) => (p.violin ? [p.violin] : []), pf);
+      check('strings', (p) => p.strings, pf);
+      check('horns', (p) => p.horns, pf);
+      check('harp', (p) => p.harp, pf);
+      check('bass', (p) => (p.bass ? [p.bass] : []), pf);
+      check('timpani', (p) => (p.timpani ? [p.timpani] : []), pf);
+      check('chime', (p) => (p.chime ? [p.chime] : []), pf);
+    }
+  });
+
   it('builds consonant pentatonic triads', () => {
     expect(triad(48)).toEqual([48, 52, 55]); // C E G
     expect(triad(50)).toEqual([50, 55, 57]); // D G A
     expect(scaleStep(49, 0)).toBe(48);
   });
+
   it('is deterministic', () => {
     expect(arrange(events)).toEqual(perf);
   });

@@ -135,19 +135,21 @@
 
 /* library -> studio: the card's groove/route grows into the geography */
 .zoom { position: fixed; inset: 0; z-index: 70; pointer-events: none; }
-.zoom__frame { position: absolute; overflow: hidden; background: #193c40; left: var(--x0); top: var(--y0); width: var(--w0); height: var(--h0); animation: zoomOpen 1.15s cubic-bezier(0.68, 0, 0.18, 1) forwards; box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55); }
+.zoom { overflow: hidden; }
+/* transform-only zoom (composited): no layout or repaint per frame, so it never stutters */
+.zoom__frame { position: absolute; overflow: hidden; background: #193c40; left: var(--x0); top: var(--y0); width: var(--w0); height: var(--h0); transform-origin: 0 0; will-change: transform; animation: zoomOpen 1.15s cubic-bezier(0.68, 0, 0.18, 1) forwards; box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55); }
 @keyframes zoomOpen {
-  0% { left: var(--x0); top: var(--y0); width: var(--w0); height: var(--h0); }
-  14% { left: calc(var(--x0) - 6px); top: calc(var(--y0) - 14px); width: calc(var(--w0) + 12px); height: calc(var(--h0) + 12px); }
-  100% { left: 0; top: 0; width: 100vw; height: 100vh; }
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  14% { transform: translate3d(0, -10px, 0) scale(1.012); }
+  100% { transform: translate3d(var(--tx), var(--ty), 0) scale(var(--s)); }
 }
 .zoom__frame::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 42% 42%, transparent 25%, #0b2528 95%); opacity: 0; animation: zoomShade 1.15s var(--ease) forwards; }
 @keyframes zoomShade { to { opacity: 0.85; } }
 .zoom .choice__art-svg { transition: none; }
-.zoom .choice__route { stroke-dasharray: 1; animation: drawRoute 0.9s var(--ease) both; filter: drop-shadow(0 0 2px rgba(243, 212, 156, 0.9)); }
+.zoom .choice__route { stroke-dasharray: 1; animation: drawRoute 0.9s var(--ease) both; }
 .zoom--vegetation .choice__rings { transform-origin: 200px 160px; animation: ringsGrow 1.15s var(--ease) forwards; }
 @keyframes ringsGrow { to { transform: rotate(42deg) scale(2.3); opacity: 0.5; } }
-.zoom__disc { position: absolute; width: 40vmin; aspect-ratio: 1; right: -8%; top: 12%; border-radius: 50%; background: repeating-radial-gradient(circle, #0b1a1c 0 3px, #1b2d2e 3.4px 4px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5); z-index: 1; animation: discAway 1s var(--ease) forwards; }
+.zoom__disc { position: absolute; width: 58%; aspect-ratio: 1; right: -16%; top: 10%; border-radius: 50%; background: repeating-radial-gradient(circle, #0b1a1c 0 3px, #1b2d2e 3.4px 4px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5); z-index: 1; animation: discAway 1s var(--ease) forwards; }
 .zoom__disc::after { content: ''; position: absolute; inset: 36%; border-radius: 50%; background: var(--paper); border: 4px solid var(--copper); }
 @keyframes discAway { from { transform: translateX(10%) rotate(0deg); } to { transform: translateX(150%) rotate(260deg); opacity: 0; } }
 

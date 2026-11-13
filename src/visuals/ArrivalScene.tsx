@@ -42,9 +42,9 @@ export function ArrivalScene() {
 
   async function begin() {
     if (leaving) return;
-    // the gesture may unlock sound and play one soft seed note
-    if (await a.ensureSound()) transport.audition(60);
+    // the gesture may unlock sound; one soft seed note sounds once the needle has landed
     void leave();
+    if (await a.ensureSound()) window.setTimeout(() => transport.audition(60), state.reducedMotion ? 0 : LEAVE_MS);
   }
 
   /** The one click of the guided journey: sound unlocks here, then the host takes it from there. */

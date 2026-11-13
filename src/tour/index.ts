@@ -47,8 +47,3 @@ try {
 }
 
 export { narration };
-
-// The audio engine holds live browser audio state (AudioContext, instruments, scheduled
-// notes). Hot-swapping this module in development would leave the page with a fresh,
-// silent engine; reload the page instead.
-if (import.meta.hot) import.meta.hot.accept(() => window.location.reload());

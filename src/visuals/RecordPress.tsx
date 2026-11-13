@@ -71,7 +71,7 @@ export function RecordPress() {
           f();
         }
       };
-      if (el >= 560) once('phrase', () => transport.phrase(record.events.map((e) => e.midiNote), 0.022));
+      if (el >= 560) once('phrase', () => transport.phrase(record.events.map((e) => e.midiNote)));
       if (el >= 1700) once('stylus', () => transport.stylus());
       if (el >= 2300) once('chord', () => transport.chord(CADENCE_MIDI));
       if (el >= TOTAL + HOLD) return finish();

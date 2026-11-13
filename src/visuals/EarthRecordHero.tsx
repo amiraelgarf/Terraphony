@@ -32,8 +32,10 @@ export function EarthRecordHero({ leaving, nudge, reducedMotion }: { leaving: bo
     if (reducedMotion) return;
     let last = performance.now();
     const tick = (t: number) => {
-      setRot((r) => r + ((t - last) / 1000) * 4);
-      last = t;
+      if (t - last >= 33) {
+        setRot((r) => r + ((t - last) / 1000) * 4);
+        last = t;
+      }
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);

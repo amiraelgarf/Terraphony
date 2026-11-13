@@ -64,7 +64,7 @@ export function LibraryScene() {
   const a = useActions();
   const [preset, setPreset] = useState<OceanPreset | null>(null);
   const [place, setPlace] = useState<LandPlace | null>(null);
-  const [zoom, setZoom] = useState<{ story: StudioStory; x: number; y: number; w: number; h: number } | null>(null);
+  const [zoom, setZoom] = useState<{ story: StudioStory; x: number; y: number; w: number; h: number; s: number; tx: number; ty: number } | null>(null);
   const zooming = useRef(false);
   const cards = { ocean: useRef<HTMLButtonElement>(null), vegetation: useRef<HTMLButtonElement>(null) };
   const tour = useSyncExternalStore((f) => tourDirector.subscribe(f), () => tourDirector.snapshot);
@@ -86,7 +86,10 @@ export function LibraryScene() {
     }
     zooming.current = true;
     const r = art.getBoundingClientRect();
-    setZoom({ story, x: r.left, y: r.top, w: r.width, h: r.height });
+    // one uniform scale + move (GPU only): the card's art grows until it covers the screen
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const s = Math.max(vw / r.width, vh / r.height);
+    setZoom({ story, x: r.left, y: r.top, w: r.width, h: r.height, s, tx: (vw - r.width * s) / 2 - r.left, ty: (vh - r.height * s) / 2 - r.top });
     return new Promise((done) =>
       window.setTimeout(() => {
         a.go('studio', story);
@@ -191,7 +194,7 @@ export function LibraryScene() {
       {zoom && (
         <div
           className={`zoom zoom--${zoom.story}`}
-          style={{ ['--x0' as string]: `${zoom.x}px`, ['--y0' as string]: `${zoom.y}px`, ['--w0' as string]: `${zoom.w}px`, ['--h0' as string]: `${zoom.h}px` }}
+          style={{ ['--x0' as string]: `${zoom.x}px`, ['--y0' as string]: `${zoom.y}px`, ['--w0' as string]: `${zoom.w}px`, ['--h0' as string]: `${zoom.h}px`, ['--s' as string]: zoom.s, ['--tx' as string]: `${zoom.tx}px`, ['--ty' as string]: `${zoom.ty}px` }}
           aria-hidden="true"
         >
           <div className="zoom__frame">

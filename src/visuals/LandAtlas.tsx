@@ -21,7 +21,8 @@ import type { FeatureCollection } from 'geojson';
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { feature } from 'topojson-client';
 import type { Topology } from 'topojson-specification';
-import landTopo from 'world-atlas/land-50m.json';
+import land50 from 'world-atlas/land-50m.json';
+import land110 from 'world-atlas/land-110m.json';
 import { normalize } from '../audio/normalize';
 import type { LandPlace, PlaceIndexEntry } from '../data/adapters/modisNdviAdapter';
 import { windowLabel } from '../data/adapters/modisNdviAdapter';
@@ -29,7 +30,16 @@ import type { EarthRecord } from '../data/types';
 import { dialAngle, dialShape, pathD } from './geometry';
 import { useSmoothPlayhead } from '../accessibility/usePlayhead';
 
-const LAND = feature(landTopo as unknown as Topology, (landTopo as unknown as Topology).objects.land) as unknown as FeatureCollection;
+/** Coastlines: the light 1:110m set for wide views; the detailed 1:50m set only when zoomed in (built on first need). */
+const landCache: Record<'50' | '110', FeatureCollection | null> = { '50': null, '110': null };
+function landFor(span: number): FeatureCollection {
+  const k = span <= 22 ? '50' : '110';
+  if (!landCache[k]) {
+    const topo = (k === '50' ? land50 : land110) as unknown as Topology;
+    landCache[k] = feature(topo, topo.objects.land) as unknown as FeatureCollection;
+  }
+  return landCache[k]!;
+}
 const GRAT = geoGraticule10();
 const MONTHS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 const SPANS = [8, 14, 22, 34, 56, 90, 150];
@@ -83,7 +93,7 @@ export function LandAtlas({ places, place, record, playhead, playing, selected, 
       .scale(Math.min(size.w, size.h * 1.6) / ((span * Math.PI) / 180));
     const path = geoPath(proj);
     return {
-      land: path(LAND) ?? '',
+      land: path(landFor(span)) ?? '',
       grat: path(GRAT) ?? '',
       project: (lon: number, lat: number) => proj([lon, lat]) ?? [0, 0],
       invert: (x: number, y: number) => proj.invert?.([x, y]) ?? [0, 0],
