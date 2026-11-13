@@ -1,0 +1,1593 @@
+{
+ "id": "atlantic-meridian",
+ "title": "A line through the Atlantic",
+ "description": "From the Southern Ocean north through the South Atlantic, across the equator, through the Sargasso Sea and over the Gulf Stream towards the Labrador Sea.",
+ "waypoints": [
+  [
+   -56.0,
+   -32.0
+  ],
+  [
+   -30.0,
+   -24.0
+  ],
+  [
+   0.0,
+   -28.0
+  ],
+  [
+   26.0,
+   -52.0
+  ],
+  [
+   37.0,
+   -64.0
+  ],
+  [
+   44.0,
+   -51.0
+  ],
+  [
+   56.0,
+   -46.0
+  ]
+ ],
+ "sampleCount": 64,
+ "lengthKm": 14597.4,
+ "accentThreshold": 0.048,
+ "accentThresholdMethod": "90th percentile of |feature difference| between valid cells 3 cells apart in frame A (114401 pairs)",
+ "reference": {
+  "A": {
+   "frame": 26400,
+   "rests": 8,
+   "notableIndex": 57,
+   "notableDelta": 0.16,
+   "samples": [
+    {
+     "index": 0,
+     "lat": -56.0,
+     "lon": -32.0,
+     "cell": [
+      210,
+      207
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.243
+    },
+    {
+     "index": 1,
+     "lat": -53.94799,
+     "lon": -31.36861,
+     "cell": [
+      211,
+      204
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.247
+    },
+    {
+     "index": 2,
+     "lat": -51.89917,
+     "lon": -30.73821,
+     "cell": [
+      212,
+      201
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.0
+    },
+    {
+     "index": 3,
+     "lat": -49.8536,
+     "lon": -30.1088,
+     "cell": [
+      213,
+      198
+     ],
+     "status": "ok",
+     "value": 0.12,
+     "confidence": 0.984
+    },
+    {
+     "index": 4,
+     "lat": -47.81129,
+     "lon": -29.4804,
+     "cell": [
+      214,
+      195
+     ],
+     "status": "ok",
+     "value": 0.172,
+     "confidence": 0.62
+    },
+    {
+     "index": 5,
+     "lat": -45.77227,
+     "lon": -28.85301,
+     "cell": [
+      214,
+      193
+     ],
+     "status": "ok",
+     "value": 0.184,
+     "confidence": 0.945
+    },
+    {
+     "index": 6,
+     "lat": -43.73653,
+     "lon": -28.22662,
+     "cell": [
+      215,
+      190
+     ],
+     "status": "ok",
+     "value": 0.216,
+     "confidence": 0.925
+    },
+    {
+     "index": 7,
+     "lat": -41.70404,
+     "lon": -27.60124,
+     "cell": [
+      216,
+      187
+     ],
+     "status": "ok",
+     "value": 0.272,
+     "confidence": 0.867
+    },
+    {
+     "index": 8,
+     "lat": -39.67476,
+     "lon": -26.97685,
+     "cell": [
+      217,
+      184
+     ],
+     "status": "ok",
+     "value": 0.328,
+     "confidence": 0.855
+    },
+    {
+     "index": 9,
+     "lat": -37.64865,
+     "lon": -26.35343,
+     "cell": [
+      218,
+      181
+     ],
+     "status": "ok",
+     "value": 0.348,
+     "confidence": 0.886
+    },
+    {
+     "index": 10,
+     "lat": -35.62562,
+     "lon": -25.73096,
+     "cell": [
+      219,
+      178
+     ],
+     "status": "ok",
+     "value": 0.392,
+     "confidence": 0.941
+    },
+    {
+     "index": 11,
+     "lat": -33.6056,
+     "lon": -25.10942,
+     "cell": [
+      220,
+      175
+     ],
+     "status": "ok",
+     "value": 0.464,
+     "confidence": 0.906
+    },
+    {
+     "index": 12,
+     "lat": -31.58849,
+     "lon": -24.48877,
+     "cell": [
+      221,
+      172
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.125
+    },
+    {
+     "index": 13,
+     "lat": -29.56218,
+     "lon": -24.05838,
+     "cell": [
+      221,
+      170
+     ],
+     "status": "ok",
+     "value": 0.564,
+     "confidence": 0.588
+    },
+    {
+     "index": 14,
+     "lat": -27.49256,
+     "lon": -24.33433,
+     "cell": [
+      221,
+      167
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.125
+    },
+    {
+     "index": 15,
+     "lat": -25.42348,
+     "lon": -24.6102,
+     "cell": [
+      220,
+      164
+     ],
+     "status": "ok",
+     "value": 0.664,
+     "confidence": 0.373
+    },
+    {
+     "index": 16,
+     "lat": -23.3549,
+     "lon": -24.88601,
+     "cell": [
+      220,
+      161
+     ],
+     "status": "ok",
+     "value": 0.688,
+     "confidence": 0.733
+    },
+    {
+     "index": 17,
+     "lat": -21.2868,
+     "lon": -25.16176,
+     "cell": [
+      220,
+      158
+     ],
+     "status": "ok",
+     "value": 0.7,
+     "confidence": 0.741
+    },
+    {
+     "index": 18,
+     "lat": -19.21914,
+     "lon": -25.43745,
+     "cell": [
+      219,
+      155
+     ],
+     "status": "ok",
+     "value": 0.72,
+     "confidence": 0.361
+    },
+    {
+     "index": 19,
+     "lat": -17.15188,
+     "lon": -25.71308,
+     "cell": [
+      219,
+      152
+     ],
+     "status": "ok",
+     "value": 0.748,
+     "confidence": 0.851
+    },
+    {
+     "index": 20,
+     "lat": -15.08499,
+     "lon": -25.98867,
+     "cell": [
+      219,
+      149
+     ],
+     "status": "ok",
+     "value": 0.78,
+     "confidence": 0.616
+    },
+    {
+     "index": 21,
+     "lat": -13.01843,
+     "lon": -26.26421,
+     "cell": [
+      218,
+      146
+     ],
+     "status": "ok",
+     "value": 0.796,
+     "confidence": 0.988
+    },
+    {
+     "index": 22,
+     "lat": -10.95216,
+     "lon": -26.53971,
+     "cell": [
+      218,
+      143
+     ],
+     "status": "ok",
+     "value": 0.808,
+     "confidence": 0.976
+    },
+    {
+     "index": 23,
+     "lat": -8.88613,
+     "lon": -26.81518,
+     "cell": [
+      217,
+      140
+     ],
+     "status": "ok",
+     "value": 0.828,
+     "confidence": 0.624
+    },
+    {
+     "index": 24,
+     "lat": -6.82029,
+     "lon": -27.09063,
+     "cell": [
+      217,
+      137
+     ],
+     "status": "ok",
+     "value": 0.836,
+     "confidence": 0.741
+    },
+    {
+     "index": 25,
+     "lat": -4.75461,
+     "lon": -27.36605,
+     "cell": [
+      217,
+      134
+     ],
+     "status": "ok",
+     "value": 0.828,
+     "confidence": 0.969
+    },
+    {
+     "index": 26,
+     "lat": -2.68904,
+     "lon": -27.64146,
+     "cell": [
+      216,
+      131
+     ],
+     "status": "ok",
+     "value": 0.816,
+     "confidence": 0.976
+    },
+    {
+     "index": 27,
+     "lat": -0.62353,
+     "lon": -27.91686,
+     "cell": [
+      216,
+      128
+     ],
+     "status": "ok",
+     "value": 0.812,
+     "confidence": 0.984
+    },
+    {
+     "index": 28,
+     "lat": 1.06897,
+     "lon": -28.98674,
+     "cell": [
+      214,
+      126
+     ],
+     "status": "ok",
+     "value": 0.848,
+     "confidence": 0.937
+    },
+    {
+     "index": 29,
+     "lat": 2.60051,
+     "lon": -30.40047,
+     "cell": [
+      212,
+      124
+     ],
+     "status": "ok",
+     "value": 0.876,
+     "confidence": 0.494
+    },
+    {
+     "index": 30,
+     "lat": 4.13292,
+     "lon": -31.815,
+     "cell": [
+      210,
+      122
+     ],
+     "status": "ok",
+     "value": 0.884,
+     "confidence": 0.98
+    },
+    {
+     "index": 31,
+     "lat": 5.66668,
+     "lon": -33.23078,
+     "cell": [
+      208,
+      119
+     ],
+     "status": "ok",
+     "value": 0.88,
+     "confidence": 0.992
+    },
+    {
+     "index": 32,
+     "lat": 7.2023,
+     "lon": -34.64828,
+     "cell": [
+      206,
+      117
+     ],
+     "status": "ok",
+     "value": 0.872,
+     "confidence": 0.616
+    },
+    {
+     "index": 33,
+     "lat": 8.7403,
+     "lon": -36.06797,
+     "cell": [
+      204,
+      115
+     ],
+     "status": "ok",
+     "value": 0.868,
+     "confidence": 0.988
+    },
+    {
+     "index": 34,
+     "lat": 10.2812,
+     "lon": -37.49034,
+     "cell": [
+      202,
+      113
+     ],
+     "status": "ok",
+     "value": 0.872,
+     "confidence": 0.859
+    },
+    {
+     "index": 35,
+     "lat": 11.8255,
+     "lon": -38.91585,
+     "cell": [
+      200,
+      111
+     ],
+     "status": "ok",
+     "value": 0.864,
+     "confidence": 0.494
+    },
+    {
+     "index": 36,
+     "lat": 13.37373,
+     "lon": -40.34498,
+     "cell": [
+      198,
+      108
+     ],
+     "status": "ok",
+     "value": 0.852,
+     "confidence": 0.871
+    },
+    {
+     "index": 37,
+     "lat": 14.92641,
+     "lon": -41.77822,
+     "cell": [
+      196,
+      106
+     ],
+     "status": "ok",
+     "value": 0.848,
+     "confidence": 0.988
+    },
+    {
+     "index": 38,
+     "lat": 16.48406,
+     "lon": -43.21606,
+     "cell": [
+      194,
+      104
+     ],
+     "status": "ok",
+     "value": 0.844,
+     "confidence": 0.988
+    },
+    {
+     "index": 39,
+     "lat": 18.04726,
+     "lon": -44.65901,
+     "cell": [
+      192,
+      102
+     ],
+     "status": "ok",
+     "value": 0.844,
+     "confidence": 0.988
+    },
+    {
+     "index": 40,
+     "lat": 19.61652,
+     "lon": -46.10756,
+     "cell": [
+      190,
+      100
+     ],
+     "status": "ok",
+     "value": 0.852,
+     "confidence": 0.616
+    },
+    {
+     "index": 41,
+     "lat": 21.1924,
+     "lon": -47.56221,
+     "cell": [
+      188,
+      97
+     ],
+     "status": "ok",
+     "value": 0.848,
+     "confidence": 0.992
+    },
+    {
+     "index": 42,
+     "lat": 22.77545,
+     "lon": -49.0235,
+     "cell": [
+      186,
+      95
+     ],
+     "status": "ok",
+     "value": 0.86,
+     "confidence": 0.988
+    },
+    {
+     "index": 43,
+     "lat": 24.36629,
+     "lon": -50.49196,
+     "cell": [
+      184,
+      93
+     ],
+     "status": "ok",
+     "value": 0.864,
+     "confidence": 0.988
+    },
+    {
+     "index": 44,
+     "lat": 25.96542,
+     "lon": -51.96808,
+     "cell": [
+      182,
+      91
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.247
+    },
+    {
+     "index": 45,
+     "lat": 27.46033,
+     "lon": -53.59309,
+     "cell": [
+      179,
+      88
+     ],
+     "status": "ok",
+     "value": 0.876,
+     "confidence": 0.992
+    },
+    {
+     "index": 46,
+     "lat": 28.96255,
+     "lon": -55.23187,
+     "cell": [
+      177,
+      86
+     ],
+     "status": "ok",
+     "value": 0.872,
+     "confidence": 0.98
+    },
+    {
+     "index": 47,
+     "lat": 30.47527,
+     "lon": -56.88211,
+     "cell": [
+      175,
+      84
+     ],
+     "status": "ok",
+     "value": 0.864,
+     "confidence": 0.62
+    },
+    {
+     "index": 48,
+     "lat": 31.99907,
+     "lon": -58.54443,
+     "cell": [
+      172,
+      82
+     ],
+     "status": "ok",
+     "value": 0.848,
+     "confidence": 0.616
+    },
+    {
+     "index": 49,
+     "lat": 33.53464,
+     "lon": -60.2196,
+     "cell": [
+      170,
+      80
+     ],
+     "status": "ok",
+     "value": 0.852,
+     "confidence": 0.957
+    },
+    {
+     "index": 50,
+     "lat": 35.08268,
+     "lon": -61.90838,
+     "cell": [
+      167,
+      78
+     ],
+     "status": "ok",
+     "value": 0.856,
+     "confidence": 0.976
+    },
+    {
+     "index": 51,
+     "lat": 36.64384,
+     "lon": -63.61146,
+     "cell": [
+      165,
+      75
+     ],
+     "status": "ok",
+     "value": 0.868,
+     "confidence": 0.976
+    },
+    {
+     "index": 52,
+     "lat": 37.90427,
+     "lon": -62.32065,
+     "cell": [
+      167,
+      74
+     ],
+     "status": "ok",
+     "value": 0.864,
+     "confidence": 0.965
+    },
+    {
+     "index": 53,
+     "lat": 39.08537,
+     "lon": -60.12718,
+     "cell": [
+      170,
+      72
+     ],
+     "status": "ok",
+     "value": 0.788,
+     "confidence": 0.929
+    },
+    {
+     "index": 54,
+     "lat": 40.27997,
+     "lon": -57.90864,
+     "cell": [
+      173,
+      70
+     ],
+     "status": "ok",
+     "value": 0.796,
+     "confidence": 0.878
+    },
+    {
+     "index": 55,
+     "lat": 41.48882,
+     "lon": -55.66361,
+     "cell": [
+      176,
+      68
+     ],
+     "status": "ok",
+     "value": 0.664,
+     "confidence": 0.965
+    },
+    {
+     "index": 56,
+     "lat": 42.71274,
+     "lon": -53.39062,
+     "cell": [
+      180,
+      67
+     ],
+     "status": "ok",
+     "value": 0.68,
+     "confidence": 0.976
+    },
+    {
+     "index": 57,
+     "lat": 43.95257,
+     "lon": -51.08809,
+     "cell": [
+      183,
+      65
+     ],
+     "status": "ok",
+     "value": 0.52,
+     "confidence": 0.373
+    },
+    {
+     "index": 58,
+     "lat": 45.92275,
+     "lon": -50.19885,
+     "cell": [
+      184,
+      62
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.125
+    },
+    {
+     "index": 59,
+     "lat": 47.92695,
+     "lon": -49.36377,
+     "cell": [
+      185,
+      59
+     ],
+     "status": "ok",
+     "value": 0.3,
+     "confidence": 0.937
+    },
+    {
+     "index": 60,
+     "lat": 49.93679,
+     "lon": -48.52634,
+     "cell": [
+      186,
+      56
+     ],
+     "status": "ok",
+     "value": 0.26,
+     "confidence": 0.953
+    },
+    {
+     "index": 61,
+     "lat": 51.95226,
+     "lon": -47.68656,
+     "cell": [
+      188,
+      54
+     ],
+     "status": "ok",
+     "value": 0.312,
+     "confidence": 0.361
+    },
+    {
+     "index": 62,
+     "lat": 53.97335,
+     "lon": -46.84444,
+     "cell": [
+      189,
+      51
+     ],
+     "status": "ok",
+     "value": 0.304,
+     "confidence": 0.373
+    },
+    {
+     "index": 63,
+     "lat": 56.0,
+     "lon": -46.0,
+     "cell": [
+      190,
+      48
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.0
+    }
+   ]
+  },
+  "B": {
+   "frame": 30400,
+   "rests": 6,
+   "notableIndex": 53,
+   "notableDelta": 0.116,
+   "samples": [
+    {
+     "index": 0,
+     "lat": -56.0,
+     "lon": -32.0,
+     "cell": [
+      210,
+      207
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.251
+    },
+    {
+     "index": 1,
+     "lat": -53.94799,
+     "lon": -31.36861,
+     "cell": [
+      211,
+      204
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.0
+    },
+    {
+     "index": 2,
+     "lat": -51.89917,
+     "lon": -30.73821,
+     "cell": [
+      212,
+      201
+     ],
+     "status": "ok",
+     "value": 0.184,
+     "confidence": 0.859
+    },
+    {
+     "index": 3,
+     "lat": -49.8536,
+     "lon": -30.1088,
+     "cell": [
+      213,
+      198
+     ],
+     "status": "ok",
+     "value": 0.22,
+     "confidence": 0.984
+    },
+    {
+     "index": 4,
+     "lat": -47.81129,
+     "lon": -29.4804,
+     "cell": [
+      214,
+      195
+     ],
+     "status": "ok",
+     "value": 0.232,
+     "confidence": 0.973
+    },
+    {
+     "index": 5,
+     "lat": -45.77227,
+     "lon": -28.85301,
+     "cell": [
+      214,
+      193
+     ],
+     "status": "ok",
+     "value": 0.296,
+     "confidence": 0.929
+    },
+    {
+     "index": 6,
+     "lat": -43.73653,
+     "lon": -28.22662,
+     "cell": [
+      215,
+      190
+     ],
+     "status": "ok",
+     "value": 0.34,
+     "confidence": 0.914
+    },
+    {
+     "index": 7,
+     "lat": -41.70404,
+     "lon": -27.60124,
+     "cell": [
+      216,
+      187
+     ],
+     "status": "ok",
+     "value": 0.452,
+     "confidence": 0.455
+    },
+    {
+     "index": 8,
+     "lat": -39.67476,
+     "lon": -26.97685,
+     "cell": [
+      217,
+      184
+     ],
+     "status": "ok",
+     "value": 0.54,
+     "confidence": 0.49
+    },
+    {
+     "index": 9,
+     "lat": -37.64865,
+     "lon": -26.35343,
+     "cell": [
+      218,
+      181
+     ],
+     "status": "ok",
+     "value": 0.572,
+     "confidence": 0.925
+    },
+    {
+     "index": 10,
+     "lat": -35.62562,
+     "lon": -25.73096,
+     "cell": [
+      219,
+      178
+     ],
+     "status": "ok",
+     "value": 0.668,
+     "confidence": 0.973
+    },
+    {
+     "index": 11,
+     "lat": -33.6056,
+     "lon": -25.10942,
+     "cell": [
+      220,
+      175
+     ],
+     "status": "ok",
+     "value": 0.704,
+     "confidence": 0.957
+    },
+    {
+     "index": 12,
+     "lat": -31.58849,
+     "lon": -24.48877,
+     "cell": [
+      221,
+      172
+     ],
+     "status": "ok",
+     "value": 0.776,
+     "confidence": 0.369
+    },
+    {
+     "index": 13,
+     "lat": -29.56218,
+     "lon": -24.05838,
+     "cell": [
+      221,
+      170
+     ],
+     "status": "ok",
+     "value": 0.796,
+     "confidence": 0.361
+    },
+    {
+     "index": 14,
+     "lat": -27.49256,
+     "lon": -24.33433,
+     "cell": [
+      221,
+      167
+     ],
+     "status": "ok",
+     "value": 0.816,
+     "confidence": 0.718
+    },
+    {
+     "index": 15,
+     "lat": -25.42348,
+     "lon": -24.6102,
+     "cell": [
+      220,
+      164
+     ],
+     "status": "ok",
+     "value": 0.84,
+     "confidence": 0.373
+    },
+    {
+     "index": 16,
+     "lat": -23.3549,
+     "lon": -24.88601,
+     "cell": [
+      220,
+      161
+     ],
+     "status": "ok",
+     "value": 0.848,
+     "confidence": 0.369
+    },
+    {
+     "index": 17,
+     "lat": -21.2868,
+     "lon": -25.16176,
+     "cell": [
+      220,
+      158
+     ],
+     "status": "ok",
+     "value": 0.848,
+     "confidence": 0.867
+    },
+    {
+     "index": 18,
+     "lat": -19.21914,
+     "lon": -25.43745,
+     "cell": [
+      219,
+      155
+     ],
+     "status": "ok",
+     "value": 0.84,
+     "confidence": 0.843
+    },
+    {
+     "index": 19,
+     "lat": -17.15188,
+     "lon": -25.71308,
+     "cell": [
+      219,
+      152
+     ],
+     "status": "ok",
+     "value": 0.84,
+     "confidence": 0.369
+    },
+    {
+     "index": 20,
+     "lat": -15.08499,
+     "lon": -25.98867,
+     "cell": [
+      219,
+      149
+     ],
+     "status": "ok",
+     "value": 0.832,
+     "confidence": 0.996
+    },
+    {
+     "index": 21,
+     "lat": -13.01843,
+     "lon": -26.26421,
+     "cell": [
+      218,
+      146
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.243
+    },
+    {
+     "index": 22,
+     "lat": -10.95216,
+     "lon": -26.53971,
+     "cell": [
+      218,
+      143
+     ],
+     "status": "ok",
+     "value": 0.856,
+     "confidence": 0.482
+    },
+    {
+     "index": 23,
+     "lat": -8.88613,
+     "lon": -26.81518,
+     "cell": [
+      217,
+      140
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.125
+    },
+    {
+     "index": 24,
+     "lat": -6.82029,
+     "lon": -27.09063,
+     "cell": [
+      217,
+      137
+     ],
+     "status": "ok",
+     "value": 0.864,
+     "confidence": 0.616
+    },
+    {
+     "index": 25,
+     "lat": -4.75461,
+     "lon": -27.36605,
+     "cell": [
+      217,
+      134
+     ],
+     "status": "ok",
+     "value": 0.868,
+     "confidence": 0.992
+    },
+    {
+     "index": 26,
+     "lat": -2.68904,
+     "lon": -27.64146,
+     "cell": [
+      216,
+      131
+     ],
+     "status": "ok",
+     "value": 0.864,
+     "confidence": 0.992
+    },
+    {
+     "index": 27,
+     "lat": -0.62353,
+     "lon": -27.91686,
+     "cell": [
+      216,
+      128
+     ],
+     "status": "ok",
+     "value": 0.868,
+     "confidence": 0.996
+    },
+    {
+     "index": 28,
+     "lat": 1.06897,
+     "lon": -28.98674,
+     "cell": [
+      214,
+      126
+     ],
+     "status": "ok",
+     "value": 0.872,
+     "confidence": 0.984
+    },
+    {
+     "index": 29,
+     "lat": 2.60051,
+     "lon": -30.40047,
+     "cell": [
+      212,
+      124
+     ],
+     "status": "ok",
+     "value": 0.876,
+     "confidence": 0.988
+    },
+    {
+     "index": 30,
+     "lat": 4.13292,
+     "lon": -31.815,
+     "cell": [
+      210,
+      122
+     ],
+     "status": "ok",
+     "value": 0.868,
+     "confidence": 0.98
+    },
+    {
+     "index": 31,
+     "lat": 5.66668,
+     "lon": -33.23078,
+     "cell": [
+      208,
+      119
+     ],
+     "status": "ok",
+     "value": 0.852,
+     "confidence": 0.973
+    },
+    {
+     "index": 32,
+     "lat": 7.2023,
+     "lon": -34.64828,
+     "cell": [
+      206,
+      117
+     ],
+     "status": "ok",
+     "value": 0.844,
+     "confidence": 0.984
+    },
+    {
+     "index": 33,
+     "lat": 8.7403,
+     "lon": -36.06797,
+     "cell": [
+      204,
+      115
+     ],
+     "status": "ok",
+     "value": 0.836,
+     "confidence": 0.988
+    },
+    {
+     "index": 34,
+     "lat": 10.2812,
+     "lon": -37.49034,
+     "cell": [
+      202,
+      113
+     ],
+     "status": "ok",
+     "value": 0.824,
+     "confidence": 0.733
+    },
+    {
+     "index": 35,
+     "lat": 11.8255,
+     "lon": -38.91585,
+     "cell": [
+      200,
+      111
+     ],
+     "status": "ok",
+     "value": 0.816,
+     "confidence": 0.843
+    },
+    {
+     "index": 36,
+     "lat": 13.37373,
+     "lon": -40.34498,
+     "cell": [
+      198,
+      108
+     ],
+     "status": "ok",
+     "value": 0.8,
+     "confidence": 0.49
+    },
+    {
+     "index": 37,
+     "lat": 14.92641,
+     "lon": -41.77822,
+     "cell": [
+      196,
+      106
+     ],
+     "status": "ok",
+     "value": 0.804,
+     "confidence": 0.498
+    },
+    {
+     "index": 38,
+     "lat": 16.48406,
+     "lon": -43.21606,
+     "cell": [
+      194,
+      104
+     ],
+     "status": "ok",
+     "value": 0.8,
+     "confidence": 1.0
+    },
+    {
+     "index": 39,
+     "lat": 18.04726,
+     "lon": -44.65901,
+     "cell": [
+      192,
+      102
+     ],
+     "status": "ok",
+     "value": 0.8,
+     "confidence": 0.498
+    },
+    {
+     "index": 40,
+     "lat": 19.61652,
+     "lon": -46.10756,
+     "cell": [
+      190,
+      100
+     ],
+     "status": "ok",
+     "value": 0.8,
+     "confidence": 0.373
+    },
+    {
+     "index": 41,
+     "lat": 21.1924,
+     "lon": -47.56221,
+     "cell": [
+      188,
+      97
+     ],
+     "status": "ok",
+     "value": 0.784,
+     "confidence": 0.867
+    },
+    {
+     "index": 42,
+     "lat": 22.77545,
+     "lon": -49.0235,
+     "cell": [
+      186,
+      95
+     ],
+     "status": "ok",
+     "value": 0.788,
+     "confidence": 0.851
+    },
+    {
+     "index": 43,
+     "lat": 24.36629,
+     "lon": -50.49196,
+     "cell": [
+      184,
+      93
+     ],
+     "status": "ok",
+     "value": 0.772,
+     "confidence": 0.608
+    },
+    {
+     "index": 44,
+     "lat": 25.96542,
+     "lon": -51.96808,
+     "cell": [
+      182,
+      91
+     ],
+     "status": "ok",
+     "value": 0.756,
+     "confidence": 0.357
+    },
+    {
+     "index": 45,
+     "lat": 27.46033,
+     "lon": -53.59309,
+     "cell": [
+      179,
+      88
+     ],
+     "status": "ok",
+     "value": 0.716,
+     "confidence": 0.478
+    },
+    {
+     "index": 46,
+     "lat": 28.96255,
+     "lon": -55.23187,
+     "cell": [
+      177,
+      86
+     ],
+     "status": "ok",
+     "value": 0.688,
+     "confidence": 0.941
+    },
+    {
+     "index": 47,
+     "lat": 30.47527,
+     "lon": -56.88211,
+     "cell": [
+      175,
+      84
+     ],
+     "status": "ok",
+     "value": 0.66,
+     "confidence": 0.737
+    },
+    {
+     "index": 48,
+     "lat": 31.99907,
+     "lon": -58.54443,
+     "cell": [
+      172,
+      82
+     ],
+     "status": "ok",
+     "value": 0.664,
+     "confidence": 0.984
+    },
+    {
+     "index": 49,
+     "lat": 33.53464,
+     "lon": -60.2196,
+     "cell": [
+      170,
+      80
+     ],
+     "status": "ok",
+     "value": 0.624,
+     "confidence": 0.678
+    },
+    {
+     "index": 50,
+     "lat": 35.08268,
+     "lon": -61.90838,
+     "cell": [
+      167,
+      78
+     ],
+     "status": "ok",
+     "value": 0.616,
+     "confidence": 0.863
+    },
+    {
+     "index": 51,
+     "lat": 36.64384,
+     "lon": -63.61146,
+     "cell": [
+      165,
+      75
+     ],
+     "status": "ok",
+     "value": 0.612,
+     "confidence": 0.941
+    },
+    {
+     "index": 52,
+     "lat": 37.90427,
+     "lon": -62.32065,
+     "cell": [
+      167,
+      74
+     ],
+     "status": "ok",
+     "value": 0.612,
+     "confidence": 0.741
+    },
+    {
+     "index": 53,
+     "lat": 39.08537,
+     "lon": -60.12718,
+     "cell": [
+      170,
+      72
+     ],
+     "status": "ok",
+     "value": 0.496,
+     "confidence": 0.933
+    },
+    {
+     "index": 54,
+     "lat": 40.27997,
+     "lon": -57.90864,
+     "cell": [
+      173,
+      70
+     ],
+     "status": "ok",
+     "value": 0.392,
+     "confidence": 0.439
+    },
+    {
+     "index": 55,
+     "lat": 41.48882,
+     "lon": -55.66361,
+     "cell": [
+      176,
+      68
+     ],
+     "status": "ok",
+     "value": 0.324,
+     "confidence": 0.949
+    },
+    {
+     "index": 56,
+     "lat": 42.71274,
+     "lon": -53.39062,
+     "cell": [
+      180,
+      67
+     ],
+     "status": "ok",
+     "value": 0.264,
+     "confidence": 0.922
+    },
+    {
+     "index": 57,
+     "lat": 43.95257,
+     "lon": -51.08809,
+     "cell": [
+      183,
+      65
+     ],
+     "status": "ok",
+     "value": 0.16,
+     "confidence": 0.455
+    },
+    {
+     "index": 58,
+     "lat": 45.92275,
+     "lon": -50.19885,
+     "cell": [
+      184,
+      62
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.224
+    },
+    {
+     "index": 59,
+     "lat": 47.92695,
+     "lon": -49.36377,
+     "cell": [
+      185,
+      59
+     ],
+     "status": "ok",
+     "value": 0.056,
+     "confidence": 0.992
+    },
+    {
+     "index": 60,
+     "lat": 49.93679,
+     "lon": -48.52634,
+     "cell": [
+      186,
+      56
+     ],
+     "status": "ok",
+     "value": 0.056,
+     "confidence": 0.867
+    },
+    {
+     "index": 61,
+     "lat": 51.95226,
+     "lon": -47.68656,
+     "cell": [
+      188,
+      54
+     ],
+     "status": "ok",
+     "value": 0.112,
+     "confidence": 0.369
+    },
+    {
+     "index": 62,
+     "lat": 53.97335,
+     "lon": -46.84444,
+     "cell": [
+      189,
+      51
+     ],
+     "status": "occluded",
+     "value": null,
+     "confidence": 0.125
+    },
+    {
+     "index": 63,
+     "lat": 56.0,
+     "lon": -46.0,
+     "cell": [
+      190,
+      48
+     ],
+     "status": "ok",
+     "value": 0.116,
+     "confidence": 0.722
+    }
+   ]
+  }
+ }
+}

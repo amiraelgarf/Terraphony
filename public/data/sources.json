@@ -1,0 +1,68 @@
+[
+ {
+  "n": 1,
+  "title": "Earth Information Center (EIC) Content Database",
+  "url": "https://svs.gsfc.nasa.gov/gallery/earth-information-center/",
+  "role": "Context: proves the EIC relationship"
+ },
+ {
+  "n": 2,
+  "title": "Data Sonification: Caldwell 73",
+  "url": "https://svs.gsfc.nasa.gov/13786/",
+  "role": "Conceptual precedent for audible scanning; studied, not copied"
+ },
+ {
+  "n": 3,
+  "title": "Change in Night Lights between 2012 and 2023 — EIC Version",
+  "url": "https://svs.gsfc.nasa.gov/5313/",
+  "role": "Roadmap: possible second story"
+ },
+ {
+  "n": 4,
+  "title": "Global Sea Surface Currents and Temperature",
+  "url": "https://svs.gsfc.nasa.gov/3912/",
+  "role": "FLAGSHIP: the frames sonified in this app"
+ },
+ {
+  "n": 5,
+  "title": "GEOS Aerosols (2025)",
+  "url": "https://svs.gsfc.nasa.gov/5669/",
+  "role": "Roadmap"
+ },
+ {
+  "n": 6,
+  "title": "Air Quality Model Runs",
+  "url": "https://svs.gsfc.nasa.gov/5533/",
+  "role": "Roadmap"
+ },
+ {
+  "n": 7,
+  "title": "Perpetual Ocean 2: Western Boundary Currents",
+  "url": "https://svs.gsfc.nasa.gov/5425/",
+  "role": "Visual reference"
+ },
+ {
+  "n": 8,
+  "title": "DYAMOND Global Carbon Dioxide",
+  "url": "https://svs.gsfc.nasa.gov/5196/",
+  "role": "Roadmap"
+ },
+ {
+  "n": 9,
+  "title": "Lightning Events Detected from ISS 2017–2023",
+  "url": "https://svs.gsfc.nasa.gov/5011/",
+  "role": "Roadmap"
+ },
+ {
+  "n": 10,
+  "title": "A 3D View of an Atmospheric River from an Earth System Model",
+  "url": "https://svs.gsfc.nasa.gov/4960/",
+  "role": "Roadmap"
+ },
+ {
+  "n": 11,
+  "title": "GEDI Forest Height",
+  "url": "https://svs.gsfc.nasa.gov/4950/",
+  "role": "Roadmap"
+ }
+]

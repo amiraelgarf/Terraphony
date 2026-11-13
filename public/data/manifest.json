@@ -1,0 +1,171 @@
+{
+ "schemaVersion": "2.0",
+ "storyId": "ocean-in-motion",
+ "primaryOfficialResourceId": 3912,
+ "sourceGallery": "https://svs.gsfc.nasa.gov/gallery/earth-information-center/",
+ "sourceVisual": "https://svs.gsfc.nasa.gov/3912/",
+ "fidelity": "verified-visual-frame",
+ "variable": "image_feature_normalized",
+ "units": "normalized_0_1",
+ "featureName": "Normalized palette position",
+ "interpretation": "Position, between 0 and 1, of a pixel's hue along NASA's published SST colour legend (0 = legend's left end, labelled 0 °C; 1 = right end, labelled 32 °C), median of matched pixels in a 4x4-pixel cell. An image feature, not a temperature.",
+ "timeRangeDocumentedUTC": [
+  "2007-03-25T12:00:00Z",
+  "2008-03-03T12:00:00Z"
+ ],
+ "availableFrames": [
+  {
+   "id": "svs3912-26400",
+   "label": "A",
+   "svsId": 3912,
+   "frameNumber": 26400,
+   "assetUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.26400.tif",
+   "imagePath": "nasa-svs/svs3912-frame-26400.jpg",
+   "featurePath": "data/frames/frame-26400.bin",
+   "captureOrModelTimeUTC": "2007-08-18T16:48:00Z",
+   "visualProjection": "verified-equirectangular",
+   "geographicBounds": [
+    -180,
+    -90,
+    180,
+    90
+   ],
+   "width": 2048,
+   "height": 1024,
+   "fidelity": "verified-visual-frame",
+   "variable": "image_feature_normalized",
+   "sourceCredits": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+   "sha256": "3e009f2640db6b51e6c9b97212f5c43cba322c26966e1310cd283f3c7afc0640",
+   "featureStats": {
+    "frame": 26400,
+    "cells": 131072,
+    "ok": 67776,
+    "land": 44731,
+    "occluded": 18565,
+    "oceanCellsUsable": 0.785,
+    "matchedPixelShare": 0.282
+   }
+  },
+  {
+   "id": "svs3912-30400",
+   "label": "B",
+   "svsId": 3912,
+   "frameNumber": 30400,
+   "assetUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.30400.tif",
+   "imagePath": "nasa-svs/svs3912-frame-30400.jpg",
+   "featurePath": "data/frames/frame-30400.bin",
+   "captureOrModelTimeUTC": "2008-02-06T16:48:00Z",
+   "visualProjection": "verified-equirectangular",
+   "geographicBounds": [
+    -180,
+    -90,
+    180,
+    90
+   ],
+   "width": 2048,
+   "height": 1024,
+   "fidelity": "verified-visual-frame",
+   "variable": "image_feature_normalized",
+   "sourceCredits": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+   "sha256": "f8987ad8fe495cc4ebc1fc3812189f73c6a47c855b17875ddadfae8648a38310",
+   "featureStats": {
+    "frame": 30400,
+    "cells": 131072,
+    "ok": 66506,
+    "land": 44747,
+    "occluded": 19819,
+    "oceanCellsUsable": 0.7704,
+    "matchedPixelShare": 0.28
+   }
+  }
+ ],
+ "availableComparablePairs": [
+  [
+   "svs3912-26400",
+   "svs3912-30400"
+  ]
+ ],
+ "mapRegistrationVerified": true,
+ "registrationEvidence": {
+  "A": "24/24 landmark checks",
+  "B": "24/24 landmark checks"
+ },
+ "comparability": {
+  "sameSize": true,
+  "pixelLandMaskAgreement": 0.99808,
+  "cellLandMaskAgreement": 0.99881,
+  "sameCamera": "fixed flat global camera (SVS frame set 2048x1024 orig)",
+  "comparable": true
+ },
+ "grid": {
+  "cellSize": 4,
+  "width": 512,
+  "height": 256,
+  "planes": [
+   "value",
+   "status",
+   "confidence"
+  ],
+  "noValue": 255,
+  "valueScale": 250,
+  "statusCodes": {
+   "ok": 0,
+   "land": 1,
+   "occluded": 2
+  }
+ },
+ "processing": {
+  "sourceAlgorithm": "hue-to-legend-position inversion (scripts/feature_lib.py)",
+  "pixelRules": {
+   "candidate": "max channel >= 40 and saturation >= 0.45",
+   "land": "saturation < 0.18 and 28 <= max channel <= 150 (GTOPO30 relief)",
+   "hueGapDegrees": 6.0
+  },
+  "aggregation": "median over matched pixels in 4x4 cells; needs >= 3 matched pixels and confidence >= 0.35",
+  "confidence": "min(1, matched/8) * clip(1 - MAD/0.08, 0, 1)",
+  "missingPolicy": "explicit_rest",
+  "legendNote": "red-end hue plateau: >0.97 resolves to ~0.97"
+ },
+ "dataIntegrity": {
+  "verifiedRealData": true,
+  "fixture": false,
+  "sampledFrom": "NASA SVS 3912 frame set 2048x1024_1x1_30p/orig"
+ },
+ "pipelineA": {
+  "attempted": true,
+  "available": false,
+  "reason": "Matching ECCO2 numeric fields for these frames were not reachable; see DECISIONS.md. The app therefore sonifies visual features only."
+ },
+ "sourceCredits": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+ "creditsPeople": "Animators: Greg Shirah, Horace Mitchell (NASA/GSFC), Eric Sokolowsky (GST, Inc.); Producer: Michael Starobin (HTSI); Scientists: Hong Zhang (UCLA), Dimitris Menemenlis (NASA/JPL Caltech). Model: ECCO2 (MIT/JPL).",
+ "sourceFilesAndChecksums": [
+  {
+   "role": "frame-timestamps",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/flat_ecco2_dates.txt",
+   "file": "flat_ecco2_dates.txt",
+   "bytes": 50025,
+   "sha256": "2911a0e01ba21542462283276636f834511527ac45b9e5df76226acc03f743fb"
+  },
+  {
+   "role": "sst-legend",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/sst_ecco2_cbar.png",
+   "file": "sst_ecco2_cbar.png",
+   "bytes": 8867,
+   "sha256": "7c4c25f9ca51bb458c100ca4d31f452b8dfdbce8898e2945b7042729d55404c5"
+  },
+  {
+   "role": "frame-A",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.26400.tif",
+   "file": "flat_global_ecco2_2028x1024.26400.tif",
+   "bytes": 6300088,
+   "sha256": "3e009f2640db6b51e6c9b97212f5c43cba322c26966e1310cd283f3c7afc0640"
+  },
+  {
+   "role": "frame-B",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/frames/2048x1024_1x1_30p/orig/flat_global_ecco2_2028x1024.30400.tif",
+   "file": "flat_global_ecco2_2028x1024.30400.tif",
+   "bytes": 6300088,
+   "sha256": "f8987ad8fe495cc4ebc1fc3812189f73c6a47c855b17875ddadfae8648a38310"
+  }
+ ]
+}
