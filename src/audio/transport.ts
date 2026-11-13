@@ -4,20 +4,28 @@
  *
  * React never touches synths. It loads a Program (the record's events) and
  * receives step callbacks. Two clock modes with the same API:
- *   'audio'  — Tone.js Transport; events scheduled ahead on the audio clock,
- *              step callbacks fired through Tone.Draw at the audible moment.
+ *   'audio'  — the AudioContext clock. On play, every remaining note of the
+ *              record (a record is ~12 s, 24 events) is handed to the audio
+ *              thread at once, at exact times. Nothing on the page's main
+ *              thread is involved while it plays, so map redraws, picture
+ *              decoding or speech can never delay, bunch up or drop a note.
+ *              Step callbacks for the picture fire through Tone.Draw at the
+ *              audible moment.
  *   'silent' — a performance.now() clock for visual-only listening (sound off,
  *              unsupported or blocked audio). Everything else keeps working.
  *
- * Pause/seek/resume release voices and reschedule from the transport
- * position, so no note is ever double-triggered.
+ * Pause / seek: the current instruments fade out in 30 ms and are replaced by a
+ * fresh set (Voices.renew), which also discards the notes already queued on the
+ * audio thread; resume schedules again from the current step. No note is ever
+ * double-triggered.
  *
  * Tone.js is imported lazily inside unlock(): importing it creates an
  * AudioContext, and nothing audio-related may exist before a visitor's gesture.
  */
 import type * as ToneNS from 'tone';
 import type { InstrumentId, MusicEvent } from '../data/types';
-import { createVoices, LAYER_LEVELS, LAYERS, type Layer, type Voices } from './instruments';
+import { ALL_LAYERS_ON, createVoices, LAYER_LEVELS, LAYERS, perform, releaseAll, type Layer, type Voices } from './instruments';
+import { arrange, type PerformedEvent } from './ensemble';
 import { midiToTone } from './normalize';
 
 export type Program = { id: string; events: MusicEvent[]; beatSeconds: number };
@@ -27,6 +35,8 @@ type ClockMode = 'audio' | 'silent';
 /** Beats of tail after the last event so the closing chord can ring. */
 export const TAIL_BEATS = 3;
 const RAMP = 0.08;
+/** Small safety margin between pressing play and the first note. */
+const START_DELAY = 0.08;
 
 let Tone: typeof ToneNS = null as unknown as typeof ToneNS;
 
@@ -40,15 +50,18 @@ export class Transport {
   private voices = new Map<InstrumentId, Voices>();
   private palette: InstrumentId = 'glass';
   private program: Program | null = null;
+  private performed: PerformedEvent[] = [];
   private listener: TransportListener | null = null;
   private mode: ClockMode = 'silent';
   private playing = false;
   private lastStep = -1;
-  private ids: number[] = [];
-  private layers: Record<Layer, boolean> = { lead: true, bass: true, accent: true, cadence: true };
+  private layers: Record<Layer, boolean> = { ...ALL_LAYERS_ON };
   private volume = 0.7;
+  /** Paused / stopped position in beats. */
+  private offset = 0;
+  /** While playing: audio time of `step`'s onset. */
+  private anchor = { time: 0, step: 0 };
   private silentStart = 0;
-  private silentOffset = 0;
   private silentTimer: number | null = null;
   private lastAudition = -Infinity;
 
@@ -72,7 +85,9 @@ export class Transport {
       await loadTone();
       await Tone.start();
       if (Tone.getContext().state !== 'running') return false;
-      this.ensureVoices(this.palette);
+      Tone.getDraw().expiration = 5; // a long page block never drops a step / end callback
+      const v = this.ensureVoices(this.palette);
+      await v.ready; // build the reverb before the first note, not during it
       return true;
     } catch {
       return false;
@@ -104,20 +119,20 @@ export class Transport {
 
   setPalette(id: InstrumentId) {
     if (id === this.palette) return;
+    const was = this.playing;
+    if (was) this.pause();
     this.release();
     this.palette = id;
     if (this.audioReady) this.ensureVoices(id);
+    if (was) this.play();
   }
 
   load(program: Program, listener: TransportListener, startStep = 0, emit = true) {
     this.stop();
     this.program = program;
+    this.performed = arrange(program.events);
     this.listener = listener;
     this.lastStep = -1;
-    if (this.mode === 'audio') {
-      Tone.getTransport().bpm.value = 60 / program.beatSeconds;
-      this.schedule();
-    }
     this.seekInternal(startStep, emit);
   }
 
@@ -128,10 +143,17 @@ export class Transport {
 
   play() {
     if (!this.program || this.playing) return;
-    if (Math.floor(this.position()) >= this.program.events.length) this.seekInternal(0);
+    const n = this.program.events.length;
+    if (Math.floor(this.offset) >= n) this.seekInternal(0);
+    const from = Math.max(0, Math.min(n - 1, Math.floor(this.offset)));
     this.playing = true;
-    if (this.mode === 'audio') Tone.getTransport().start('+0.05');
-    else {
+    if (this.mode === 'audio' && this.v) {
+      const t0 = Tone.immediate() + START_DELAY;
+      this.anchor = { time: t0, step: from };
+      this.lastStep = from - 1;
+      this.scheduleFrom(from, t0);
+    } else {
+      this.offset = from;
       this.silentStart = performance.now();
       this.silentTimer = window.setInterval(() => this.silentTick(), 20);
       this.silentTick();
@@ -140,25 +162,17 @@ export class Transport {
 
   pause() {
     if (!this.playing) return;
+    this.offset = this.position();
     this.playing = false;
-    if (this.mode === 'audio') Tone.getTransport().pause();
-    else {
-      this.silentOffset = this.position();
-      this.clearTimer();
-    }
+    this.clearTimer();
+    this.cancelDraw();
     this.release();
   }
 
   stop() {
     this.playing = false;
     this.clearTimer();
-    if (this.audioReady) {
-      const t = Tone.getTransport();
-      t.stop();
-      this.ids.forEach((id) => t.clear(id));
-      this.ids = [];
-      t.cancel(0);
-    }
+    this.cancelDraw();
     this.release();
   }
 
@@ -172,13 +186,9 @@ export class Transport {
   /** Fractional playhead in beats — the single source of truth for animation. */
   position(): number {
     const beat = this.program?.beatSeconds ?? 0.5;
-    if (this.mode === 'audio' && this.audioReady) {
-      // Transport time runs one look-ahead ahead of what is audible.
-      const s = Tone.getTransport().seconds - (this.playing ? Tone.getContext().lookAhead : 0);
-      return Math.max(0, s / beat);
-    }
-    if (!this.playing) return this.silentOffset;
-    return this.silentOffset + (performance.now() - this.silentStart) / 1000 / beat;
+    if (!this.playing) return this.offset;
+    if (this.mode === 'audio' && this.audioReady) return Math.max(this.anchor.step, this.anchor.step + (Tone.immediate() - this.anchor.time) / beat);
+    return this.offset + (performance.now() - this.silentStart) / 1000 / beat;
   }
 
   setLayers(on: Record<Layer, boolean>) {
@@ -197,9 +207,19 @@ export class Transport {
       if (immediate) v.buses[l].gain.value = g;
       else v.buses[l].gain.rampTo(g, RAMP);
     }
-    const db = this.volume <= 0.001 ? -Infinity : 20 * Math.log10(this.volume) - 8;
+    // +12 dB of make-up gain: at the default 70 % the mix peaks around -3 dBFS, like ordinary music
+    const db = this.volume <= 0.001 ? -Infinity : 20 * Math.log10(this.volume) + 12;
     if (immediate) v.master.volume.value = db;
     else v.master.volume.rampTo(db, RAMP);
+  }
+
+  /** One original struck tone to open the journey. */
+  chime() {
+    const v = this.v;
+    if (!v || this.mode !== 'audio') return;
+    const t = Tone.immediate() + 0.03;
+    v.set.lead.triggerAttackRelease('G4', 1.6, t, 0.55);
+    v.set.lead.triggerAttackRelease('C5', 1.8, t + 0.18, 0.4);
   }
 
   /** One note on demand (inspecting a score mark). At most ~5 per second. */
@@ -209,29 +229,29 @@ export class Transport {
     const now = performance.now();
     if (now - this.lastAudition < 180) return;
     this.lastAudition = now;
-    v.lead.triggerAttackRelease(midiToTone(midi), 0.45, Tone.now() + 0.01, 0.75);
+    v.set.lead.triggerAttackRelease(midiToTone(midi), 0.45, Tone.immediate() + 0.01, 0.75);
   }
 
   /** Short phrase for the press (beat II): the visitor's own notes, quickly. */
   phrase(midis: (number | null)[], spacing = 0.07) {
     const v = this.v;
     if (!v || this.mode !== 'audio') return;
-    const t0 = Tone.now() + 0.02;
+    const t0 = Tone.immediate() + 0.02;
     midis.forEach((m, i) => {
-      if (m !== null) v.lead.triggerAttackRelease(midiToTone(m), 0.25, t0 + i * spacing, 0.45);
+      if (m !== null) v.set.lead.triggerAttackRelease(midiToTone(m), 0.25, t0 + i * spacing, 0.45);
     });
   }
 
   stylus() {
     const v = this.v;
     if (!v || this.mode !== 'audio') return;
-    v.thump.triggerAttackRelease('C2', 0.12, Tone.now() + 0.01, 0.6);
+    v.thump.triggerAttackRelease('C2', 0.12, Tone.immediate() + 0.01, 0.6);
   }
 
   chord(midis: number[]) {
     const v = this.v;
     if (!v || this.mode !== 'audio') return;
-    v.cadence.triggerAttackRelease(midis.map(midiToTone), 2.4, Tone.now() + 0.02, 0.4);
+    v.set.cadence.triggerAttackRelease(midis.map(midiToTone), 2.4, Tone.immediate() + 0.02, 0.4);
   }
 
   /* ------------------------------------------------------------------ */
@@ -240,41 +260,31 @@ export class Transport {
     const n = this.program?.events.length ?? 0;
     const s = Math.max(0, Math.min(n, step));
     this.release();
-    const beat = this.program?.beatSeconds ?? 0.5;
-    if (this.mode === 'audio') Tone.getTransport().seconds = s * beat;
-    else this.silentOffset = s;
+    this.offset = s;
     this.lastStep = s - 1;
     if (emit && s < n) this.listener?.onStep(s);
   }
 
-  private schedule() {
-    const t = Tone.getTransport();
-    const draw = Tone.getDraw();
+  /** Hand every remaining note to the audio thread now, at exact times. */
+  private scheduleFrom(from: number, t0: number) {
     const p = this.program!;
-    p.events.forEach((e, k) => {
-      this.ids.push(
-        t.schedule((time) => {
-          this.playEvent(e, time, p.beatSeconds);
-          draw.schedule(() => this.emit(k), time);
-        }, k * p.beatSeconds),
-      );
-    });
-    this.ids.push(t.schedule((time) => draw.schedule(() => this.finish(), time), (p.events.length + TAIL_BEATS) * p.beatSeconds));
+    const v = this.v!;
+    const beat = p.beatSeconds;
+    const draw = Tone.getDraw();
+    for (let k = from; k < this.performed.length; k++) {
+      const time = t0 + (k - from) * beat;
+      perform(Tone, v, this.performed[k], time, beat);
+      draw.schedule(() => this.emit(k), time);
+    }
+    draw.schedule(() => this.finish(), t0 + (p.events.length - from + TAIL_BEATS) * beat);
   }
 
-  private playEvent(e: MusicEvent, time: number, beat: number) {
-    const v = this.v;
-    if (!v) return;
-    if (e.midiNote !== null) v.lead.triggerAttackRelease(midiToTone(e.midiNote), beat * 0.92, time, 0.72);
-    for (const s of e.supportingEvents) {
-      if (s.instrumentId === 'bass' && s.midiNote !== undefined) v.bass.triggerAttackRelease(midiToTone(s.midiNote), beat * 3.7, time, s.velocity ?? 0.6);
-      if (s.instrumentId === 'accent') v.accent.triggerAttackRelease(0.05, time + 0.002, s.velocity ?? 0.6);
-      if (s.instrumentId === 'cadence' && s.midiNotes) v.cadence.triggerAttackRelease(s.midiNotes.map(midiToTone), beat * 3, time + beat, s.velocity ?? 0.35);
-    }
+  private cancelDraw() {
+    if (this.audioReady) Tone.getDraw().cancel(0);
   }
 
   private emit(k: number) {
-    if (k === this.lastStep) return;
+    if (!this.playing || k === this.lastStep) return;
     this.lastStep = k;
     this.listener?.onStep(k);
   }
@@ -291,19 +301,19 @@ export class Transport {
     if (!this.playing) return;
     this.playing = false;
     this.clearTimer();
-    if (this.mode === 'audio') Tone.getTransport().pause();
-    this.release();
-    this.silentOffset = this.program?.events.length ?? 0;
+    this.release(false); // let the closing chord ring
+    this.offset = this.program?.events.length ?? 0;
     this.listener?.onEnd();
   }
 
-  private release() {
-    const now = this.audioReady ? Tone.now() : 0;
-    this.voices.forEach((v) => {
-      v.lead.releaseAll(now);
-      v.bass.triggerRelease(now);
-      v.cadence.releaseAll(now);
-    });
+  /**
+   * Silence what is sounding. With `renew`, the instruments are swapped for fresh
+   * ones, which also discards notes already queued on the audio thread.
+   */
+  private release(renew = true) {
+    if (!this.audioReady) return;
+    const now = Tone.immediate();
+    this.voices.forEach((v) => (renew ? v.renew() : releaseAll(v, now)));
   }
 
   private clearTimer() {
@@ -313,3 +323,8 @@ export class Transport {
 }
 
 export const transport = new Transport();
+
+// The audio engine holds live browser audio state (AudioContext, instruments, scheduled
+// notes). Hot-swapping this module in development would leave the page with a fresh,
+// silent engine; reload the page instead.
+if (import.meta.hot) import.meta.hot.accept(() => window.location.reload());

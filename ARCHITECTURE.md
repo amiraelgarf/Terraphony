@@ -138,10 +138,11 @@ is what keeps the code testable (all of `data/`, `audio/normalize`, `audio/music
 ```
  entry      main.tsx → App.tsx
  visuals    scenes + components (React)               ← render state, call actions
+ tour       tourDirector · narration · TourBridge     ← the guided journey (talks to app via a host)
  app        recordMachine · RecordContext · useActions · useStudioRecord · persistence
  export     recordRecipe · coverRenderer · wavRenderer
  audio      transport · instruments · musicMapper · normalize
- stories    ocean / vegetation / fire configs (sources, rules, copy)
+ stories    ocean / vegetation configs (sources, rules, copy)
  data       types · projections · geodesicPath · adapters/*
 ```
 
@@ -149,7 +150,7 @@ is what keeps the code testable (all of `data/`, `audio/normalize`, `audio/music
 
 | File | Responsibility |
 |---|---|
-| `main.tsx` | Loads fonts (Fontsource) and the five stylesheets, mounts `<App/>` |
+| `main.tsx` | Loads fonts (Fontsource) and the six stylesheets, mounts `<App/>` |
 | `App.tsx` | Error boundary (`Boundary`), `RecordProvider`, the screen-reader live region `#announcer`, and `Scenes`: picks one scene component from `state.scene`. The `key` changes per scene so each scene remounts (fresh enter animation) and scrolls to top |
 
 ### 5.2 `data/` — facts about the Earth, no React, no sound
@@ -161,6 +162,7 @@ is what keeps the code testable (all of `data/`, `audio/normalize`, `audio/music
 | `geodesicPath.ts` | `resampleGeographic(waypoints, 24)` → 24 stops at equal great-circle distance (mirror of `geo_lib.py`); `thinTrace` removes pointer noise (≥ 60 km apart); `isDegenerateRoute` (< 300 km) |
 | `adapters/murSstAdapter.ts` | `OceanGrid` class wraps the `Int16Array`: `statusOf(code)` decodes mask codes; `sample(lat, lon)` = nearest cell decides status, otherwise bilinear over valid corners. `loadOceanGrid(key)` fetches and caches per date. `sampleRoute()` turns 24 stops into 24 `ObservationSample`s with provenance details |
 | `adapters/modisNdviAdapter.ts` | `loadPlace(id)` / `loadPlaceIndex()` (cached fetch), `placeSamples(place)` → 23 `ObservationSample`s, `windowLabel` ("13–28 Aug"), `reliabilityLabel` |
+| `adapters/modisLiveAdapter.ts` | **Any place.** `fetchLandPoint(lat, lon, onProgress)` asks the ORNL MODIS service (NDVI + reliability, chunks of 10 dates, in parallel, one retry). `buildLandPlace(raw)` is the pure port of `build_land_series.py`. `pointId`/`parsePointId` keep the coordinate in the place id (`pt:47.00,1.00`). Results are cached in memory and `localStorage` |
 | `adapters/oceanPresets.ts` | `loadPresets()` and `presetWaypoints()` |
 
 ### 5.3 `stories/` — what each side *is*
@@ -173,15 +175,15 @@ descriptions) and the copy. Changing a sentence or a range happens here.
 |---|---|
 | `ocean.config.ts` | `OCEAN_SOURCE` (MUR), `OCEAN_RULE` (−2…31 °C, accent 1 °C, 120 bpm), `OCEAN_DATES` (A/B), `OCEAN_COPY` |
 | `vegetation.config.ts` | `LAND_SOURCE` (MOD13Q1), `LAND_RULE` (0…0.9 NDVI, accent 0.08), `LAND_COPY` |
-| `fire.config.ts` | `FIRE_COPY` only — status "In preparation" and the list of what is missing |
 
 ### 5.4 `audio/` — from numbers to sound
 
 | File | Responsibility |
 |---|---|
 | `normalize.ts` | **The one rule.** `normalize(value, lo, hi)` → `u` + clamped flag; `noteIndex(u)` = round(u×10); `valueToMidi`; `noteBand` (which value range plays a note); `midiToName` ("G4"), `midiToTone` (Tone.js names) |
-| `musicMapper.ts` | `buildEvents(samples, rule)` → one `MusicEvent` per sample: lead note or rest, bass on block starts in sections 2–3 (`blockMean`), accent when `changeFromPrevious` ≥ threshold in sections 3–4, artistic cadence on the last event. `sectionOf` / `sectionBounds` (5/24, 12/24, 20/24). `notableIndex` (biggest change, used by the tour). `eventHash` (FNV-1a, used for record ids and tests) |
-| `instruments.ts` | `createVoices(Tone, paletteId)` builds the audio graph for Glass / Wood / Felt: lead, bass, accent, cadence, plus a stylus "thump"; each layer has its own gain bus → reverb → master → compressor → limiter. It receives the Tone module as an argument so it works both live and inside `Tone.Offline` |
+| `musicMapper.ts` | `buildEvents(samples, rule)` → one `MusicEvent` per sample: lead note or rest, bass on block starts in sections 2–3 (`blockMean`), accent when `changeFromPrevious` ≥ threshold in sections 3–4, artistic cadence on the last event. `sectionOf` / `sectionBounds` (5/24, 12/24, 20/24). `notableIndex` (biggest change: the guided journey's planned discovery). `eventHash` (FNV-1a, used for record ids and tests) |
+| `ensemble.ts` | **Pure** `arrange(events)`: turns the record's events into an ensemble part without changing them. The melody and data bass exactly as the original engine played them, plus one derived layer: soft low strings (a pentatonic `triad` built on the bass, or on the melody in the resolve). It also has soft bells for declared changes, and the closing chord |
+| `instruments.ts` | `createVoices(Tone, paletteId)` builds the ensemble for Glass / Wood / Felt on five buses (lead, bass, harmony, accent, cadence). Each bus goes dry plus a reverb send → master → 9.5 kHz high cut → compressor → limiter. `perform(Tone, v, performedEvent, time, beat)` plays one arranged event, and `releaseAll` releases them. Both are shared by live playback and the WAV export |
 | `transport.ts` | The **only** owner of sound and the **single clock**. Singleton `transport`. Details in §6.3 |
 
 ### 5.5 `app/` — state and behaviour
@@ -208,9 +210,9 @@ Scenes (one is mounted at a time):
 
 | File | Screen | What it owns |
 |---|---|---|
-| `ArrivalScene.tsx` | 00 Invitation | headline, two actions, the leave choreography timer; uses `EarthRecordHero` |
-| `LibraryScene.tsx` | 01 Library | three sleeves (real NASA frame + route; real NDVI rings; fire document grid), the shelf, recipe import, the "not ready" dialog |
-| `StudioScene.tsx` | 02 Studio | layout; chooses `OceanAtlas` or (lazy-loaded) `LandAtlas`; panel controls; readout; play/press buttons; anchored inspector; score footer; tour |
+| `ArrivalScene.tsx` | 00 Invitation | headline, *Make my Earth Record*, the host's *Begin the narrated journey* invitation, the leave choreography (also lent to the director as `sceneHooks.leaveArrival`); uses `EarthRecordHero` |
+| `LibraryScene.tsx` | 01 Library | two sleeves (real NASA frame + route; real NDVI rings), the featured highlight while the host speaks, the card → studio zoom (`open(story)`, also lent as `sceneHooks.openStory`), the shelf, recipe import |
+| `StudioScene.tsx` | 02 Studio | layout; chooses `OceanAtlas` or (lazy-loaded) `LandAtlas`; panel controls; readout; play/press buttons; anchored inspector; score footer (the docked living score) |
 | `RecordPress.tsx` | 03 Press | the 4-beat morph: own `requestAnimationFrame` loop interpolating origin → score → spiral shapes; triggers phrase / stylus / chord sounds; then `go('reveal')` |
 | `RevealScene.tsx` | 04 Reveal | sleeve + disc, liner notes, play, notes explorer, the three exports |
 | `MethodScene.tsx` | How it works | full method; reads `manifest.json` for validation numbers and official resources |
@@ -223,17 +225,28 @@ Components and helpers:
 | `Dialog.tsx` | accessible modal: focus in, Tab trap, Esc, focus returns to opener |
 | `EarthRecordHero.tsx` | the arrival sculpture: d3-geo orthographic globe (Natural Earth 110m) rotated by its own rAF loop, grooves, ticks, gold ring, tonearm, iris |
 | `OceanAtlas.tsx` | SVG map in degree units; NASA picture or data map repeated at −360/0/+360 for dateline routes; viewBox pan/zoom; pointer → `getScreenCTM().inverse()` → `mapToGeo`; drawing → `thinTrace` → `onRoute`; stops, played line, cursor; reports the selected stop's screen position (`onAnchor`) |
-| `LandAtlas.tsx` | d3-geo equirectangular map (Natural Earth 50m) centred on the place, place markers, the year dial (spokes, ring, month guides, clock hand) |
+| `LandAtlas.tsx` | Movable d3-geo equirectangular map (drag to pan, zoom levels; a short click → `onPoint(lat, lon)`). Underneath: the NASA GIBS MODIS 16-day NDVI picture for the window on the clock or selected. `gibsUrl` builds one picture per window for the visible box; all 23 are preloaded, the on-screen window first, and they crossfade. Above: coastline, place markers, the live-fetch status, and the year dial on a dark ring backdrop (spokes, ring, month guides, clock hand) |
 | `StudioControls.tsx` | `RouteControls` (presets, draw tool, coordinate editor), `DateControl`, `PlaceControl`, `InstrumentControl`, `LayerMixer` |
-| `SonicScore.tsx` | the score: one button per event (roving tabindex, arrow keys), section dividers, change dots, cursor, caption line |
+| `SonicScore.tsx` | the score as a real staff: 5 lines; the 11 pitches sit on lines and spaces; oval heads with stems up or down; a bar line every 4 notes (the bass block); section labels; accent marks over changes; dashed rings for rests; a cursor gliding from note centre to note centre. One button per event (roving tabindex, arrow keys), plus the caption line |
 | `ScientificInspector.tsx` | three depths for one note: sentence → facts → technical details (formula with real numbers, bands, bass, change, QA, provenance, MODIS pixel mosaic) |
 | `ScienceDialog.tsx` | "What's behind these notes?" + `NoteTable` (value range of each note) |
-| `TourCoach.tsx` | the optional guided path; watches state and advances only on the visitor's own actions |
+| `GuideLayer.tsx` | mounted once above every scene: the host's caption card (portrait, current phrase, the one next action, pause/replay/voice/transcript/adjust/end), the narration settings, and `DiscoveryThread` (gold curve from the sample on the map to its score mark). Toggles `html.tour-discovery` so the panel steps back |
+| `BeethovenPortrait.tsx` | the host's round cameo (Stieler's 1820 portrait, `public/host/`); `speaking` (breath + sound arcs) and `baton` (the handover gesture) states |
 | `RecordSleeve.tsx` | the sleeve as SVG + HTML type, from `sleeveArt()` |
 | `RecordDisc.tsx` | the disc with a data spiral groove; highlights the played part |
 | `geometry.ts` | **pure** shape maths shared by press, disc, sleeve and PNG: `smooth` (Catmull-Rom), `resampleTo`, `routeShape`, `dialShape`, `scoreShape`, `spiralShape`, `originShape`, `eventLevels`, `sleeveArt` |
 | `sampleText.ts` | all human sentences about a sample (`sampleCaption`, `interpretation`, `formatValue`, `whenText`, `whereText`, `REASON_TEXT`) — shared by captions, aria-labels and the inspector so every audience gets the same facts |
 | `sleeveText.ts` | the three text lines printed on every sleeve (screen and PNG) |
+
+### 5.7b `tour/` — the narrated journey (no React except the bridge)
+
+| File | Responsibility |
+|---|---|
+| `guideScript.en.json` | the host's 13 cues: phrases (caption text), per-phrase pacing/pitch/pause, emotion, direction, ElevenLabs settings and v3 emotion tags. Single source for captions, browser voice and the renderer |
+| `narration.ts` | `NarrationService` (singleton `narration`): one cue session at a time; per phrase picks **clip** (manifest) → **speech** (best browser voice via `pickVoice`/`scoreVoice`) → **timer** (captions only). `play(cueId)` resolves `'ended'` or `'cancelled'` — never both, never late. Pause/resume/replay/stop, settings (voice on/off, pace, level, chosen voice) persisted locally |
+| `tourDirector.ts` | `TourDirector`: the phases (`invitation → record-transition → choosing-record → first-performance → discovery → baton-handover → creation → pressing → record-ready → complete`, plus `paused`/`skipped`). Each run of beats holds a **token**; cancelling it rejects every pending wait, sleep and cue, so stale endings can't act. Learns the app through `observe(AppSnap)`, acts through `TourHost` |
+| `index.ts` | singletons `tourDirector` + `narration`, `sceneHooks` (transitions lent by mounted scenes), `drive()`/`isDriving()` (marks the director's own actions), the e2e fast-mode hook |
+| `TourBridge.tsx` | builds the `TourHost` from `useActions`/`dispatch`/`transport`, calls `tourDirector.observe(...)` after every render |
 
 ### 5.8 `accessibility/` and `styles/`
 
@@ -244,7 +257,8 @@ Components and helpers:
 | `styles/tokens.css` | colours, fonts, easing, gutters (CSS variables) |
 | `styles/base.css` | reset, grain, type utilities, buttons, masthead, dialog, reduced-motion rules |
 | `styles/scenes.css` | arrival (incl. hero animation), library, press, method |
-| `styles/studio.css` | studio layout, atlases, year dial, inspector, panel controls, tour, score |
+| `styles/studio.css` | studio layout, atlases, year dial, inspector, panel controls, score |
+| `styles/guide.css` | host portrait, caption card, arrival invitation, featured sleeve, library→studio zoom, discovery thread and dimming |
 | `styles/record.css` | sleeve, disc, reveal |
 
 ---
@@ -281,31 +295,60 @@ Components and helpers:
 ### 6.3 The transport and the one clock
 
 ```
-RecordProvider effect:  transport.load({ id, events, beatSeconds }, { onStep, onEnd })
+RecordProvider effect:  transport.load({ id, events, beatSeconds }, { onStep, onEnd })   → arrange(events) once
                                    │
           ┌────────────────────────┴───────────────────────┐
    mode 'audio' (after unlock)                      mode 'silent' (sound off / unavailable)
-   Tone.Transport.schedule(k × 0.5 s)               setInterval 20 ms reading performance.now()
-     ├─ playEvent → voices (lead/bass/accent/cadence)
-     └─ Tone.Draw.schedule(emit(k)) at audible time  └─ emit(k) when floor(position) changes
+   play(): every remaining note is handed to the    setInterval 20 ms reading performance.now()
+   audio thread at once, at exact AudioContext
+   times (perform → voice pools), plus
+   Tone.Draw.schedule(emit(k)) at each onset         └─ emit(k) when floor(position) changes
                                    │
                          onStep(k) → dispatch({type:'playhead', index:k})
                                    │
-             SonicScore / OceanAtlas / LandAtlas / readout re-render with state.playhead
-             + useSmoothPlayhead reads transport.position() each frame for smooth motion
+             SonicScore / OceanAtlas / LandAtlas / readout re-render once per note
+             + only the small cursor parts (ScoreCursor, PlayedTrail, DialHand) read
+               transport.position() every frame (about 30 times a second)
 ```
 
-* `transport.load` is called when the record id changes (route edited, record opened). It cancels
-  everything previously scheduled, so stale notes can never play.
-* `pause`/`seek`/`play` release voices and restart from the transport position — no
-  double-triggered notes.
-* `position()` subtracts Tone's look-ahead, so the cursor shows what you *hear*, not what is
-  scheduled.
+* **Nothing on the main thread is needed while music plays.** A record is about 12 s, so `play()`
+  schedules all remaining notes on the audio thread immediately. Map redraws, picture decoding or
+  speech can't delay, bunch up or drop a note. This is measured: on a 4×-throttled CPU, the live
+  output matches the offline render with zero drift, and an e2e test checks it.
+* **Voice pools.** Each layer uses a fixed set of single-note voices round-robin (`VoicePool`), so
+  notes queued far ahead are never dropped. Tone's PolySynth drops notes past its polyphony limit.
+* **Pause / seek / new record.** The current instruments fade out in 30 ms and are replaced
+  (`Voices.renew`), which discards notes already queued. Play then schedules again from the current
+  step, so no note is ever double-triggered.
+* **`position()`** is `anchor.step + (audioTime − anchor.time) / beat`, so the cursor shows what you
+  *hear*.
 * **Tone.js is loaded lazily** (`loadTone()` inside `unlock()`), because importing it creates an
   AudioContext. `useActions.ensureSound()` is the only caller of `unlock()`, and it is only called
-  from click handlers.
-* Mixer/volume/palette: `RecordProvider` effects call `transport.setLayers`, `setVolume`,
-  `setPalette` whenever those parts of state change.
+  from click handlers. `unlock()` waits for the reverb to be built before the first note.
+* **Mixer, volume and palette.** `RecordProvider` effects call `transport.setLayers`, `setVolume`
+  and `setPalette` whenever those parts of state change.
+
+### 6.3b The guided journey
+
+```
+ click "Begin the narrated journey" ──▶ tourDirector.start()   (the only mandatory click)
+                                           │ host.ensureSound() — unlock inside the gesture
+                                           │ narration.play('intro-01') ── resolves on the real end of the cue
+                                           │ host.leaveArrival() ─▶ sceneHooks.leaveArrival (ArrivalScene's own needle/ring/iris)
+                                           │ narration.play('choose-ocean') … sleep … host.openStory('ocean') ─▶ LibraryScene zoom
+                                           │ waitFor(studio ready with the featured record)
+                                           │ 'first-notes' → host.play(0) → waitFor(playhead ≥ notable+1)
+                                           │ host.inspect(notable) → 'discovery' → 'discovery-ocean' → 'resume' → host.play(notable)
+                                           │ waitFor(performance ended) → 'handover' → phase creation (one next action)
+ visitor presses ─ useActions.press ─▶ userIntent('press') → waitFor(reveal) → 'record-ready' → complete
+
+ state change ─▶ RecordProvider ─▶ TourBridge effect ─▶ tourDirector.observe(AppSnap)
+                    · scene key matches an expectation the director set → its own navigation
+                    · otherwise → the visitor navigated: choose a side (branch), library (wait),
+                      method/arrival/shelf record (pause 'away', no teleport back)
+                    · resolves waitFor() predicates (never while paused)
+ useActions.togglePlay / inspect / press ─▶ userIntent(...) unless isDriving()
+```
 
 ### 6.4 URL ↔ state
 
@@ -418,6 +461,8 @@ always refer to the same thing.
 | `src/tests/pythonParity.test.ts` | data ↔ scripts | the browser reproduces the Python reference exactly |
 | `src/tests/geodesicPath.test.ts` | data | equal spacing, dateline, projection |
 | `src/tests/helpers.ts` | — | reads the real `public/` files from disk for the tests |
+| `src/tests/tourDirector.test.ts` | tour | hands-off progression, choice wins and cancels, pause holds beats, skip, press, leaving |
+| `src/tests/narrationScript.test.ts` | tour | cues complete; spoken numbers match the data; voice ranking |
 | `tests/e2e/journeys.spec.ts` | whole app | user journeys in Chromium (desktop + Pixel 7), downloads, keyboard, no AudioContext before a gesture, no console errors |
 
 ---
@@ -433,6 +478,8 @@ always refer to the same thing.
 6. Only `transport.ts` touches Tone; only `reducer` changes state; only `useActions` unlocks sound.
 7. Pure modules (`data/`, `normalize`, `musicMapper`, `recordRecipe`, `geometry`) never import
    React or the DOM, so they are tested in Node.
+8. The tour never acts on a cancelled token, never navigates the visitor back after they leave,
+   and never presses or exports on their behalf.
 
 ---
 

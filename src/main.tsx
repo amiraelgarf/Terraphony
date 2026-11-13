@@ -12,6 +12,7 @@ import './styles/base.css';
 import './styles/scenes.css';
 import './styles/studio.css';
 import './styles/record.css';
+import './styles/guide.css';
 import { App } from './App';
 
 createRoot(document.getElementById('root')!).render(

@@ -1,0 +1,6 @@
+{
+  "locale": "en",
+  "voice": null,
+  "status": "No recorded voice yet. Render one with scripts/voice/render_guide_voice.py (see VOICE.md). Until then the app uses captions plus the most natural browser voice on the device.",
+  "cues": []
+}

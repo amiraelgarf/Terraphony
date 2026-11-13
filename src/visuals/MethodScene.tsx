@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useActions } from '../app/useActions';
 import { OCEAN_RULE, OCEAN_SOURCE } from '../stories/ocean.config';
 import { LAND_RULE, LAND_SOURCE } from '../stories/vegetation.config';
-import { FIRE_COPY } from '../stories/fire.config';
 import { Masthead } from './Masthead';
 import { NoteTable } from './ScienceDialog';
 
@@ -66,6 +65,8 @@ export function MethodScene() {
               {LAND_SOURCE.transformNotes.map((t) => <li key={t}>{t}</li>)}
               <li>One note per real 16-day composite window (23 start in 2023), labelled with its true dates. Month letters on the dial are calendar guides only.</li>
               <li>Fixed range {LAND_RULE.domainMin} to {LAND_RULE.domainMax} NDVI for every place. Accent threshold {LAND_RULE.accentThreshold}.</li>
+              <li>Any place: a point chosen on the map is fetched live from the same ORNL service, and the same quality rules are applied in the browser (tested to match the pipeline exactly). Each point is then remembered in this browser.</li>
+              <li>The picture under the dial is NASA GIBS <em>MODIS Terra 16-day NDVI</em> for the very window being played. There are 23 dated pictures, one per note. It is the same sensor and the same 16-day windows, at a coarser resolution than the 250 m numbers. The picture shows the season; the notes come from the numbers.</li>
             </ul>
             {m && (
               <ul className="plain-list muted">
@@ -77,15 +78,9 @@ export function MethodScene() {
         </article>
 
         <article className="method__section">
-          <span className="eyebrow eyebrow--muted">Side C · {FIRE_COPY.status}</span>
-          <h2>{FIRE_COPY.name}</h2>
-          <p>Not playable. It needs: {FIRE_COPY.needs.join(' ')}</p>
-        </article>
-
-        <article className="method__section">
           <h2>What stays true</h2>
           <ul className="plain-list">
-            <li>Absolute temperature is not an anomaly. Greenness is not health. A detection is not a fire.</li>
+            <li>Absolute temperature is not an anomaly. Greenness is not health.</li>
             <li>Missing, masked or rejected values are rests, drawn as rings, never filled in.</li>
             <li>Same recipe → same notes → same sleeve. A recipe whose notes do not match its observations is refused when opened.</li>
             <li>Nothing you make leaves your browser unless you download it.</li>

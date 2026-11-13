@@ -1,0 +1,171 @@
+{
+  "locale": "en",
+  "host": "An original, fictional host portrayed as Beethoven: a thoughtful, curious musician. Warm mid-to-low register, textured and articulate, lightly theatrical but never pompous. No accent imitation; a modern, clear voice.",
+  "cues": [
+    {
+      "id": "intro-01",
+      "beat": "invitation",
+      "emotion": "intimate / curious",
+      "direction": "Start softly, close to the microphone. A tiny smile in 'the Earth itself'. Breathe before the reveal.",
+      "nextEvent": "library-reveal",
+      "tts": { "stability": 0.34, "style": 0.5 },
+      "phrases": [
+        { "text": "Welcome.", "pauseAfterMs": 750, "rate": 0.82, "pitch": 0.9, "tag": "[softly]" },
+        { "text": "Today we have a new kind of orchestra…", "pauseAfterMs": 520, "rate": 0.88, "pitch": 0.9, "tag": "[curious]" },
+        { "text": "the Earth itself.", "pauseAfterMs": 950, "rate": 0.8, "pitch": 0.86, "tag": "[warmly, a small smile]" },
+        { "text": "I will only point the way. The planet does the playing.", "pauseAfterMs": 300, "rate": 0.9, "pitch": 0.9, "tag": "[lightly amused]" }
+      ]
+    },
+    {
+      "id": "choose-ocean",
+      "beat": "choosing-record",
+      "emotion": "warm / adventurous",
+      "direction": "An invitation, not a command. Let 'anywhere' breathe.",
+      "nextEvent": "open-featured-record",
+      "tts": { "stability": 0.36, "style": 0.45 },
+      "phrases": [
+        { "text": "We could begin anywhere.", "pauseAfterMs": 800, "rate": 0.84, "pitch": 0.9, "tag": "[warmly]" },
+        { "text": "For our first performance, let's follow a line through the ocean.", "pauseAfterMs": 200, "rate": 0.9, "pitch": 0.9, "tag": "[adventurous]" }
+      ]
+    },
+    {
+      "id": "choice-ocean",
+      "beat": "first-performance",
+      "emotion": "pleased",
+      "direction": "Quick, warm acknowledgement that the visitor chose.",
+      "nextEvent": "first-notes",
+      "tts": { "stability": 0.4, "style": 0.4 },
+      "phrases": [{ "text": "The ocean it is.", "pauseAfterMs": 350, "rate": 0.88, "pitch": 0.9, "tag": "[pleased]" }]
+    },
+    {
+      "id": "choice-land",
+      "beat": "first-performance",
+      "emotion": "pleased",
+      "direction": "Quick, warm acknowledgement that the visitor chose.",
+      "nextEvent": "first-notes-land",
+      "tts": { "stability": 0.4, "style": 0.4 },
+      "phrases": [
+        { "text": "A year in one place.", "pauseAfterMs": 350, "rate": 0.86, "pitch": 0.9, "tag": "[pleased]" },
+        { "text": "A fine choice.", "pauseAfterMs": 350, "rate": 0.86, "pitch": 0.88, "tag": "[warmly]" }
+      ]
+    },
+    {
+      "id": "first-notes",
+      "beat": "first-performance",
+      "emotion": "wonder / attentive",
+      "direction": "Slightly slower. Give the listener room to hear the first sound.",
+      "nextEvent": "play-data-sequence",
+      "tts": { "stability": 0.38, "style": 0.42 },
+      "phrases": [
+        { "text": "Follow the path.", "pauseAfterMs": 650, "rate": 0.82, "pitch": 0.88, "tag": "[with quiet wonder]" },
+        { "text": "Each stop becomes a note,", "pauseAfterMs": 280, "rate": 0.86, "pitch": 0.9 },
+        { "text": "and every note can lead us back to a place.", "pauseAfterMs": 700, "rate": 0.86, "pitch": 0.88 },
+        { "text": "Listen.", "pauseAfterMs": 250, "rate": 0.78, "pitch": 0.85, "tag": "[whispering]" }
+      ]
+    },
+    {
+      "id": "first-notes-land",
+      "beat": "first-performance",
+      "emotion": "wonder / attentive",
+      "direction": "Slow and settled; the visitor is staying still while time moves.",
+      "nextEvent": "play-data-sequence",
+      "tts": { "stability": 0.38, "style": 0.42 },
+      "phrases": [
+        { "text": "Now we stay in one place,", "pauseAfterMs": 300, "rate": 0.84, "pitch": 0.9, "tag": "[with quiet wonder]" },
+        { "text": "and let the months move around us.", "pauseAfterMs": 650, "rate": 0.84, "pitch": 0.88 },
+        { "text": "Every sixteen days a satellite looks down, and each look becomes a note.", "pauseAfterMs": 600, "rate": 0.88, "pitch": 0.9 },
+        { "text": "Listen.", "pauseAfterMs": 250, "rate": 0.78, "pitch": 0.85, "tag": "[whispering]" }
+      ]
+    },
+    {
+      "id": "discovery",
+      "beat": "discovery",
+      "emotion": "surprised / precise",
+      "direction": "Short pause before 'There.' Do not oversell it.",
+      "nextEvent": "discovery-science",
+      "tts": { "stability": 0.3, "style": 0.55 },
+      "phrases": [
+        { "text": "There.", "pauseAfterMs": 700, "rate": 0.8, "pitch": 0.92, "tag": "[surprised, quietly]" },
+        { "text": "Did you hear the turn?", "pauseAfterMs": 550, "rate": 0.86, "pitch": 0.92, "tag": "[intrigued]" },
+        { "text": "Look at the highlighted note.", "pauseAfterMs": 260, "rate": 0.88, "pitch": 0.9 },
+        { "text": "It came from this point on Earth.", "pauseAfterMs": 450, "rate": 0.86, "pitch": 0.88 }
+      ]
+    },
+    {
+      "id": "discovery-ocean",
+      "beat": "discovery",
+      "emotion": "clear / grounded",
+      "direction": "Less drama. Speak the coordinates, units and the date accurately.",
+      "nextEvent": "resume-performance",
+      "tts": { "stability": 0.55, "style": 0.2 },
+      "phrases": [
+        { "text": "Stop nine: thirty-nine point nine degrees north, fifty-nine point five west.", "pauseAfterMs": 420, "rate": 0.9, "pitch": 0.92 },
+        { "text": "On the eighteenth of August, two thousand and seven, the sea surface measured twenty-three point seven degrees Celsius,", "pauseAfterMs": 220, "rate": 0.92, "pitch": 0.92 },
+        { "text": "down from twenty-eight point three at the stop before.", "pauseAfterMs": 550, "rate": 0.9, "pitch": 0.9 },
+        { "text": "The sound is artistic. The number behind it is not invented.", "pauseAfterMs": 300, "rate": 0.86, "pitch": 0.88, "tag": "[sincerely]" }
+      ]
+    },
+    {
+      "id": "discovery-land",
+      "beat": "discovery",
+      "emotion": "clear / grounded",
+      "direction": "Less drama. Speak the dates and NDVI values accurately.",
+      "nextEvent": "resume-performance",
+      "tts": { "stability": 0.55, "style": 0.2 },
+      "phrases": [
+        { "text": "The window from the twenty-sixth of June to the eleventh of July, twenty twenty-three.", "pauseAfterMs": 420, "rate": 0.9, "pitch": 0.92 },
+        { "text": "Greenness rose from zero point three three to zero point five seven.", "pauseAfterMs": 380, "rate": 0.9, "pitch": 0.92 },
+        { "text": "Seen from orbit, these Nile Delta fields grew green again.", "pauseAfterMs": 550, "rate": 0.88, "pitch": 0.9 },
+        { "text": "The sound is artistic. The number behind it is not invented.", "pauseAfterMs": 300, "rate": 0.86, "pitch": 0.88, "tag": "[sincerely]" }
+      ]
+    },
+    {
+      "id": "discovery-generic",
+      "beat": "discovery",
+      "emotion": "clear / grounded",
+      "direction": "Plain and helpful.",
+      "nextEvent": "resume-performance",
+      "tts": { "stability": 0.55, "style": 0.2 },
+      "phrases": [
+        { "text": "The panel shows the exact measurement,", "pauseAfterMs": 200, "rate": 0.9, "pitch": 0.92 },
+        { "text": "its date, and the place it came from.", "pauseAfterMs": 500, "rate": 0.9, "pitch": 0.9 },
+        { "text": "The sound is artistic. The number behind it is not invented.", "pauseAfterMs": 300, "rate": 0.86, "pitch": 0.88, "tag": "[sincerely]" }
+      ]
+    },
+    {
+      "id": "resume",
+      "beat": "discovery",
+      "emotion": "warm",
+      "direction": "Light, moving on.",
+      "nextEvent": "resume-performance",
+      "tts": { "stability": 0.42, "style": 0.38 },
+      "phrases": [{ "text": "Let's hear the rest.", "pauseAfterMs": 200, "rate": 0.9, "pitch": 0.9, "tag": "[warmly]" }]
+    },
+    {
+      "id": "handover",
+      "beat": "baton-handover",
+      "emotion": "encouraging / playful",
+      "direction": "Gentle smile, a subtle lift in the final phrase.",
+      "nextEvent": "creation",
+      "tts": { "stability": 0.32, "style": 0.52 },
+      "phrases": [
+        { "text": "My turn is over.", "pauseAfterMs": 700, "rate": 0.84, "pitch": 0.88, "tag": "[gently]" },
+        { "text": "Now the baton is yours.", "pauseAfterMs": 520, "rate": 0.84, "pitch": 0.9, "tag": "[encouraging]" },
+        { "text": "Choose a place, draw a route, or listen to another year.", "pauseAfterMs": 200, "rate": 0.9, "pitch": 0.94, "tag": "[playful]" }
+      ]
+    },
+    {
+      "id": "record-ready",
+      "beat": "record-ready",
+      "emotion": "quietly delighted",
+      "direction": "A warm sense of completion, not a game-show victory.",
+      "nextEvent": "complete",
+      "tts": { "stability": 0.36, "style": 0.48 },
+      "phrases": [
+        { "text": "A record unlike any other.", "pauseAfterMs": 700, "rate": 0.82, "pitch": 0.88, "tag": "[quietly delighted]" },
+        { "text": "Earth provided the pattern.", "pauseAfterMs": 420, "rate": 0.86, "pitch": 0.9 },
+        { "text": "You chose where to listen.", "pauseAfterMs": 200, "rate": 0.84, "pitch": 0.86, "tag": "[warmly]" }
+      ]
+    }
+  ]
+}

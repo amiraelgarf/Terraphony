@@ -10,6 +10,8 @@ import { MethodScene } from './visuals/MethodScene';
 import { RecordPress } from './visuals/RecordPress';
 import { RevealScene } from './visuals/RevealScene';
 import { StudioScene } from './visuals/StudioScene';
+import { GuideLayer } from './visuals/GuideLayer';
+import { TourBridge } from './tour/TourBridge';
 
 function Scenes() {
   const { state } = useRecord();
@@ -53,6 +55,8 @@ export function App() {
       <RecordProvider>
         <div id="announcer" role="status" aria-live="polite" className="sr-only" />
         <Scenes />
+        <TourBridge />
+        <GuideLayer />
       </RecordProvider>
     </Boundary>
   );

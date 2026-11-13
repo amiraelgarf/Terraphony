@@ -9,6 +9,7 @@
  * and then the inverse projection — never by pixel arithmetic — so zoom,
  * pan and screen size cannot change which samples are taken.
  */
+import { useSmoothPlayhead } from '../accessibility/usePlayhead';
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPE } from 'react';
 import { isDegenerateRoute, thinTrace, unwrapLongitudes } from '../data/geodesicPath';
 import { formatGeo, mapToGeo } from '../data/projections';
@@ -26,7 +27,8 @@ type Props = {
   record: EarthRecord | null;
   waypoints: GeoPosition[];
   playhead: number | null;
-  smooth: number | null;
+  /** Playing: the trail and beacon follow the transport clock on their own (no full-map redraws). */
+  playing: boolean;
   selected: number | null;
   reducedMotion: boolean;
   onSelect: (i: number) => void;
@@ -60,7 +62,7 @@ function clampView(v: View, aspect: number): View {
   return { x: v.x, y, w };
 }
 
-export function OceanAtlas({ draft, record, waypoints, playhead, smooth, selected, reducedMotion, onSelect, onRoute, onAnchor, busy }: Props) {
+export function OceanAtlas({ draft, record, waypoints, playhead, playing, selected, reducedMotion, onSelect, onRoute, onAnchor, busy }: Props) {
   const stage = useRef<HTMLDivElement>(null);
   const svg = useRef<SVGSVGElement>(null);
   const [size, setSize] = useState({ w: 900, h: 520 });
@@ -169,11 +171,6 @@ export function OceanAtlas({ draft, record, waypoints, playhead, smooth, selecte
 
   const copies = [-360, 0, 360];
   const img = draft.layer === 'picture' ? FRAME[draft.dateKey] : DATAMAP[draft.dateKey];
-  const cursor = smooth !== null && stopsAligned.length ? (() => {
-    const f = Math.max(0, Math.min(stopsAligned.length - 1, smooth));
-    const i = Math.floor(f), t = f - i, a = stopsAligned[i], b = stopsAligned[Math.min(stopsAligned.length - 1, i + 1)];
-    return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
-  })() : null;
   const sw = view.w / size.w; // one screen pixel in map units
 
   return (
@@ -202,9 +199,7 @@ export function OceanAtlas({ draft, record, waypoints, playhead, smooth, selecte
         {stopsAligned.length > 1 && (
           <polyline key={`line-${revealKey}`} className={`atlas__route${reducedMotion ? '' : ' is-revealing'}`} points={stopsAligned.map((p) => `${p.x},${p.y}`).join(' ')} strokeWidth={sw * 2.6} pathLength={1} />
         )}
-        {smooth !== null && stopsAligned.length > 1 && (
-          <polyline className="atlas__played" points={stopsAligned.slice(0, Math.floor(smooth) + 1).map((p) => `${p.x},${p.y}`).concat(cursor ? [`${cursor.x},${cursor.y}`] : []).join(' ')} strokeWidth={sw * 3.4} />
-        )}
+        {stopsAligned.length > 1 && <PlayedTrail stops={stopsAligned} sw={sw} playing={playing} playhead={playhead} part="line" />}
         <g key={`stops-${revealKey}`}>
           {stopsAligned.map((p, i) => {
             const o = record!.observations[i];
@@ -219,7 +214,7 @@ export function OceanAtlas({ draft, record, waypoints, playhead, smooth, selecte
             );
           })}
         </g>
-        {cursor && <circle className="atlas__beacon" cx={cursor.x} cy={cursor.y} r={sw * 8} strokeWidth={sw * 2} />}
+        {stopsAligned.length > 1 && <PlayedTrail stops={stopsAligned} sw={sw} playing={playing} playhead={playhead} part="beacon" />}
         {trace && trace.length > 1 && <polyline className="atlas__trace" points={trace.map((p) => `${p.x},${p.y}`).join(' ')} strokeWidth={sw * 2.4} />}
       </svg>
       <div className="atlas__zoom" role="group" aria-label="Map zoom">
@@ -230,4 +225,15 @@ export function OceanAtlas({ draft, record, waypoints, playhead, smooth, selecte
       {busy && <div className="atlas__loading" role="status">Loading measurements…</div>}
     </div>
   );
+}
+
+/** The played part of the route and the moving beacon: the only parts that move every frame. */
+function PlayedTrail({ stops, sw, playing, playhead, part }: { stops: { x: number; y: number }[]; sw: number; playing: boolean; playhead: number | null; part: 'line' | 'beacon' }) {
+  const smooth = useSmoothPlayhead(playing, playhead);
+  if (smooth === null) return null;
+  const f = Math.max(0, Math.min(stops.length - 1, smooth));
+  const i = Math.floor(f), t = f - i, a = stops[i], b = stops[Math.min(stops.length - 1, i + 1)];
+  const cursor = { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+  if (part === 'beacon') return <circle className="atlas__beacon" cx={cursor.x} cy={cursor.y} r={sw * 8} strokeWidth={sw * 2} />;
+  return <polyline className="atlas__played" points={stops.slice(0, i + 1).map((p) => `${p.x},${p.y}`).concat([`${cursor.x},${cursor.y}`]).join(' ')} strokeWidth={sw * 3.4} />;
 }

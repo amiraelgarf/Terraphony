@@ -10,8 +10,12 @@ own route and values. Then save the sleeve (PNG), the recipe (JSON) or the audio
 | Side | Question | Data the notes come from | Picture |
 |---|---|---|---|
 | **A · Ocean in Motion** | What changes as you travel? | Sea surface temperature, °C — **MUR SST v4.1** (NASA JPL), 18 Aug 2007 or 6 Feb 2008 | NASA **SVS 3912** (ECCO2 model) for the same day |
-| **B · A Year in One Place** | What changes as time passes? | Vegetation greenness (NDVI) — **MODIS MOD13Q1 v061**, all 23 16-day windows of 2023 | Natural Earth coastlines + year dial |
-| **C · A Landscape Interrupted** | Window-by-window fire detections | *Planned — not playable* (see DECISIONS D9) | — |
+| **B · A Year in One Place** | What changes as time passes? | Vegetation greenness (NDVI) — **MODIS MOD13Q1 v061**, all 23 16-day windows of 2023, for **any place you click** | NASA GIBS MODIS 16-day NDVI picture for each window + year dial |
+
+**Begin the narrated journey** is the one-click way in. Your host, an original, fictional
+Beethoven, introduces the idea and opens the ocean record. He stops the music on a real
+discovery, then hands you the baton. Captions are always on, and you can pause, skip or take
+over at any moment (see [VOICE.md](VOICE.md)).
 
 Nothing is synthetic. Every note is a real value, or a **rest** where no valid value exists
 (land, sea ice, cloud, snow). The sound and sleeve are artistic; the numbers are not.
@@ -43,8 +47,8 @@ The `dist/` folder is static (relative paths + hash routes) and can be hosted an
 | `npm run build` | Type-check + production build into `dist/` |
 | `npm run preview` | Serve the production build (port 4173) |
 | `npm run typecheck` | TypeScript only |
-| `npm test` | Unit tests (Vitest, 40 tests, ~1 s) |
-| `npm run test:e2e` | Browser journeys (Playwright, desktop + Pixel 7, 26 tests, ~1–2 min) |
+| `npm test` | Unit tests (Vitest, 64 tests, ~6 s) |
+| `npm run test:e2e` | Browser journeys (Playwright, desktop + Pixel 7, 32 tests, ~4 min) |
 | `npm run pipeline` | Re-download and re-process all NASA data (Python, optional) |
 
 First time running e2e tests: `npx playwright install chromium`.
@@ -60,10 +64,10 @@ Each step says what you should **see** and **hear**. If something differs, see T
    the stage closes like an iris and the library opens. (With *reduce motion* on: a direct cut.)
 
 **The library** — `#/library`
-4. Three sleeves. Side A shows the real NASA SVS 3912 picture with the suggested route drawing on
-   hover; Side B shows growth rings drawn from real Nile Delta NDVI; Side C is marked *In
-   preparation*. Click C: a dialog explains what data it still needs. Press **Esc**: it closes and
-   focus returns to the sleeve.
+4. Two sleeves. Side A shows the real NASA SVS 3912 picture, and its suggested route draws itself
+   when you hover. Side B shows growth rings drawn from real Nile Delta NDVI. Click a sleeve: its
+   art grows into the full screen (the route or the rings expand, and the disc spins away), then
+   the studio opens.
 
 **Side A, the ocean studio** — click **Ocean in Motion** (`#/studio/ocean`)
 5. Map = NASA picture of 18 Aug 2007; a dashed suggested route (Florida Strait → Norwegian Sea)
@@ -106,12 +110,24 @@ Each step says what you should **see** and **hear**. If something differs, see T
     exported recipe (it is refused if its notes do not match its observations).
 
 **Side B, a year in one place** — `#/studio/land`
-17. A quiet map around the Nile Delta and a **year dial**: 23 spokes = the 23 real MODIS 16-day
-    windows of 2023 (starting 1 January at 12 o'clock); spoke length = NDVI. Month letters are
-    calendar guides only. Play it: the hand sweeps once around the year; two harvests, two dips.
+17. You should see:
+    - NASA's **MODIS greenness picture** around the Nile Delta, dated top-right (“1–16 Jan
+      2023”).
+    - A **year dial**. Its 23 spokes are the 23 real MODIS 16-day windows of 2023, starting
+      1 January at 12 o'clock. Spoke length is NDVI. Month letters are calendar guides only.
+
+    Play it: the hand sweeps once around the year, and **the picture changes with every note**.
+    Each note has NASA's picture of its own 16-day window, so the delta greens and fades through
+    two harvests. Click any note and the picture jumps to that window.
 18. Choose **Harvard Forest**: dashed spokes / score rings are windows rejected by quality checks
     (one cloudy, one snow-covered). Choose **Sahel grassland**: one sharp rainy-season pulse, with
     two cloud gaps in the wet season.
+18b. **Any place:** click anywhere on the map (drag to move, +/− to zoom), or type coordinates
+    and press **Listen here**. You should see:
+    - a pulsing marker and “Asking NASA's MODIS service…” with a request counter (about 15–40 s);
+    - then the point's own 2023 year: notes, dial and pictures.
+    Ocean or ice gives only rests, and the panel says so. A point you have opened before loads
+    instantly.
 19. Inspect a window: its true dates (“13–28 Aug 2023”), NDVI, and in Technical details the 81
     actual MODIS pixels with rejected ones crossed out.
 
@@ -120,8 +136,30 @@ Each step says what you should **see** and **hear**. If something differs, see T
 21. Browser **Back/Forward** move between scenes; drafts survive navigation and reloads.
 22. Turn on *reduce motion* in your OS: transitions become cuts, the press becomes a direct reveal.
 23. **Sound off**: everything still works; captions and the score carry all the information.
-24. Short tour: from `#/` choose **Take the short tour** — Hear → Notice (“That change you
-    heard? Here is the observation that made it.”) → Investigate → Shape → Press. Skip any time.
+24. **Narrated journey**: from `#/` click **Begin the narrated journey** once, then let go of
+    the mouse. You should see and hear:
+    - The host's caption appears bottom-left, with a low tonal bed and a struck tone.
+    - *“Welcome. Today we have a new kind of orchestra… the Earth itself.”*
+    - The needle drops and the library opens, with Side A highlighted: *“We could begin
+      anywhere…”*
+    - If you don't choose, the ocean card grows into the studio: *“Follow the path…”*
+    - The melody plays and stops right after stop 9. The note is inspected, and a gold thread
+      links the map point to its score mark (the panel dims): *“There. Did you hear the turn?”*,
+      then the exact values.
+    - The performance finishes, the baton animation plays (*“My turn is over…”*), and one next
+      step is offered: **Draw your own route across the sea**, then **Press my Earth Record**.
+    - After you press: *“A record unlike any other…”*
+
+    Also try:
+    - Click **Side B** while the host is speaking in the library: the land story starts
+      (*“A year in one place. A fine choice.”*), and the ocean never opens later.
+    - **Pause** freezes the voice, the music and the next beat.
+    - Clicking a score note during the performance pauses the tour, so you can explore.
+    - **Muted** keeps the captions running.
+    - **Replay** repeats the line.
+    - **✕** ends the tour.
+    - Leaving for *How it works* pauses the tour; **Resume the journey** continues from the
+      same beat.
 
 ## 4. Automated tests
 
@@ -138,7 +176,11 @@ npm run test:e2e    # browser (builds and serves the app automatically)
 | `src/tests/recordRoundtrip.test.ts` | recipe → JSON → recipe gives identical events and identical sleeve geometry; tampered, invented or synthetic recipes are refused |
 | `src/tests/pythonParity.test.ts` | the browser reproduces the Python pipeline's stops, statuses, grid cells, values and notes for every preset route on both days |
 | `src/tests/geodesicPath.test.ts` | equal great-circle spacing, antimeridian crossing, projection round trip, trace thinning |
-| `tests/e2e/journeys.spec.ts` | no AudioContext before a gesture; 3-click path to sound; inspector + formula; keyboard score + coordinate editor; drawing; press → reveal → valid JSON / 2400-px PNG / WAV; shelf survives reload; land dial + QA rests + 81 pixels; tour; deep links + back; reduced motion; no horizontal overflow; no console errors — desktop and Pixel 7 |
+| `src/tests/tourDirector.test.ts` | the guided journey: hands-off progression on real cue endings and data events; choosing land cancels the ocean branch for good; pause holds planned beats; skip leaves no stale actions; pressing jumps to the closing line; leaving pauses without teleporting back |
+| `src/tests/narrationScript.test.ts` | every cue exists with direction; the brief's lines are verbatim; the spoken Gulf Stream and Nile Delta numbers match the data; the browser fallback picks a natural, lower voice and never a novelty voice |
+| `src/tests/ensemble.test.ts` | the ensemble plays exactly the data melody and bass, keeps section 1 solo, and keeps every added note in the pentatonic collection |
+| `src/tests/modisLive.test.ts` | the in-browser MODIS builder (any place) reproduces the pipeline's windows for all three curated places |
+| `tests/e2e/journeys.spec.ts` | no AudioContext before a gesture; 3-click path to sound; inspector + formula; keyboard score + coordinate editor; drawing; press → reveal → valid JSON / 2400-px PNG / WAV; shelf survives reload; land dial + QA rests + 81 pixels; playback keeps time on a 4×-throttled CPU and the score is never covered at laptop height; any place by click or coordinates with the picture following the notes (NASA services mocked); narrated journey hands-off to the baton; the visitor's choice wins; pause; voice off; deep links + back; reduced motion; no horizontal overflow; no console errors — desktop and Pixel 7 |
 
 ## 5. Regenerating the data (optional)
 
@@ -193,20 +235,25 @@ earth-information-jukebox/
 │  ├─ data/manifest.json    provenance, checksums, validation, official resources
 │  ├─ data/legend.json      NASA SVS 3912 legend ramp
 │  └─ nasa-svs/             the two SVS 3912 frames + NASA legend
-├─ scripts/                 Python pipeline (see §5); pipeline_config.py = all choices
+├─ public/audio/guide/en/   the host's recorded voice + manifest.json (empty until rendered)
+├─ scripts/                 Python pipeline (see §5); pipeline_config.py = all choices;
+│                           voice/render_guide_voice.py renders or registers the host's voice
 ├─ src/
 │  ├─ app/                  recordMachine (state + routes), RecordContext (effects), useActions,
 │  │                        useStudioRecord (draft record), persistence
-│  ├─ stories/              ocean / vegetation / fire configs: sources, rules, copy
+│  ├─ stories/              ocean / vegetation configs: sources, rules, copy
+│  ├─ tour/                 guideScript.en.json (the host's lines), narration (voice/captions),
+│  │                        tourDirector (guided journey state machine), TourBridge (React link)
 │  ├─ data/                 types (brief §9 contracts), projections, geodesicPath,
 │  │  └─ adapters/          murSstAdapter, modisNdviAdapter, oceanPresets
 │  ├─ audio/                normalize (the one rule), musicMapper, instruments (3 palettes), transport
 │  ├─ visuals/              scenes (Arrival, Library, Studio, RecordPress, Reveal, Method),
 │  │                        EarthRecordHero, OceanAtlas, LandAtlas, SonicScore, ScientificInspector,
-│  │                        RecordSleeve, RecordDisc, geometry (route→score→groove→sleeve), TourCoach…
+│  │                        RecordSleeve, RecordDisc, geometry (route→score→groove→sleeve),
+│  │                        GuideLayer (caption + discovery thread), BeethovenPortrait…
 │  ├─ export/               recordRecipe, coverRenderer (PNG), wavRenderer (WAV)
 │  ├─ accessibility/        announcements (live region), usePlayhead (audio-clock animation)
-│  ├─ styles/               tokens, base, scenes, studio, record
+│  ├─ styles/               tokens, base, scenes, studio, record, guide
 │  └─ tests/                unit tests
 └─ tests/e2e/               Playwright journeys
 ```
@@ -220,10 +267,15 @@ earth-information-jukebox/
 | add a suggested ocean route | `PRESETS` in `scripts/build_ocean_presets.py`, run it |
 | add a land place | `LAND_PLACES` in `scripts/pipeline_config.py`, run steps 6–8 |
 | change instrument sounds | `src/audio/instruments.ts` (timbre only) |
+| change who plays what (the soft strings layer) | `src/audio/ensemble.ts` (`arrange`, tested in `src/tests/ensemble.test.ts`) |
+| change the land picture | `gibsUrl()` in `src/visuals/LandAtlas.tsx` |
+| change live land fetching / QA | `src/data/adapters/modisLiveAdapter.ts` (tested against the pipeline) |
 | change the arrangement | `src/audio/musicMapper.ts` (tests describe the current rules) |
 | change sleeve artwork | `sleeveArt()` in `src/visuals/geometry.ts` (PNG export follows automatically) |
 | change the press choreography | `src/visuals/RecordPress.tsx` (beat timings at the top) |
 | change colours / type | `src/styles/tokens.css` |
+| change what the host says | `src/tour/guideScript.en.json` (then re-render the voice, see VOICE.md) |
+| change the guided journey's beats | `src/tour/tourDirector.ts` (tests in `src/tests/tourDirector.test.ts`) |
 
 ## 9. Troubleshooting
 
@@ -238,7 +290,7 @@ earth-information-jukebox/
 | Pipeline: `No module named scipy` | `pip install -r scripts/requirements.txt` |
 | My shelf disappeared | It lives in this browser's storage; private windows or clearing site data remove it. Export recipes to keep records. |
 
-More: [ARCHITECTURE.md](ARCHITECTURE.md) (how the code works) · [METHODS.md](METHODS.md) · [DATA_SOURCES.md](DATA_SOURCES.md) · [DECISIONS.md](DECISIONS.md) ·
+More: [ARCHITECTURE.md](ARCHITECTURE.md) (how the code works) · [VOICE.md](VOICE.md) (the host) · [METHODS.md](METHODS.md) · [DATA_SOURCES.md](DATA_SOURCES.md) · [DECISIONS.md](DECISIONS.md) ·
 [STORYBOARD.md](STORYBOARD.md) · [ASSET_CREDITS.md](ASSET_CREDITS.md)
 
 > An independent NASA Space Apps Challenge 2026 project using NASA data and visualization assets; not endorsed by NASA.

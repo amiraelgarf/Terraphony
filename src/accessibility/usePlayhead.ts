@@ -13,8 +13,14 @@ export function useSmoothPlayhead(playing: boolean, fallback: number | null): nu
       setPos(fallback);
       return;
     }
-    const tick = () => {
-      setPos(transport.position());
+    // ~30 updates a second is smooth for a cursor and keeps the page light, so the
+    // audio thread is never starved by redraws
+    let last = 0;
+    const tick = (t: number) => {
+      if (t - last >= 33) {
+        last = t;
+        setPos(transport.position());
+      }
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);

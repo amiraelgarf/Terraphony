@@ -43,9 +43,9 @@ Brief §10: draw true compositing intervals; month letters are only calendar gui
 Same recipe → same events → same sleeve (tested). Imported recipes are re-derived and refused if
 their notes do not match their observations. PNG is drawn with the same geometry at 2400 px.
 
-## D9 — Side C (Dixie Fire) is visible but not playable
-Brief §2 MVP: "label it planned rather than making it falsely playable". Its sleeve is a sober
-document grid; its dialog lists exactly what data and review are still required.
+## D9 — Side C (Dixie Fire) removed
+It used to appear as an unplayable "planned" sleeve. The V8 handoff (§9) asks for no placeholder
+tiles, so the library now shows only the two playable records.
 
 ## D10 — No AudioContext before a gesture
 Importing Tone.js creates an AudioContext, so Tone is loaded only inside the first gesture that
@@ -61,6 +61,129 @@ own geometry, skippable and replaced by a direct reveal under reduced motion.
 `#/`, `#/library`, `#/studio/ocean|land`, `#/record/<id>`, `#/method` deep-link and survive
 refresh on any static host. Drafts and the shelf live in `localStorage` only (no accounts, no
 uploads); every storage access is guarded.
+
+## D14 — A narrated journey, not a tutorial (V8 handoff)
+**Begin the narrated journey** is the only click the tour needs: it unlocks sound inside the
+gesture.
+
+After that click:
+- **What moves it on.** Each beat starts when the previous cue actually ends
+  (`NarrationService`), or when the music reaches a planned data event.
+- **The visitor's choice wins.** Choosing a side, pausing, or inspecting a note always takes
+  priority.
+- **No stale actions.** A `TourDirector` token cancels obsolete beats, so a late cue ending can
+  never navigate anyone.
+- **Never on the visitor's behalf.** The tour never presses or exports a record for them.
+- **Where the discovery comes from.** It is computed from the data (`notableIndex`), not
+  scripted. The specific spoken values are asserted against the data in tests.
+- **Existing motion is reused.** The director uses the scenes' own transitions (needle → ring →
+  line; card → geography zoom) rather than new animation.
+
+## D15 — The voice: recorded first, browser speech only as a fallback
+The script, direction, manifest format and renderer (ElevenLabs with character timestamps, or an
+actor's files) are complete. The clips themselves need a licence or an actor, so they are not
+included (see VOICE.md).
+
+Until they exist, the fallback works like this:
+- It ranks the device's voices and prefers neural, warm, lower voices. Edge's "Natural" voices
+  are the best of these.
+- It speaks phrase by phrase, with scripted pacing, pitch and real silences.
+- Captions always run. The music is never ducked (see D20).
+
+## D16 — The desktop studio fits the viewport
+A CSS rule-order bug let the studio grow taller than the screen, which pushed the living score out
+of view. The desktop rule now comes after the base rule, so the score stays docked, as the
+handoff requires (§8).
+
+## D17 — A small ensemble instead of one instrument (and no noise)
+Visitors heard "only piano", and the change accents (filtered noise bursts) made the mix sound
+noisy. The record's events are untouched: same notes, same bass, same accents, and recipes and
+tests unchanged. A pure `arrange()` (`src/audio/ensemble.ts`) now orchestrates them:
+- **Melody:** the lead instrument, doubled by a wind voice in sections 3–4.
+- **Bass:** a cello-like voice.
+- **Strings:** a pentatonic triad built on the data bass, or on the melody in the resolve.
+- **Accents:** pitched bell chimes instead of noise.
+
+Section 1 is still the melody alone. The mix is cleaner:
+- less reverb (it is now a send);
+- a gentle 9.5 kHz high cut;
+- milder compression;
+- a measured WAV peak of about −9 dBFS with no clipping.
+
+## D18 — Any place on the land map
+Three curated places were too limiting. Any point can now be chosen, by clicking the map or
+typing coordinates. Its year is fetched live from ORNL and built with the pipeline's own rules.
+Water, ice or missing land data simply become rests, and the panel says why.
+
+## D19 — The land picture moves with the music
+Instead of 12 generic monthly images, the studio shows NASA's own MODIS 16-day NDVI picture for
+the exact window each note comes from (GIBS, 23 per year). It crossfades as the year plays and
+follows any note the visitor selects. All 23 pictures are preloaded, starting with the one on
+screen.
+
+## D20 — The sound: proven voices, scheduled on the audio thread
+The sound was described as noisy, disturbed and stopping, especially in Chrome. Measurements showed
+the cause was timing, not the instruments:
+- **The page blocks.** With a 4×-throttled CPU (a typical laptop under load), the page blocked the
+  main thread for up to 2.3 s during playback.
+- **Tone.js waited for the page.** Its Transport only hands notes to the audio engine 0.1 s ahead,
+  and it does that from the main thread, so notes arrived up to 2 s late or bunched up.
+  Raising the look-ahead to 0.6 s did not help.
+- **Notes were dropped.** Tone's PolySynth also drops notes past its polyphony limit.
+
+The fix:
+- **Schedule everything at once.** On play, the whole remaining record (about 24 notes) is scheduled
+  on the audio thread at exact times. No main-thread clock is involved during playback.
+- **Voice pools.** Round-robin pools of single voices never drop notes.
+- **Instant pause and seek.** They swap in fresh instruments, discarding anything still queued.
+- **Lighter page.** Only the small cursor parts redraw every frame, and the 23 land pictures publish
+  their loading in batches.
+
+Verified on a 4×-throttled CPU: the live recording matches the offline render (contour correlation
+0.94 for ocean, 0.89 for land), with 0 ms drift. Live level is +8 dB (peak about −18 dBFS).
+
+The voices are the original engine's (`93a2a50`), plus a soft low string pad, a rounder bass, and
+soft bells instead of noise bursts. The glass reverb tail is 4 s instead of 6.5 s.
+
+## D20c — Loud enough to hear, and no silent engine during development
+- **Levels.** Measured in real Google Chrome, the music peaked at only −18 dBFS. The opening,
+  where the melody plays alone, peaked at −27 dBFS, which is nearly inaudible at an ordinary
+  laptop volume. The levels are now set like ordinary music: a +12 dB make-up gain, the melody
+  lifted further, a gentle compressor (−10 dB threshold, 2:1 ratio) and a −1 dB limiter. At the
+  default 70 % volume, the opening peaks around −5 dBFS and the full ensemble around −3, with no
+  clipping. An e2e test guards these levels.
+- **Development reloads.** Hot-module replacement in `npm run dev` could swap the audio modules
+  inside an open tab. The page then kept animating with a fresh, silent engine. Audio and tour
+  modules now force a full page reload when they change.
+
+## D20b — The score is never covered
+On laptop-height windows (600–730 px) the map insisted on a 420 px minimum and ran 40–60 px into
+the score, covering its header and section labels. On desktop the map now takes only the space
+that is left, the score sits above it, and on short screens the staff is a little more compact. An
+e2e test checks the layout at 1366 × 657.
+
+## D21 — The score is a staff
+Floating bars on long stems did not read as music. The score is now a 5-line staff:
+- The 11 pitches sit on lines and spaces, as oval note heads with stems.
+- A bar line marks every 4 notes, which is the bass block.
+- Accent marks sit over changes, and rests are dashed rings.
+- The cursor sits on the note being heard.
+
+It uses the same buttons, keyboard model and classes as before.
+
+## D21b — Nothing on the stage stacks
+The map area has fixed zones:
+- **Top-left:** the title. **Top-right:** the legends and the picture date.
+- **Footer:** the credit and hint on the left, the zoom buttons on the right.
+- **Inspector:** a card that always ends above the footer and scrolls if needed.
+- **Host caption:** above the footer. While the camera holds on a discovery, it moves to the
+  top-left so the sample and its thread to the score stay visible.
+
+On phones the staff scrolls sideways and keeps the sounding note in view.
+
+## D22 — A real portrait of the host
+The hand-drawn SVG cameo looked amateur. It is replaced by Stieler's 1820 portrait, which is in
+the public domain, in the same round frame and with the same speaking and baton states.
 
 ## D13 — Previous "Ocean in Motion" app
 The earlier 7-scene observatory was replaced by this experience. Its source is preserved outside the

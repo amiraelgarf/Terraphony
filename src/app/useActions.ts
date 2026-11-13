@@ -11,6 +11,12 @@ import { SHELF_LIMIT } from './persistence';
 import { useRecord } from './RecordContext';
 import { announce } from '../accessibility/announcements';
 import type { Scene, StudioStory } from './recordMachine';
+import { isDriving, tourDirector } from '../tour';
+
+/** Tell the guided journey what the visitor did (never what the director did). */
+const intent = (kind: 'play' | 'pause' | 'inspect' | 'press', index?: number | null) => {
+  if (!isDriving()) tourDirector.userIntent(kind, index);
+};
 
 export function useActions() {
   const { state, dispatch, activeRecord } = useRecord();
@@ -42,6 +48,7 @@ export function useActions() {
 
     async function togglePlay() {
       if (!activeRecord) return;
+      intent(transport.isPlaying() ? 'pause' : 'play');
       if (transport.isPlaying()) {
         transport.pause();
         dispatch({ type: 'playing', on: false });
@@ -63,6 +70,7 @@ export function useActions() {
 
     /** Select a note: pause, move the playhead there, play just that note. */
     async function inspect(index: number | null, opts: { audition?: boolean } = {}) {
+      intent('inspect', index);
       if (index === null) return dispatch({ type: 'select', index: null });
       if (transport.isPlaying()) {
         transport.pause();
@@ -83,6 +91,7 @@ export function useActions() {
       if (!draft || state.scene !== 'studio') return;
       const valid = draft.events.filter((e) => e.midiNote !== null).length;
       if (valid === 0) return announce('This journey has no valid measurements yet, so there is nothing to press. Try another route or place.');
+      intent('press');
       await ensureSound();
       const record = buildRecord({
         title: draft.title,
@@ -98,7 +107,6 @@ export function useActions() {
         credits: draft.credits,
       });
       dispatch({ type: 'shelf', records: [record, ...state.shelf.filter((r) => r.recordId !== record.recordId)].slice(0, SHELF_LIMIT) });
-      dispatch({ type: 'tour', step: null });
       dispatch({ type: 'openRecord', record, source: 'press' });
     }
 

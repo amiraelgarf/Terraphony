@@ -7,10 +7,10 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { useRecord } from '../app/RecordContext';
 import { useActions } from '../app/useActions';
-import { useSmoothPlayhead } from '../accessibility/usePlayhead';
 import { transport } from '../audio/transport';
 import { midiToName } from '../audio/normalize';
 import { loadPlaceIndex, type PlaceIndexEntry } from '../data/adapters/modisNdviAdapter';
+import { parsePointId, pointId } from '../data/adapters/modisLiveAdapter';
 import { OCEAN_COPY, OCEAN_DATES } from '../stories/ocean.config';
 import { LAND_COPY } from '../stories/vegetation.config';
 import { Masthead } from './Masthead';
@@ -18,7 +18,6 @@ import { OceanAtlas } from './OceanAtlas';
 import { ScientificInspector } from './ScientificInspector';
 import { SonicScore } from './SonicScore';
 import { DateControl, InstrumentControl, LayerMixer, PlaceControl, RouteControls } from './StudioControls';
-import { TourCoach } from './TourCoach';
 import { formatValue } from './sampleText';
 import { ScienceDialog } from './ScienceDialog';
 
@@ -33,7 +32,6 @@ export function StudioScene() {
   const ocean = state.story === 'ocean';
   const copy = ocean ? OCEAN_COPY : LAND_COPY;
   const record = studio.record;
-  const smooth = useSmoothPlayhead(state.playing, state.playhead);
   const draft = ocean ? state.ocean : state.land;
 
   useEffect(() => {
@@ -76,7 +74,7 @@ export function StudioScene() {
               record={record}
               waypoints={studio.routeWaypoints}
               playhead={state.playhead}
-              smooth={smooth}
+              playing={state.playing}
               selected={state.selected}
               reducedMotion={state.reducedMotion}
               busy={studio.status === 'loading'}
@@ -91,12 +89,15 @@ export function StudioScene() {
                 place={studio.place}
                 record={record}
                 playhead={state.playhead}
-                smooth={smooth}
+                playing={state.playing}
                 selected={state.selected}
                 onSelect={(i) => a.inspect(i)}
                 onPlace={(id) => dispatch({ type: 'land', patch: { placeId: id } })}
+                onPoint={(lat, lon) => dispatch({ type: 'land', patch: { placeId: pointId(lat, lon) } })}
                 onAnchor={setAnchor}
                 reducedMotion={state.reducedMotion}
+                loading={studio.landProgress}
+                pending={studio.place?.id === state.land.placeId ? null : parsePointId(state.land.placeId)}
               />
             </Suspense>
           )}
@@ -106,9 +107,8 @@ export function StudioScene() {
               ? state.ocean.layer === 'picture'
                 ? 'Picture: NASA SVS 3912, ECCO2 model, same day · Notes: MUR SST v4.1 observation-based analysis, same day'
                 : 'Measured field: MUR SST v4.1 (NASA JPL), drawn with the NASA SVS 3912 colour legend, 0–32 °C'
-              : 'Coastlines: Natural Earth · Values: MODIS MOD13Q1 v061 NDVI, 9 × 9 pixels of 250 m around each place'}
+              : 'Picture: NASA GIBS, MODIS Terra 16-day NDVI for the window being played · Notes: MODIS MOD13Q1 v061 NDVI, 9 × 9 pixels of 250 m around the place · Coastlines: Natural Earth'}
           </p>
-          {state.tour !== null && <TourCoach record={record} />}
         </div>
 
         <aside className="studio__panel" aria-label="Your record">
@@ -121,7 +121,7 @@ export function StudioScene() {
               <DateControl value={state.ocean.dateKey} onChange={(k) => dispatch({ type: 'ocean', patch: { dateKey: k } })} layer={state.ocean.layer} onLayer={(l) => dispatch({ type: 'ocean', patch: { layer: l } })} />
             </>
           ) : (
-            <PlaceControl places={places} value={state.land.placeId} onChange={(id) => dispatch({ type: 'land', patch: { placeId: id } })} />
+            <PlaceControl places={places} value={state.land.placeId} place={studio.place} onChange={(id) => dispatch({ type: 'land', patch: { placeId: id } })} />
           )}
 
           <div className="field">
@@ -141,9 +141,11 @@ export function StudioScene() {
             </div>
           </div>
 
-          {studio.status === 'error' && <p className="error-note" role="alert">The measurements could not be loaded ({studio.error}). Check your connection and reload; nothing you chose has been lost.</p>}
+          {studio.status === 'error' && !studio.landError && <p className="error-note" role="alert">The measurements could not be loaded ({studio.error}). Check your connection and reload; nothing you chose has been lost.</p>}
+          {studio.landError && !ocean && <p className="error-note" role="alert">NASA&apos;s MODIS service did not answer for this point ({studio.landError}). Try again in a moment, or pick another place.</p>}
+          {!ocean && record && valid === 0 && <p className="error-note">No land greenness here: every window is a rest (open water, permanent ice or no MODIS land data). Click on land.</p>}
           {studio.status === 'empty' && ocean && <p className="field__note">Draw a line across the sea, or pick a suggested route.</p>}
-          {record && valid === 0 && <p className="error-note">Every stop on this line is masked (land or ice), so there is nothing to play yet. Try a line through open water.</p>}
+          {ocean && record && valid === 0 && <p className="error-note">Every stop on this line is masked (land or ice), so there is nothing to play yet. Try a line through open water.</p>}
 
           <div className="panel-actions">
             <button className="cta cta--paper" onClick={() => a.togglePlay()} disabled={!record || valid === 0}>
@@ -168,7 +170,7 @@ export function StudioScene() {
           <span className="studio__score-meta">{record ? `${record.events.length} ${ocean ? 'stops' : 'windows'} · ${record.musicalRule.domainMin}–${record.musicalRule.domainMax} ${record.musicalRule.units} → C3–C5 · ${record.musicalRule.tempoBpm} bpm` : 'Loading…'}</span>
         </div>
         {record ? (
-          <SonicScore record={record} playhead={state.playhead} smooth={smooth} selected={state.selected} onSelect={(i) => a.inspect(i)} />
+          <SonicScore record={record} playhead={state.playhead} playing={state.playing} selected={state.selected} onSelect={(i) => a.inspect(i)} />
         ) : (
           <div className="score score--paper score--empty">{studio.status === 'error' ? 'No score: data unavailable.' : 'Preparing the score…'}</div>
         )}

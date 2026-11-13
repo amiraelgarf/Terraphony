@@ -7,7 +7,7 @@
  * Scene changes and data choices go through this reducer; side effects
  * (audio, persistence, URL) live in hooks that observe the state.
  */
-import type { Layer } from '../audio/instruments';
+import { ALL_LAYERS_ON, LAYERS, type Layer } from '../audio/instruments';
 import type { EarthRecord, GeoPosition, InstrumentId } from '../data/types';
 import type { OceanDateKey } from '../stories/ocean.config';
 import { LAND_COPY } from '../stories/vegetation.config';
@@ -42,7 +42,6 @@ export type State = {
   volume: number;
   current: EarthRecord | null;
   shelf: EarthRecord[];
-  tour: number | null;
   reducedMotion: boolean;
   revealSource: 'press' | 'shelf';
 };
@@ -68,11 +67,10 @@ export function initialState(partial: Partial<State> = {}): State {
     playhead: null,
     playing: false,
     sound: 'unset',
-    layers: { lead: true, bass: true, accent: true, cadence: true },
+    layers: { ...ALL_LAYERS_ON },
     volume: 0.7,
     current: null,
     shelf: [],
-    tour: null,
     reducedMotion: false,
     revealSource: 'press',
     ...partial,
@@ -92,7 +90,6 @@ export type Action =
   | { type: 'solo'; layer: Layer | null }
   | { type: 'volume'; value: number }
   | { type: 'shelf'; records: EarthRecord[] }
-  | { type: 'tour'; step: number | null }
   | { type: 'reducedMotion'; on: boolean };
 
 export function reducer(s: State, a: Action): State {
@@ -125,16 +122,12 @@ export function reducer(s: State, a: Action): State {
     case 'solo':
       return {
         ...s,
-        layers: a.layer === null
-          ? { lead: true, bass: true, accent: true, cadence: true }
-          : { lead: a.layer === 'lead', bass: a.layer === 'bass', accent: a.layer === 'accent', cadence: a.layer === 'cadence' },
+        layers: a.layer === null ? { ...ALL_LAYERS_ON } : (Object.fromEntries(LAYERS.map((l) => [l, l === a.layer])) as Record<Layer, boolean>),
       };
     case 'volume':
       return { ...s, volume: a.value };
     case 'shelf':
       return { ...s, shelf: a.records };
-    case 'tour':
-      return { ...s, tour: a.step };
     case 'reducedMotion':
       return { ...s, reducedMotion: a.on };
     default:

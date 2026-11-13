@@ -117,7 +117,7 @@ export function RevealScene() {
 
       {explore && (
         <div className="reveal__notes">
-          <SonicScore record={r} playhead={state.playhead} smooth={smooth} selected={state.selected} onSelect={(i) => a.inspect(i)} />
+          <SonicScore record={r} playhead={state.playhead} playing={state.playing} selected={state.selected} onSelect={(i) => a.inspect(i)} />
           {state.selected !== null && (
             <ScientificInspector
               record={r}

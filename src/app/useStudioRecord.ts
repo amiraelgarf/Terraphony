@@ -7,6 +7,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { loadOceanGrid, sampleRoute, type OceanGrid } from '../data/adapters/murSstAdapter';
 import { loadPlace, placeSamples, type LandPlace } from '../data/adapters/modisNdviAdapter';
+import { fetchLandPoint, parsePointId } from '../data/adapters/modisLiveAdapter';
 import { loadPresets, presetWaypoints, type OceanPreset } from '../data/adapters/oceanPresets';
 import { resampleGeographic, ROUTE_STOPS } from '../data/geodesicPath';
 import { formatGeo } from '../data/projections';
@@ -19,6 +20,10 @@ import type { State } from './recordMachine';
 export type StudioData = {
   status: 'loading' | 'ready' | 'error' | 'empty';
   error?: string;
+  /** Live MODIS fetch for a point chosen on the map: requests done / total. */
+  landProgress: { done: number; total: number } | null;
+  /** A chosen point could not be loaded (the curated story still works). */
+  landError: string | null;
   record: EarthRecord | null;
   presets: OceanPreset[];
   routeWaypoints: GeoPosition[];
@@ -34,6 +39,8 @@ export function useStudioRecord(state: State): StudioData {
   const [grid, setGrid] = useState<{ key: string; grid: OceanGrid } | null>(null);
   const [place, setPlace] = useState<LandPlace | null>(null);
   const [error, setError] = useState<string | undefined>();
+  const [landProgress, setLandProgress] = useState<{ done: number; total: number } | null>(null);
+  const [landError, setLandError] = useState<string | null>(null);
   const inStudio = state.scene === 'studio' || state.scene === 'library';
 
   useEffect(() => {
@@ -55,7 +62,21 @@ export function useStudioRecord(state: State): StudioData {
   useEffect(() => {
     if (state.scene !== 'studio' || state.story !== 'vegetation') return;
     let live = true;
-    loadPlace(placeId).then((p) => live && setPlace(p)).catch((e) => live && setError(String(e.message ?? e)));
+    setLandError(null);
+    const pt = parsePointId(placeId);
+    const load = pt ? fetchLandPoint(pt.lat, pt.lon, (done, total) => live && setLandProgress({ done, total })) : loadPlace(placeId);
+    load
+      .then((p) => {
+        if (!live) return;
+        setPlace(p);
+        setLandProgress(null);
+      })
+      .catch((e) => {
+        if (!live) return;
+        setLandProgress(null);
+        if (pt) setLandError(String(e.message ?? e));
+        else setError(String(e.message ?? e));
+      });
     return () => {
       live = false;
     };
@@ -111,5 +132,5 @@ export function useStudioRecord(state: State): StudioData {
 
   const loading = state.story === 'ocean' ? !grid || grid.key !== o.dateKey || (o.presetId !== null && !preset) : !place || place.id !== state.land.placeId;
   const status: StudioData['status'] = error ? 'error' : state.story === 'ocean' && routeWaypoints.length < 2 && !loading ? 'empty' : loading ? 'loading' : record ? 'ready' : 'empty';
-  return { status, error, record, presets, routeWaypoints, place };
+  return { status: landError && state.story === 'vegetation' ? 'error' : status, error: error ?? (state.story === 'vegetation' ? landError ?? undefined : undefined), landProgress, landError, record, presets, routeWaypoints, place };
 }

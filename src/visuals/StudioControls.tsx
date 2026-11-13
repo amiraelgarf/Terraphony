@@ -7,7 +7,9 @@
  */
 import { useState } from 'react';
 import { LAYERS, PALETTES, type Layer } from '../audio/instruments';
-import type { PlaceIndexEntry } from '../data/adapters/modisNdviAdapter';
+import type { LandPlace, PlaceIndexEntry } from '../data/adapters/modisNdviAdapter';
+import { parsePointId, pointId } from '../data/adapters/modisLiveAdapter';
+import { formatGeo } from '../data/projections';
 import type { OceanPreset } from '../data/adapters/oceanPresets';
 import { presetWaypoints } from '../data/adapters/oceanPresets';
 import { MIN_ROUTE_KM, routeLengthKm } from '../data/geodesicPath';
@@ -100,11 +102,27 @@ export function DateControl({ value, onChange, layer, onLayer }: { value: string
   );
 }
 
-export function PlaceControl({ places, value, onChange }: { places: PlaceIndexEntry[]; value: string; onChange: (id: string) => void }) {
+export function PlaceControl({ places, value, place, onChange }: { places: PlaceIndexEntry[]; value: string; place: LandPlace | null; onChange: (id: string) => void }) {
+  const point = parsePointId(value);
+  const [lat, setLat] = useState(point ? String(point.lat) : '');
+  const [lon, setLon] = useState(point ? String(point.lon) : '');
+  const la = Number(lat), lo = Number(lon);
+  const ok = lat.trim() !== '' && lon.trim() !== '' && Number.isFinite(la) && Number.isFinite(lo) && Math.abs(la) <= 85 && Math.abs(lo) <= 180;
   return (
     <fieldset className="field">
       <legend>Choose a landscape</legend>
+      <p className="field__note">Click anywhere on the map, or start from a suggestion.</p>
       <div className="place-list" role="radiogroup" aria-label="Place">
+        {point && (
+          <label className="place-option is-on">
+            <input type="radio" name="place" value={value} checked onChange={() => undefined} />
+            <span className="place-option__name">Your chosen place</span>
+            <span className="place-option__meta">{formatGeo(point, 2)} · live from NASA&apos;s MODIS service</span>
+            <span className="place-option__meta">
+              {place?.id === value ? `${place.summary.valid} of ${place.summary.total} windows passed quality checks` : 'Loading its 2023 windows…'}
+            </span>
+          </label>
+        )}
         {places.map((p) => (
           <label key={p.id} className={`place-option${p.id === value ? ' is-on' : ''}`}>
             <input type="radio" name="place" value={p.id} checked={p.id === value} onChange={() => onChange(p.id)} />
@@ -114,6 +132,23 @@ export function PlaceControl({ places, value, onChange }: { places: PlaceIndexEn
           </label>
         ))}
       </div>
+      <form
+        className="coord-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (ok) onChange(pointId(la, lo));
+        }}
+      >
+        <label>
+          <span>Latitude</span>
+          <input inputMode="decimal" value={lat} onChange={(e) => setLat(e.target.value)} placeholder="e.g. 48.86" aria-label="Latitude, −85 to 85" />
+        </label>
+        <label>
+          <span>Longitude</span>
+          <input inputMode="decimal" value={lon} onChange={(e) => setLon(e.target.value)} placeholder="e.g. 2.35" aria-label="Longitude, −180 to 180" />
+        </label>
+        <button className="mini-btn" type="submit" disabled={!ok}>Listen here</button>
+      </form>
     </fieldset>
   );
 }
@@ -139,7 +174,8 @@ export function InstrumentControl({ value, onChange }: { value: InstrumentId; on
 const LAYER_TEXT: Record<Layer, [string, string]> = {
   lead: ['Melody', 'data: each value'],
   bass: ['Bass', 'data: mean of each block of 4'],
-  accent: ['Accents', 'data: declared changes'],
+  harmony: ['Strings', 'built on the bass; adds no data'],
+  accent: ['Bells', 'data: declared changes'],
   cadence: ['Closing chord', 'artistic, not data'],
 };
 

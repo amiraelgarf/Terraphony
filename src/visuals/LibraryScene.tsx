@@ -1,5 +1,5 @@
 /** Screen 01 — The Record Library. "Where shall we listen?" */
-import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent } from 'react';
 import { useRecord } from '../app/RecordContext';
 import { useActions } from '../app/useActions';
 import { normalize } from '../audio/normalize';
@@ -7,13 +7,16 @@ import { loadPlace, type LandPlace } from '../data/adapters/modisNdviAdapter';
 import { loadPresets, type OceanPreset } from '../data/adapters/oceanPresets';
 import type { EarthRecord } from '../data/types';
 import { parseRecipe, RecipeError } from '../export/recordRecipe';
-import { FIRE_COPY } from '../stories/fire.config';
 import { OCEAN_COPY } from '../stories/ocean.config';
 import { LAND_COPY } from '../stories/vegetation.config';
-import { Dialog } from './Dialog';
 import { dialShape, pathD, smooth } from './geometry';
 import { Masthead } from './Masthead';
 import { RecordSleeve } from './RecordSleeve';
+import { sceneHooks, tourDirector } from '../tour';
+import type { StudioStory } from '../app/recordMachine';
+
+/** Card -> studio: the record's groove/route grows into the geography (ms). */
+const ZOOM_MS = 1150;
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -56,34 +59,49 @@ function LandArt({ place }: { place: LandPlace | null }) {
   );
 }
 
-/** A sober document grid — nothing invented, no flames. */
-function FireArt() {
-  return (
-    <svg className="choice__art-svg" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <rect width="400" height="320" fill="#2b2a28" />
-      {Array.from({ length: 18 }, (_, i) => (
-        <line key={i} x1={40} x2={360} y1={40 + i * 14} y2={40 + i * 14} stroke="#efe6d4" strokeOpacity={0.12} />
-      ))}
-      {Array.from({ length: 25 }, (_, i) => (
-        <line key={`v${i}`} x1={40 + i * 13.33} x2={40 + i * 13.33} y1={40} y2={278} stroke="#efe6d4" strokeOpacity={0.06} />
-      ))}
-      <text x="40" y="302" className="choice__doc">14 JUL – 22 OCT 2021 · 12-HOUR WINDOWS</text>
-    </svg>
-  );
-}
-
 export function LibraryScene() {
   const { state } = useRecord();
   const a = useActions();
   const [preset, setPreset] = useState<OceanPreset | null>(null);
   const [place, setPlace] = useState<LandPlace | null>(null);
-  const [fireOpen, setFireOpen] = useState(false);
+  const [zoom, setZoom] = useState<{ story: StudioStory; x: number; y: number; w: number; h: number } | null>(null);
+  const zooming = useRef(false);
+  const cards = { ocean: useRef<HTMLButtonElement>(null), vegetation: useRef<HTMLButtonElement>(null) };
+  const tour = useSyncExternalStore((f) => tourDirector.subscribe(f), () => tourDirector.snapshot);
   const [importError, setImportError] = useState<string | null>(null);
   const file = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadPresets().then((f) => setPreset(f.presets[0])).catch(() => setPreset(null));
     loadPlace('nile-delta').then(setPlace).catch(() => setPlace(null));
+  }, []);
+
+  /** Open a side with the shared groove -> path -> geography transition (crossfade if reduced motion). */
+  function open(story: StudioStory): Promise<void> {
+    if (zooming.current) return Promise.resolve();
+    const art = cards[story].current?.querySelector('.choice__art');
+    if (state.reducedMotion || !art) {
+      a.go('studio', story);
+      return Promise.resolve();
+    }
+    zooming.current = true;
+    const r = art.getBoundingClientRect();
+    setZoom({ story, x: r.left, y: r.top, w: r.width, h: r.height });
+    return new Promise((done) =>
+      window.setTimeout(() => {
+        a.go('studio', story);
+        done();
+      }, ZOOM_MS),
+    );
+  }
+  const openRef = useRef(open);
+  openRef.current = open;
+  useEffect(() => {
+    const hook = (story: StudioStory) => openRef.current(story);
+    sceneHooks.openStory = hook;
+    return () => {
+      if (sceneHooks.openStory === hook) delete sceneHooks.openStory;
+    };
   }, []);
 
   async function onImport(f: File | undefined) {
@@ -115,7 +133,7 @@ export function LibraryScene() {
       </div>
 
       <div className="shelf-row">
-        <button className="choice choice--ocean" onPointerMove={tilt} onClick={() => a.go('studio', 'ocean')} aria-describedby="choice-a-desc">
+        <button ref={cards.ocean} className={`choice choice--ocean${tour.featured === 'ocean' ? ' is-featured' : ''}`} onPointerMove={tilt} onClick={() => open('ocean')} aria-describedby="choice-a-desc">
           <div className="choice__art">
             <OceanArt preset={preset} />
             <span className="choice__disc" aria-hidden="true" />
@@ -130,7 +148,7 @@ export function LibraryScene() {
           </div>
         </button>
 
-        <button className="choice choice--land" onPointerMove={tilt} onClick={() => a.go('studio', 'vegetation')} aria-describedby="choice-b-desc">
+        <button ref={cards.vegetation} className={`choice choice--land${tour.featured === 'vegetation' ? ' is-featured' : ''}`} onPointerMove={tilt} onClick={() => open('vegetation')} aria-describedby="choice-b-desc">
           <div className="choice__art">
             <LandArt place={place} />
             <span className="choice__disc" aria-hidden="true" />
@@ -142,20 +160,6 @@ export function LibraryScene() {
             <p id="choice-b-desc">{LAND_COPY.libraryLine}</p>
             <span className="choice__source">Vegetation greenness (NDVI) · MODIS MOD13Q1 v061 · 2023</span>
             <span className="choice__go">Choose a place <span aria-hidden="true">→</span></span>
-          </div>
-        </button>
-
-        <button className="choice choice--fire is-planned" onClick={() => setFireOpen(true)} aria-describedby="choice-c-desc">
-          <div className="choice__art">
-            <FireArt />
-            <span className="choice__band eyebrow"><span>Side C</span><span>{FIRE_COPY.status}</span></span>
-          </div>
-          <div className="choice__body">
-            <span className="eyebrow eyebrow--muted">{FIRE_COPY.question}</span>
-            <h2 className="display">A Landscape<br />Interrupted</h2>
-            <p id="choice-c-desc">{FIRE_COPY.libraryLine}</p>
-            <span className="choice__source">Planned · Dixie Fire 2021 · not playable yet</span>
-            <span className="choice__go">Why it is not ready <span aria-hidden="true">→</span></span>
           </div>
         </button>
       </div>
@@ -184,18 +188,18 @@ export function LibraryScene() {
         )}
       </div>
 
-      <Dialog open={fireOpen} onClose={() => setFireOpen(false)} title="Not pressed yet." overline="Side C · In preparation">
-        <p>
-          This record will follow a documented wildfire, the 2021 Dixie Fire in California, window by window as NASA&apos;s visualization does (
-          <a href={FIRE_COPY.svs} target="_blank" rel="noreferrer">SVS 4993</a>). It stays unplayable until the observations are integrated and reviewed. It needs:
-        </p>
-        <ul className="plain-list">
-          {FIRE_COPY.needs.map((n) => (
-            <li key={n}>{n}</li>
-          ))}
-        </ul>
-        <p className="muted">One detection is not one fire, and no detection does not prove nothing was burning. The event affected real communities; it will be scored soberly or not at all.</p>
-      </Dialog>
+      {zoom && (
+        <div
+          className={`zoom zoom--${zoom.story}`}
+          style={{ ['--x0' as string]: `${zoom.x}px`, ['--y0' as string]: `${zoom.y}px`, ['--w0' as string]: `${zoom.w}px`, ['--h0' as string]: `${zoom.h}px` }}
+          aria-hidden="true"
+        >
+          <div className="zoom__frame">
+            {zoom.story === 'ocean' ? <OceanArt preset={preset} /> : <LandArt place={place} />}
+            <span className="zoom__disc" />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

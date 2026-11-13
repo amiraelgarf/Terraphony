@@ -4,8 +4,8 @@
  * and encoded as 16-bit PCM stereo.
  */
 import type { EarthRecord } from '../data/types';
-import { createVoices } from '../audio/instruments';
-import { midiToTone } from '../audio/normalize';
+import { createVoices, perform } from '../audio/instruments';
+import { arrange } from '../audio/ensemble';
 import { loadTone, TAIL_BEATS } from '../audio/transport';
 
 export async function renderRecordWav(record: EarthRecord, sampleRate = 44100): Promise<Blob> {
@@ -16,15 +16,7 @@ export async function renderRecordWav(record: EarthRecord, sampleRate = 44100): 
     const v = createVoices(Tone, record.instrumentPaletteId);
     v.output.toDestination();
     await v.ready;
-    for (const e of record.events) {
-      const time = e.atBeat * beat + 0.05;
-      if (e.midiNote !== null) v.lead.triggerAttackRelease(midiToTone(e.midiNote), beat * 0.92, time, 0.72);
-      for (const s of e.supportingEvents) {
-        if (s.instrumentId === 'bass' && s.midiNote !== undefined) v.bass.triggerAttackRelease(midiToTone(s.midiNote), beat * 3.7, time, s.velocity ?? 0.6);
-        if (s.instrumentId === 'accent') v.accent.triggerAttackRelease(0.05, time + 0.002, s.velocity ?? 0.6);
-        if (s.instrumentId === 'cadence' && s.midiNotes) v.cadence.triggerAttackRelease(s.midiNotes.map(midiToTone), beat * 3, time + beat, s.velocity ?? 0.35);
-      }
-    }
+    arrange(record.events).forEach((p, k) => perform(Tone, v, p, record.events[k].atBeat * beat + 0.05, beat));
   }, duration, 2, sampleRate);
   return encodeWav(buffer.get() as AudioBuffer);
 }
@@ -48,10 +40,14 @@ export function encodeWav(buf: AudioBuffer): Blob {
   str(36, 'data');
   view.setUint32(40, len * ch * 2, true);
   const data = Array.from({ length: ch }, (_, c) => buf.getChannelData(c));
+  // normalise the file to a -3 dBFS peak (the live mix is untouched)
+  let peak = 0;
+  for (const d of data) for (let i = 0; i < d.length; i++) peak = Math.max(peak, Math.abs(d[i]));
+  const gain = peak > 0 ? Math.min(8, 0.708 / peak) : 1;
   let o = 44;
   for (let i = 0; i < len; i++) {
     for (let c = 0; c < ch; c++) {
-      const s = Math.max(-1, Math.min(1, data[c][i]));
+      const s = Math.max(-1, Math.min(1, data[c][i] * gain));
       view.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7fff, true);
       o += 2;
     }

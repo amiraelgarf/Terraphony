@@ -48,6 +48,28 @@ starting in 2023.
 | Harvard Forest | `harvard-forest.json` | 38 324 | `1e00f1144027ccd496b8c0ba14a54d3be139163daad7142832864b88a65a1858` |
 | Sahel grassland | `sahel-dahra.json` | 38 381 | `db4ae27d4eee31568c7ae50200d2109f033c16d0537b0595fef04b585fe6733f` |
 
+**Any place (live).** A point chosen on the map, or typed as coordinates, is fetched in the
+browser from the same ORNL service:
+- **What is fetched:** NDVI and pixel reliability, 6 requests, about 15–40 s.
+- **Rules:** the same QA as `build_land_series.py`. `src/tests/modisLive.test.ts` rebuilds the
+  three curated places from their raw responses and gets identical windows.
+- **Caching:** each point is kept in this browser's `localStorage`.
+
+## Side B picture — NASA GIBS, MODIS Terra 16-day NDVI
+
+**What it is:** NASA Global Imagery Browse Services (GIBS), WMS layer
+`MODIS_Terra_L3_NDVI_16Day`, EPSG:4326
+(`https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi`). No login is needed, and CORS is
+open.
+
+**How it is used:**
+- **Matching dates.** One JPEG for each 16-day window of 2023 (`TIME` = the window's start date,
+  the same date as the MOD13Q1 composite), so there are 23 dated pictures per view.
+- **Fitted to the view.** Each picture is cropped to the visible map and uses the studio's ocean
+  colour as background (`BGCOLOR`).
+- **Colour scale:** NASA's legend, `https://gibs.earthdata.nasa.gov/legends/MODIS_L3_NDVI_H.png`.
+- **Role:** the picture shows the season; the notes always come from the MOD13Q1 numbers.
+
 ## Base map
 
 Natural Earth land (1:110m on the invitation globe, 1:50m in the land studio), public domain,
@@ -56,7 +78,7 @@ via the `world-atlas` npm package (ISC).
 ## Planned, not used yet
 
 * **Dixie Fire 2021** — NASA SVS 4993 (https://svs.gsfc.nasa.gov/4993/) and FIRMS
-  (https://firms.modaps.eosdis.nasa.gov/). Not integrated; Side C is labelled *In preparation*.
+  (https://firms.modaps.eosdis.nasa.gov/). Not integrated; removed from the library until it can be played honestly (DECISIONS D9).
 * **GEDI forest height** — NASA SVS 4950. Not integrated.
 
 ## Derived files in this repository

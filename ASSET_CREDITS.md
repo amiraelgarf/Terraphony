@@ -8,6 +8,11 @@
   Global 250m SIN Grid V061. NASA EOSDIS Land Processes DAAC. doi:10.5067/MODIS/MOD13Q1.061.
   Subsets: ORNL DAAC MODIS/VIIRS Land Product Subsets web service.
 
+## NASA imagery (live, not stored)
+**MODIS Terra 16-day NDVI** pictures from NASA Global Imagery Browse Services (GIBS),
+https://earthdata.nasa.gov/gibs, part of NASA's Earth Science Data and Information System
+(ESDIS). The colour legend is GIBS's own `MODIS_L3_NDVI_H`.
+
 ## NASA visualization (in `public/nasa-svs/`)
 **Global Sea Surface Currents and Temperature**, NASA SVS 3912 — https://svs.gsfc.nasa.gov/3912/.
 Credit: NASA/Goddard Space Flight Center Scientific Visualization Studio. Animators: Greg Shirah,
@@ -21,6 +26,13 @@ Natural Earth (public domain) via the `world-atlas` package (ISC, Mike Bostock).
 
 ## Our own work
 - All music is original and synthesized at run time with Tone.js; no samples or recordings.
+- The host's portrait: **Joseph Karl Stieler, *Portrait of Ludwig van Beethoven when composing the
+  Missa Solemnis* (1820)**, Beethoven-Haus Bonn. Public domain, via Wikimedia Commons
+  (https://commons.wikimedia.org/wiki/File:Beethoven.jpg), cropped to
+  `public/host/beethoven-stieler-1820.jpg`. The host's words are this project's own script, not
+  Beethoven's. The voice is a captioned
+  narration: a recorded or licensed voice when provided (see VOICE.md), otherwise the visitor's
+  own browser voice. No Beethoven compositions or recordings are used.
 - Interface, sleeve algorithms, groove geometry and copy: this project. The visual direction follows
   the team's own *Earth Records Record Press* prototype.
 

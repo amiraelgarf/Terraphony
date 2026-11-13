@@ -1,38 +1,60 @@
 /** Screen 00 — The Invitation. "A world of sound. Yours." */
-import { useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useRecord } from '../app/RecordContext';
 import { useActions } from '../app/useActions';
 import { transport } from '../audio/transport';
 import { EarthRecordHero } from './EarthRecordHero';
 import { Masthead } from './Masthead';
+import { BeethovenPortrait } from './BeethovenPortrait';
+import { sceneHooks, tourDirector } from '../tour';
 
 const LEAVE_MS = 1650;
 
 export function ArrivalScene() {
-  const { state, dispatch } = useRecord();
+  const { state } = useRecord();
   const a = useActions();
   const [leaving, setLeaving] = useState(false);
   const [nudge, setNudge] = useState(false);
+  const touring = useSyncExternalStore((f) => tourDirector.subscribe(f), () => tourDirector.snapshot.active);
 
-  async function begin(tour: boolean) {
+  /** The needle drops, the gold ring unrolls into a line, the iris opens — then the library. */
+  function leave(): Promise<void> {
+    return new Promise((done) => {
+      const go = () => {
+        a.go('library');
+        setLeaving(false);
+        done();
+      };
+      if (state.reducedMotion) return go();
+      setLeaving(true);
+      window.setTimeout(go, LEAVE_MS);
+    });
+  }
+  const leaveRef = useRef(leave);
+  leaveRef.current = leave;
+  useEffect(() => {
+    const hook = () => leaveRef.current();
+    sceneHooks.leaveArrival = hook;
+    return () => {
+      if (sceneHooks.leaveArrival === hook) delete sceneHooks.leaveArrival;
+    };
+  }, []);
+
+  async function begin() {
     if (leaving) return;
     // the gesture may unlock sound and play one soft seed note
     if (await a.ensureSound()) transport.audition(60);
-    const go = () => {
-      if (tour) {
-        dispatch({ type: 'ocean', patch: { presetId: 'gulf-stream', tool: 'preset' } });
-        dispatch({ type: 'tour', step: 0 });
-        a.go('studio', 'ocean');
-      } else a.go('library');
-      setLeaving(false);
-    };
-    if (state.reducedMotion) return go();
-    setLeaving(true);
-    window.setTimeout(go, LEAVE_MS);
+    void leave();
+  }
+
+  /** The one click of the guided journey: sound unlocks here, then the host takes it from there. */
+  function beginJourney() {
+    if (leaving || tourDirector.active) return;
+    tourDirector.start();
   }
 
   return (
-    <section className={`scene scene--arrival${leaving ? ' is-leaving' : ''}`} aria-labelledby="arrival-title">
+    <section className={`scene scene--arrival${leaving ? ' is-leaving' : ''}${touring ? ' is-touring' : ''}`} aria-labelledby="arrival-title">
       <Masthead tone="paper" />
       <div className="arrival__copy">
         <span className="eyebrow eyebrow--rule eyebrow--copper">An invitation to listen</span>
@@ -46,7 +68,7 @@ export function ArrivalScene() {
         <div className="arrival__actions">
           <button
             className="cta cta--ink"
-            onClick={() => begin(false)}
+            onClick={() => begin()}
             onMouseEnter={() => setNudge(true)}
             onMouseLeave={() => setNudge(false)}
             onFocus={() => setNudge(true)}
@@ -54,9 +76,17 @@ export function ArrivalScene() {
           >
             Make my Earth Record <span className="cta__arrow" aria-hidden="true">↗</span>
           </button>
-          <button className="link-btn link-btn--ink" onClick={() => begin(true)}>
-            Take the short tour
+        </div>
+        <div className="arrival__host">
+          <button className="host-invite" onClick={beginJourney} aria-describedby="host-note">
+            <BeethovenPortrait size={58} tone="paper" />
+            <span className="host-invite__text">
+              <span className="host-invite__label">Begin the narrated journey</span>
+              <span className="host-invite__sub">with your host, Beethoven</span>
+            </span>
+            <span className="host-invite__play" aria-hidden="true">▶</span>
           </button>
+          <p id="host-note" className="arrival__host-note">Beethoven as your host (portrait: J. K. Stieler, 1820). One click, then it plays by itself — captions always on; pause, skip or take over at any moment.</p>
         </div>
         <p className="arrival__quote">“We know how Earth looks. What if we could follow how it changes — by listening?”</p>
         <p className="arrival__foot">
