@@ -178,7 +178,8 @@ npm run test:e2e    # browser (builds and serves the app automatically)
 | `src/tests/geodesicPath.test.ts` | equal great-circle spacing, antimeridian crossing, projection round trip, trace thinning |
 | `src/tests/tourDirector.test.ts` | the guided journey: hands-off progression on real cue endings and data events; choosing land cancels the ocean branch for good; pause holds planned beats; skip leaves no stale actions; pressing jumps to the closing line; leaving pauses without teleporting back |
 | `src/tests/narrationScript.test.ts` | every cue exists with direction; the brief's lines are verbatim; the spoken Gulf Stream and Nile Delta numbers match the data; the browser fallback picks a natural, lower voice and never a novelty voice |
-| `src/tests/ensemble.test.ts` | the orchestra plays exactly the data melody and bass, brings instruments in section by section, keeps every added note in the pentatonic collection, and never retriggers a sounding voice (no clicks) |
+| `src/tests/dsp.test.ts` | the rendered orchestra is deterministic, peaks at −3 dBFS, brings each group in where the arrangement does (the orchestra as present as the melody), and has no clicks (the waveform never jumps) |
+| `src/tests/ensemble.test.ts` | the orchestra plays exactly the data melody and bass, brings instruments in section by section, keeps every added note in the pentatonic collection |
 | `src/tests/modisLive.test.ts` | the in-browser MODIS builder (any place) reproduces the pipeline's windows for all three curated places |
 | `tests/e2e/journeys.spec.ts` | no AudioContext before a gesture; 3-click path to sound; inspector + formula; keyboard score + coordinate editor; drawing; press → reveal → valid JSON / 2400-px PNG / WAV; shelf survives reload; land dial + QA rests + 81 pixels; playback keeps time on a 4×-throttled CPU and the score is never covered at laptop height; any place by click or coordinates with the picture following the notes (NASA services mocked); narrated journey hands-off to the baton; the visitor's choice wins; pause; voice off; deep links + back; reduced motion; no horizontal overflow; no console errors — desktop and Pixel 7 |
 
@@ -209,7 +210,7 @@ Change dates, places or ranges in `scripts/pipeline_config.py` (and mirror the r
 ## 6. How it is built
 
 ```
-React 18 + TypeScript + Vite · Tone.js (loaded only after a gesture) · d3-geo + Natural Earth (world-atlas)
+React 18 + TypeScript + Vite · the orchestra is rendered in a Web Worker (`src/audio/dsp.ts`) and played back with the Web Audio API (no audio before a gesture) · d3-geo + Natural Earth (world-atlas)
 Fonts: Instrument Serif (display), DM Sans (body), DM Mono (data labels) — self-hosted via Fontsource
 ```
 
@@ -277,7 +278,49 @@ earth-information-jukebox/
 | change what the host says | `src/tour/guideScript.en.json` (then re-render the voice, see VOICE.md) |
 | change the guided journey's beats | `src/tour/tourDirector.ts` (tests in `src/tests/tourDirector.test.ts`) |
 
-## 9. Troubleshooting
+## 9. Publishing (free, for everyone)
+
+The site is fully static: no server, accounts or keys. `npm run build` writes everything into
+`dist/`, and that folder can be hosted anywhere. Links use hash routes and relative paths, so it
+works from any address, including a sub-folder.
+
+### Option A — GitHub Pages (free for public repositories)
+
+A workflow is included: `.github/workflows/deploy-pages.yml`. On every push to `master` it
+installs, builds, runs the unit tests and publishes `dist/`.
+
+**Once, by the repository owner:**
+1. **Make the repository public.** On GitHub, open **Settings → General → Danger Zone → Change
+   visibility**. Pages is free only for public repositories; a private repository needs a paid plan.
+2. **Turn on Pages.** Open **Settings → Pages → Build and deployment → Source** and choose **GitHub
+   Actions**.
+
+**Then, every time you publish:**
+```bash
+git add -A
+git commit -m "Publish"
+git push origin master        # or merge your branch into master
+```
+
+The **Actions** tab shows the run (about 2 minutes). The site appears at
+`https://<owner>.github.io/<repository>/`, for example `https://amiraelgarf.github.io/Terraphony/`.
+You can also start a run by hand: **Actions → Deploy to GitHub Pages → Run workflow**.
+
+### Option B — Netlify or Cloudflare Pages (free; the repository can stay private)
+
+- **Connect the repository.** Sign up, choose *Import from Git*, and select the repository.
+  - Build command: `npm run build`
+  - Publish directory: `dist`
+  - Node version: 22
+- **Or skip Git entirely.** Run `npm run build` and drag the `dist/` folder onto
+  <https://app.netlify.com/drop>.
+
+### After publishing, check
+- `#/studio/ocean` plays sound after a click, and the map shows the NASA picture.
+- `#/studio/land`: clicking a new place fetches live MODIS data (about 15–40 s), and the pictures
+  load from NASA GIBS. Both services answer browsers from any website (CORS); this was checked.
+
+## 10. Troubleshooting
 
 | Symptom | Fix |
 |---|---|

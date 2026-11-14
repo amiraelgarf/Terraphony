@@ -182,8 +182,10 @@ descriptions) and the copy. Changing a sentence or a range happens here.
 |---|---|
 | `normalize.ts` | **The one rule.** `normalize(value, lo, hi)` → `u` + clamped flag; `noteIndex(u)` = round(u×10); `valueToMidi`; `noteBand` (which value range plays a note); `midiToName` ("G4"), `midiToTone` (Tone.js names) |
 | `musicMapper.ts` | `buildEvents(samples, rule)` → one `MusicEvent` per sample: lead note or rest, bass on block starts in sections 2–3 (`blockMean`), accent when `changeFromPrevious` ≥ threshold in sections 3–4, artistic cadence on the last event. `sectionOf` / `sectionBounds` (5/24, 12/24, 20/24). `notableIndex` (biggest change: the guided journey's planned discovery). `eventHash` (FNV-1a, used for record ids and tests) |
-| `ensemble.ts` | **Pure** `arrange(events)`: turns the record's events into an ensemble part without changing them. The melody and data bass exactly as the original engine played them, plus one derived layer: soft low strings (a pentatonic `triad` built on the bass, or on the melody in the resolve). It also has soft bells for declared changes, and the closing chord |
-| `instruments.ts` | `createVoices(Tone, paletteId)` builds the ensemble for Glass / Wood / Felt on five buses (lead, bass, harmony, accent, cadence). Each bus goes dry plus a reverb send → master → 9.5 kHz high cut → compressor → limiter. `perform(Tone, v, performedEvent, time, beat)` plays one arranged event, and `releaseAll` releases them. Both are shared by live playback and the WAV export |
+| `ensemble.ts` | **Pure** `arrange(events)`: the orchestration. The data melody (solo, plus violins from section 2) and the data bass are unchanged. Around them: strings from the first bar, horns and harp eighth notes from section 3, timpani on bar downbeats, a glockenspiel on declared changes, and the closing chord. All harmony is a pentatonic `triad` built on the data's own bass or melody |
+| `instruments.ts` | Metadata only: the five mixer `LAYERS`, `ALL_LAYERS_ON`, and the three `PALETTES` with their names |
+| `dsp.ts` | **The sound, rendered.** Pure DSP with no Web Audio or DOM. `renderStems(performed, palette, beat)` computes the whole record into five stereo stems (one per layer). It uses band-limited wavetables, raised-cosine attacks, release tails that end at exactly zero, modal synthesis for struck instruments (celesta, marimba, felt piano, harp, timpani, glockenspiel), detuned bowed voices with vibrato, and a soft hall reverb. The mix is normalised to −3 dBFS. `renderOneShot` makes previews, the press phrase and the chime. Deterministic (tested) |
+| `renderWorker.ts` / `renderClient.ts` | `renderRecord(events, palette, beat)` runs `arrange` + `renderStems` in a background Web Worker (main-thread fallback). Shared by playback and the WAV export |
 | `transport.ts` | The **only** owner of sound and the **single clock**. Singleton `transport`. Details in §6.3 |
 
 ### 5.5 `app/` — state and behaviour
@@ -202,7 +204,7 @@ descriptions) and the copy. Changing a sentence or a range happens here.
 |---|---|
 | `recordRecipe.ts` | `buildRecord(input)` assembles an `EarthRecord` (derives events, id = story + event hash + time). `toRecipeJson`, `parseRecipe` (validates, re-derives events, refuses mismatches), `catalogueNumber` ("ER-A-B049"), `recipeFileName` |
 | `coverRenderer.ts` | `renderSleevePng(record)` — draws `sleeveArt()` paths onto a 2400×2400 canvas with `Path2D`, then the typography with the loaded webfonts, returns a PNG `Blob` |
-| `wavRenderer.ts` | `renderRecordWav(record)` — loads Tone, renders the events in `Tone.Offline` with the same voices, `encodeWav` writes a 16-bit PCM RIFF file |
+| `wavRenderer.ts` | `renderRecordWav(record)`: renders the same stems as playback (`renderRecord`), sums them, and `encodeWav` writes a 16-bit PCM RIFF file. The export is exactly what you hear |
 
 ### 5.7 `visuals/` — what you see
 
@@ -295,38 +297,34 @@ Components and helpers:
 ### 6.3 The transport and the one clock
 
 ```
-RecordProvider effect:  transport.load({ id, events, beatSeconds }, { onStep, onEnd })   → arrange(events) once
-                                   │
+RecordProvider effect:  transport.load({ id, events, beatSeconds }, { onStep, onEnd })
+                                   │  prepare(): renderRecord(...) in the Web Worker (starts at once,
+                                   │  even before sound is unlocked) → 5 stereo stems → AudioBuffers
           ┌────────────────────────┴───────────────────────┐
    mode 'audio' (after unlock)                      mode 'silent' (sound off / unavailable)
-   play(): every remaining note is handed to the    setInterval 20 ms reading performance.now()
-   audio thread at once, at exact AudioContext
-   times (perform → voice pools), plus
-   Tone.Draw.schedule(emit(k)) at each onset         └─ emit(k) when floor(position) changes
+   play(): 5 AudioBufferSourceNodes start together   performance.now() clock
+   at the exact offset:
+   stem → session fade → layer gain → master → speakers
                                    │
-                         onStep(k) → dispatch({type:'playhead', index:k})
+             a 20 ms timer reads position() (AudioContext time) → onStep(k) when k changes
                                    │
-             SonicScore / OceanAtlas / LandAtlas / readout re-render once per note
-             + only the small cursor parts (ScoreCursor, PlayedTrail, DialHand) read
-               transport.position() every frame (about 30 times a second)
+                         dispatch({type:'playhead', index:k}) → score, map, dial, captions
+             + small cursor parts (ScoreCursor, PlayedTrail, DialHand) read position() ~30×/s
 ```
 
-* **Nothing on the main thread is needed while music plays.** A record is about 12 s, so `play()`
-  schedules all remaining notes on the audio thread immediately. Map redraws, picture decoding or
-  speech can't delay, bunch up or drop a note. This is measured: on a 4×-throttled CPU, the live
-  output matches the offline render with zero drift, and an e2e test checks it.
-* **Voice pools.** Each layer uses a fixed set of single-note voices round-robin (`VoicePool`), so
-  notes queued far ahead are never dropped. Tone's PolySynth drops notes past its polyphony limit.
-* **Pause / seek / new record.** The current instruments fade out in 30 ms and are replaced
-  (`Voices.renew`), which discards notes already queued. Play then schedules again from the current
-  step, so no note is ever double-triggered.
-* **`position()`** is `anchor.step + (audioTime − anchor.time) / beat`, so the cursor shows what you
-  *hear*.
-* **Tone.js is loaded lazily** (`loadTone()` inside `unlock()`), because importing it creates an
-  AudioContext. `useActions.ensureSound()` is the only caller of `unlock()`, and it is only called
-  from click handlers. `unlock()` waits for the reverb to be built before the first note.
-* **Mixer, volume and palette.** `RecordProvider` effects call `transport.setLayers`, `setVolume`
-  and `setPalette` whenever those parts of state change.
+* **No live synthesis.** The record (about 15 s) is rendered once, off the main thread, and played
+  back from buffers. Buffer playback is the steadiest sound a browser can make. On a 4×-throttled
+  CPU in real Chrome, the live output matched the clean render with 0 dropouts and 0 ms drift. The
+  page can be as busy as it likes: only the picture can lag, never the sound.
+* **Layers and volume.** Mute and solo set the layer gains; volume sets the master. Both are
+  instant, with no re-rendering. Changing instrument re-renders in the worker (cached per record and
+  palette).
+* **Pause, seek and resume.** The session fades out over 40 ms (no click), and resuming starts new
+  sources at the exact offset with a 15 ms fade-in.
+* **`position()`** is `anchor.step + (currentTime − outputLatency − anchor.time) / beat`, so the
+  cursor shows what you *hear*.
+* **No AudioContext before a gesture.** `unlock()` creates it, with `latencyHint: 'playback'`.
+  `useActions.ensureSound()` is the only caller, and only from click handlers.
 
 ### 6.3b The guided journey
 
@@ -380,14 +378,15 @@ whenever they change; `boot()` restores them. Nothing is sent to any server.
 
 ### B. Pressing "Hear this journey"
 
-1. `useActions.togglePlay()` → `ensureSound()` → `transport.unlock()` → `import('tone')`,
-   `Tone.start()`, `createVoices(Tone, 'glass')` → `dispatch(sound 'on')` →
-   `transport.setMode('audio')` (reloads the program on the Tone Transport).
-2. `transport.play()`; `dispatch(playing true)`.
-3. Every 0.5 s: `playEvent` triggers synths; `Tone.Draw` calls `onStep(k)` →
-   `dispatch(playhead k)` → score mark, map stop, caption and readout update.
-4. `useSmoothPlayhead` animates the cursor between steps from `transport.position()`.
-5. After the last event + 3 beats of tail → `onEnd` → `playing false`, `playhead null`.
+1. Already when the studio opened: `transport.load` → `renderRecord` rendered the orchestra in the
+   worker.
+2. `useActions.togglePlay()` → `ensureSound()` → `transport.unlock()` creates the AudioContext →
+   `dispatch(sound 'on')` → `transport.setMode('audio')`.
+3. `transport.play()` starts the five stem buffers at the current step; `dispatch(playing true)`.
+4. A 20 ms timer reads the audio clock and calls `onStep(k)` → `dispatch(playhead k)` → score note,
+   map stop, caption and readout update.
+5. The small cursor parts animate between steps from `transport.position()`.
+6. After the last event + 3 beats of tail → `onEnd` → `playing false`, `playhead null`.
 
 ### C. Inspecting a note
 
@@ -419,7 +418,7 @@ whenever they change; `boot()` restores them. Nothing is sent to any server.
 3. `RevealScene`: the transport is loaded with the pressed record; Play drives the disc groove
    highlight and the sleeve's highlighted stop through `state.playhead`.
 4. Exports: `toRecipeJson` → Blob → download; `renderSleevePng` → canvas → PNG; `renderRecordWav`
-   → `Tone.Offline` → WAV. Each is a `Blob` given to a temporary `<a download>`.
+   → the same rendered stems → WAV. Each is a `Blob` given to a temporary `<a download>`.
 5. Later: "Open a record recipe" → `parseRecipe(text)` → `importRecord` → reveal.
 
 ---
@@ -474,8 +473,8 @@ always refer to the same thing.
 2. Ranges are constants in `stories/*.config.ts`; nothing rescales them per route/place/date.
 3. Order is never changed between observations, events, stops, marks, spokes and groove.
 4. Only the cadence chord is artistic (`artistic: true`); instruments change timbre only.
-5. No AudioContext before a user gesture (lazy Tone import).
-6. Only `transport.ts` touches Tone; only `reducer` changes state; only `useActions` unlocks sound.
+5. No AudioContext before a user gesture (`unlock()` creates it).
+6. Only `transport.ts` plays sound, and only `dsp.ts` makes it; only `reducer` changes state; only `useActions` unlocks sound.
 7. Pure modules (`data/`, `normalize`, `musicMapper`, `recordRecipe`, `geometry`) never import
    React or the DOM, so they are tested in Node.
 8. The tour never acts on a cancelled token, never navigates the visitor back after they leave,
@@ -487,7 +486,7 @@ always refer to the same thing.
 
 | File | Purpose |
 |---|---|
-| `package.json` | dependencies (react, tone, d3-geo, topojson-client, world-atlas, fontsource) and scripts |
+| `package.json` | dependencies (react, d3-geo, topojson-client, world-atlas, fontsource) and scripts |
 | `vite.config.ts` | `base: './'` (works from any folder), dev port 5173, preview 4173, Vitest config |
 | `tsconfig.json` | strict TypeScript, JSON imports (world-atlas), bundler resolution |
 | `playwright.config.ts` | builds + previews the app, runs desktop and Pixel 7 projects, autoplay allowed for audio tests |

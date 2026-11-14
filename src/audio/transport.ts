@@ -52,7 +52,9 @@ export class Transport {
   private silentStart = 0;
   private timer: number | null = null;
   private session: Session | null = null;
-  private renders = new Map<string, Promise<AudioBuffer[]>>();
+  /** Rendered stems by record + palette (rendering needs no AudioContext, so it starts at once). */
+  private rendered = new Map<string, Promise<Rendered>>();
+  private buffered = new Map<string, Promise<AudioBuffer[]>>();
   private oneShots = new Map<string, AudioBuffer>();
   private lastAudition = -Infinity;
   private playToken = 0;
@@ -277,18 +279,40 @@ export class Transport {
     return `${p.id}|${this.palette}|${p.beatSeconds}`;
   }
 
-  /** Start rendering the current record in the background (if sound is on). */
+  /**
+   * Start rendering the current record in the background worker as soon as it is
+   * loaded — before sound is even unlocked — so it is ready when play is pressed.
+   */
   private prepare() {
-    if (!this.program || !this.ctx || this.ctx.state !== 'running') return;
-    void this.buffers().catch(() => undefined);
+    if (!this.program || typeof window === 'undefined') return;
+    void this.render().catch(() => undefined);
+    // once sound is unlocked, also hand the stems to the audio engine ahead of time
+    if (this.ctx && this.ctx.state === 'running') void this.buffers().catch(() => undefined);
+  }
+
+  private render(): Promise<Rendered> {
+    const key = this.renderKey();
+    let job = this.rendered.get(key);
+    if (!job) {
+      const p = this.program!;
+      job = renderRecord(p.events, this.palette as Palette, p.beatSeconds);
+      job.catch(() => this.rendered.delete(key));
+      this.rendered.set(key, job);
+      // keep memory modest: only the most recent renders
+      while (this.rendered.size > 3) {
+        const old = this.rendered.keys().next().value as string;
+        this.rendered.delete(old);
+        this.buffered.delete(old);
+      }
+    }
+    return job;
   }
 
   private buffers(): Promise<AudioBuffer[]> {
     const key = this.renderKey();
-    let job = this.renders.get(key);
+    let job = this.buffered.get(key);
     if (!job) {
-      const p = this.program!;
-      job = renderRecord(p.events, this.palette as Palette, p.beatSeconds).then((r: Rendered) => {
+      job = this.render().then((r: Rendered) => {
         const ctx = this.ctx!;
         return LAYERS.map((l) => {
           const [left, right] = r.stems[l];
@@ -298,10 +322,8 @@ export class Transport {
           return b;
         });
       });
-      job.catch(() => this.renders.delete(key));
-      this.renders.set(key, job);
-      // keep memory modest: only the most recent renders
-      while (this.renders.size > 3) this.renders.delete(this.renders.keys().next().value as string);
+      job.catch(() => this.buffered.delete(key));
+      this.buffered.set(key, job);
     }
     return job;
   }

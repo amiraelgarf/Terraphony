@@ -197,6 +197,29 @@ about 0.2 s or less. The causes were:
 - **Expensive animations.** The full-screen blur is gone from scene entrances, and the
   library→studio zoom now uses transforms only.
 
+## D20e — Rendered, not synthesised live (the sound problem, solved at the root)
+Visitors in a real Chrome session heard all of these: gaps of several seconds, cut-outs, crackle,
+rough note changes, and "only piano". A clean test window on the same PC played fine. Those are
+real-time audio underruns. Tone.js synthesised the orchestra live: about 30 voices and hundreds of
+always-running audio nodes, plus a large convolution reverb. When the browser is busy, the audio
+thread misses its deadlines; each miss is a gap or crackle, and the quiet orchestral layers are the
+first to vanish.
+
+**Now:**
+- **Render once.** The whole record (about 15 s) is rendered once by our own DSP (`src/audio/dsp.ts`)
+  in a Web Worker, into five stereo stems.
+- **Play back from buffers.** Playback is five `AudioBufferSourceNode`s, which is almost no
+  real-time load.
+- **Instant mixing.** Mute, solo and volume are gain changes.
+- **Ready before play.** Rendering starts as soon as a record is loaded, so it is usually done well
+  before play.
+- **The export matches.** The WAV export is exactly the rendered sound.
+- **Tone.js removed.**
+
+**Verified in real Chrome, CPU throttled 4×:** 0 dropout frames, 0 ms drift, and the live output
+matches the clean render. In the tour, music starts about 20 ms after "Listen.". In the rendered
+waveform, the largest jump is 0.006–0.010, against about 0.1–0.7 for a click.
+
 ## D20b — The score is never covered
 On laptop-height windows (600–730 px) the map insisted on a 420 px minimum and ran 40–60 px into
 the score, covering its header and section labels. On desktop the map now takes only the space

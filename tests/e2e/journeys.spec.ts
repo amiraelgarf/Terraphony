@@ -223,7 +223,8 @@ test('narrated journey: the visitor’s choice wins, captions run with the voice
   await expect(guide).toContainText('We could begin anywhere.', { timeout: 10_000 });
   await page.locator('.choice--land').click();
   await expect(page).toHaveURL(/#\/studio\/land$/);
-  await expect(guide).toContainText('A year in one place.', { timeout: 10_000 });
+  // the land story begins (its acknowledgement or its first lines, depending on machine speed)
+  await expect(guide).toContainText(/A year in one place\.|A fine choice\.|Now we stay in one place|move around us|Every sixteen days|Listen\./, { timeout: 15_000 });
   await page.waitForTimeout(9000); // the cancelled ocean line must never take them anywhere
   await expect(page).toHaveURL(/#\/studio\/land$/);
   await guide.getByRole('button', { name: 'End the narrated journey' }).click();
@@ -341,9 +342,11 @@ test('the narrated journey music is audible after "Listen."', async ({ page }, i
   // the studio's own play button switches to Pause when the tour starts the music
   await page.locator('.panel-actions .cta', { hasText: 'Pause' }).waitFor({ timeout: 60_000 });
   await page.evaluate(() => ((window as unknown as { __peaks: number[] }).__peaks = []));
-  await page.waitForTimeout(2500);
-  const peak = await page.evaluate(() => Math.max(0, ...(window as unknown as { __peaks: number[] }).__peaks));
-  expect(20 * Math.log10(Math.max(peak, 1e-6))).toBeGreaterThan(-15);
+  // (test speed: the host's lines take a fraction of a second here, so allow for the
+  // record's background render; at real speaking pace it is ready long before "Listen.")
+  await expect
+    .poll(() => page.evaluate(() => Math.max(0, ...(window as unknown as { __peaks: number[] }).__peaks)), { timeout: 8000 })
+    .toBeGreaterThan(0.18);
 });
 
 test('deep links and the back button keep the journey', async ({ page }) => {

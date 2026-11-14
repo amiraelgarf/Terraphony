@@ -25,7 +25,7 @@ logos or insignia. Usage follows https://svs.gsfc.nasa.gov/help/ and NASA media 
 Natural Earth (public domain) via the `world-atlas` package (ISC, Mike Bostock).
 
 ## Our own work
-- All music is original and synthesized at run time with Tone.js; no samples or recordings.
+- All music is original, synthesized by this project's own renderer (`src/audio/dsp.ts`); no samples or recordings.
 - The host's portrait: **Joseph Karl Stieler, *Portrait of Ludwig van Beethoven when composing the
   Missa Solemnis* (1820)**, Beethoven-Haus Bonn. Public domain, via Wikimedia Commons
   (https://commons.wikimedia.org/wiki/File:Beethoven.jpg), cropped to
@@ -38,7 +38,7 @@ Natural Earth (public domain) via the `world-atlas` package (ISC, Mike Bostock).
 
 ## Open source
 Fonts (SIL Open Font License, self-hosted via Fontsource): Instrument Serif, DM Sans, DM Mono.
-Libraries: React (MIT), Tone.js (MIT), d3-geo (ISC), topojson-client (ISC), Vite (MIT),
+Libraries: React (MIT), d3-geo (ISC), topojson-client (ISC), Vite (MIT),
 Vitest (MIT), Playwright (Apache-2.0), NumPy (BSD), SciPy (BSD), Pillow (MIT-CMU).
 
 > An independent NASA Space Apps Challenge 2026 project using NASA data and visualization assets;
