@@ -87,7 +87,7 @@ export function arrange(events: MusicEvent[]): PerformedEvent[] {
     if (root !== null) {
       const chord = triad(root);
       // strings hold the bar's chord from the very first bar (softly at first)
-      if (downbeat) out.strings = chord.map((m) => ({ midi: m, at: 0, dur: 3.85, vel: section === 1 ? 0.45 : 0.62 }));
+      if (downbeat) out.strings = chord.map((m) => ({ midi: m, at: 0, dur: 3.85, vel: section === 1 ? 0.7 : 0.75 }));
       // horns: warm root + fifth swells
       if (downbeat && section >= 3) out.horns = [root, chord[2]].map((m) => ({ midi: within(m, 48, 62), at: 0, dur: 3.6, vel: section === 4 ? 0.5 : 0.6 }));
       // harp: the rhythm — eighth notes in section 3, quarter notes in the resolve

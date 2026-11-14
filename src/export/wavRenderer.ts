@@ -1,24 +1,22 @@
 /**
- * Offline WAV render of a record: the same voices, the same events, the same
- * limiter as live playback, rendered with Tone.Offline (OfflineAudioContext)
- * and encoded as 16-bit PCM stereo.
+ * WAV export of a record: exactly the orchestra you hear — the same rendered stems
+ * as live playback (dsp.ts, rendered in the background worker), summed and encoded
+ * as 16-bit PCM stereo at 44.1 kHz.
  */
 import type { EarthRecord } from '../data/types';
-import { createVoices, perform } from '../audio/instruments';
-import { arrange } from '../audio/ensemble';
-import { loadTone, TAIL_BEATS } from '../audio/transport';
+import { renderRecord } from '../audio/renderClient';
+import type { Palette } from '../audio/dsp';
 
-export async function renderRecordWav(record: EarthRecord, sampleRate = 44100): Promise<Blob> {
-  const beat = record.musicalRule.beatSeconds;
-  const duration = (record.events.length + TAIL_BEATS + 2) * beat;
-  const Tone = await loadTone();
-  const buffer = await Tone.Offline(async () => {
-    const v = createVoices(Tone, record.instrumentPaletteId);
-    v.output.toDestination();
-    await v.ready;
-    arrange(record.events).forEach((p, k) => perform(Tone, v, p, record.events[k].atBeat * beat + 0.05, beat));
-  }, duration, 2, sampleRate);
-  return encodeWav(buffer.get() as AudioBuffer);
+export async function renderRecordWav(record: EarthRecord): Promise<Blob> {
+  const r = await renderRecord(record.events, record.instrumentPaletteId as Palette, record.musicalRule.beatSeconds);
+  const left = new Float32Array(r.length), right = new Float32Array(r.length);
+  for (const [l, rr] of Object.values(r.stems)) {
+    for (let i = 0; i < r.length; i++) {
+      left[i] += l[i];
+      right[i] += rr[i];
+    }
+  }
+  return encodeWav({ numberOfChannels: 2, length: r.length, sampleRate: r.sampleRate, getChannelData: (c: number) => (c === 0 ? left : right) } as unknown as AudioBuffer);
 }
 
 export function encodeWav(buf: AudioBuffer): Blob {

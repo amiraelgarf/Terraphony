@@ -1,19 +1,16 @@
 /**
- * The orchestra plays the data; it never changes it, never clashes with it, and is
- * click-free by construction (no voice is retriggered while it is still sounding).
+ * The orchestra plays the data; it never changes it and never clashes with it.
  */
 import { describe, expect, it } from 'vitest';
-import { arrange, scaleStep, triad, type Hit, type PerformedEvent } from '../audio/ensemble';
-import { POOL_PLAN } from '../audio/instruments';
+import { arrange, scaleStep, triad } from '../audio/ensemble';
 import { buildEvents } from '../audio/musicMapper';
 import { OCEAN_RULE } from '../stories/ocean.config';
-import { obs, presets } from './helpers';
+import { obs } from './helpers';
 
 const values = [12, 14, 15, 13, null, 18, 21, 22, 22, 25, 24, 20, 19, 17, 16, 18, 20, 23, 26, 27, 25, 22, 20, 18];
 const events = buildEvents(obs(values), OCEAN_RULE);
 const perf = arrange(events);
 const SCALE = new Set([0, 2, 4, 7, 9]);
-const BEAT = OCEAN_RULE.beatSeconds;
 
 describe('ensemble', () => {
   it('plays exactly the data melody and the data bass; rests stay silent', () => {
@@ -41,29 +38,6 @@ describe('ensemble', () => {
 
   it('keeps every added note inside the pentatonic collection', () => {
     for (const p of perf) for (const h of [...p.strings, ...p.horns, ...p.harp, ...(p.violin ? [p.violin] : []), ...(p.timpani ? [p.timpani] : [])]) expect(SCALE.has(h.midi % 12)).toBe(true);
-  });
-
-  it('never retriggers a voice that is still sounding (the cause of clicks)', () => {
-    const check = (name: keyof typeof POOL_PLAN, list: (p: PerformedEvent) => Hit[], evs: PerformedEvent[]) => {
-      const { voices, release } = POOL_PLAN[name];
-      const notes = evs.flatMap((p, i) => list(p).map((h) => ({ start: (i + h.at) * BEAT, end: (i + h.at + h.dur) * BEAT + release })));
-      notes.sort((a, b) => a.start - b.start);
-      notes.forEach((n, k) => {
-        if (k >= voices) expect(n.start, `${name} note ${k}`).toBeGreaterThanOrEqual(notes[k - voices].end - 1e-9);
-      });
-    };
-    const records = [events, ...presets().presets.map((pr) => buildEvents(obs(pr.reference.A.map((r) => r.value)), OCEAN_RULE))];
-    for (const evs of records) {
-      const pf = arrange(evs);
-      check('lead', (p) => (p.lead ? [p.lead] : []), pf);
-      check('violin', (p) => (p.violin ? [p.violin] : []), pf);
-      check('strings', (p) => p.strings, pf);
-      check('horns', (p) => p.horns, pf);
-      check('harp', (p) => p.harp, pf);
-      check('bass', (p) => (p.bass ? [p.bass] : []), pf);
-      check('timpani', (p) => (p.timpani ? [p.timpani] : []), pf);
-      check('chime', (p) => (p.chime ? [p.chime] : []), pf);
-    }
   });
 
   it('builds consonant pentatonic triads', () => {
